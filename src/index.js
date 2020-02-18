@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef
-const { registerBlockType } = wp.blocks;
+import { registerBlockType } from '@wordpress/blocks'
 
 /**
  * Internal dependencies
