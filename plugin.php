@@ -14,21 +14,13 @@ function a8c_meeting_calendar_register() {
 	// Register our block script with WordPress
 	wp_register_script(
 		'a8c-meeting-calendar',
-		plugins_url('build/index.js', __FILE__),
-		array('wp-blocks', 'wp-element', 'wp-editor')
+		plugins_url('build/index.js', __FILE__)
 	);
 
 	// Register our block's base CSS
 	wp_register_style(
 		'a8c-meeting-calendar-style',
 		plugins_url( 'style.css', __FILE__ )
-	);
-
-	// Register our block's editor-specific CSS
-	wp_register_style(
-		'a8c-meeting-calendar-edit-style',
-		plugins_url('style.css', __FILE__),
-		array( 'wp-edit-blocks' )
 	);
 
 	// Enqueue the script in the editor
