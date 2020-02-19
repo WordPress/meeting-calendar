@@ -1,5 +1,3 @@
-const SaveView = () => {
-	return <div>The backend is alive</div>;
-};
+const Save = () => null;
 
-export default SaveView;
+export default Save;
