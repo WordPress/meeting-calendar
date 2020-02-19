@@ -229,13 +229,13 @@ class Meeting_Post_Type {
 	}
 
 	public function register_meta() {
+		// Most are string types
 		$meta_keys = array(
 			'team',
 			'start_date',
 			'end_date',
 			'time',
 			'recurring',
-			'occurrence',
 			'link',
 			'location',
 		);
@@ -248,6 +248,21 @@ class Meeting_Post_Type {
 				)
 			);
 		}
+		// 'occurrence' is an array of strings
+		register_meta( 'post', 'occurrence', array(
+				'object_subtype' => 'meeting',
+				'type' => 'array',
+				'single' => true,
+				'show_in_rest' => array(
+					'schema' => array(
+						'type' => 'array',
+						'items' => array(
+							'type' => 'integer',
+						)
+					)
+				),
+			)
+		);
 	}
 
 	public function add_meta_boxes() {
