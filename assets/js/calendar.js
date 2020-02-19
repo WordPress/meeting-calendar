@@ -1,43 +1,36 @@
-// var calendarElement = document.querySelector( '#a8c-meeting-calendar-js' );
+( function( $ ) {
+	'use strict';
 
-// var ulElement = document.createElement( 'ul' );
+	document.addEventListener( 'DOMContentLoaded', function() {
+		var calendarEl = document.getElementById( 'a8c-meeting-calendar-js' );
 
-// for ( var i = 0; i < meetingData.length; i++ ) {
-// 	var li = document.createElement( 'div' );
-// 	console.log( meetingData[ i ] );
-// 	li.textContent = `date: ${ meetingData[ i ].date } - Title: ${ meetingData[ i ].title.rendered } `;
-// 	ulElement.appendChild( li );
-// }
+		var meetingData = JSON.parse(
+			calendarEl.getAttribute( 'data-meetings' )
+		);
 
-// calendarElement.innerHTML = '';
-// calendarElement.appendChild( ulElement );
+		var events = meetingData.map( ( i ) => {
+			return {
+				...i,
+				title: i.title.rendered,
+				start: i.date,
+			};
+		} );
 
-document.addEventListener( 'DOMContentLoaded', function() {
-	var calendarEl = document.getElementById( 'a8c-meeting-calendar-js' );
+		console.log( events );
 
-	var meetingData = JSON.parse( calendarEl.getAttribute( 'data-meetings' ) );
+		//Empty calendar
+		calendarEl.innerHTML = '';
 
-	console.log( meetingData );
-	var events = meetingData.map( ( i ) => {
-		return {
-			...i,
-			title: i.title.rendered,
-			start: i.date,
-		};
+		var calendar = new FullCalendar.Calendar( calendarEl, {
+			plugins: [ 'dayGrid', 'timeGrid', 'list' ],
+			events,
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'dayGridMonth, timeGridWeek, timeGridDay',
+			},
+		} );
+
+		calendar.render();
 	} );
-
-	//Empty calendar
-	calendarEl.innerHTML = '';
-
-	var calendar = new FullCalendar.Calendar( calendarEl, {
-		plugins: [ 'dayGrid', 'timeGrid', 'list' ],
-		events,
-		header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'dayGridMonth, timeGridWeek, timeGridDay',
-		},
-	} );
-
-	calendar.render();
-} );
+} )( jQuery );

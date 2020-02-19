@@ -8,13 +8,30 @@
  * License: GPL2+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
  */
+
+
+/**
+ * Retrieves meetings
+ *
+ * @param integer $perPage Number of meetings per page.
+ * @return string List of meetings in JSON format
+ */
+function getMeetingData( $perPage ) {
+	$request = new WP_REST_Request( 'GET', '/wp/v2/meeting' );
+	$request->set_query_params( [ 'per_page' => $perPage ] );
+	$response = rest_do_request( $request );
+	$server = rest_get_server();
+	$data = $server->response_to_data( $response, false );
+	return wp_json_encode( $data );
+}
+
 function a8c_meeting_calendar_callback( $attributes, $content ) {
-	$temporaryData = '[{"id":2673,"date":"2020-01-20T22:37:52","date_gmt":"2020-01-20T22:37:52","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2673"},"modified":"2020-01-20T22:37:52","modified_gmt":"2020-01-20T22:37:52","slug":"5-4-bug-scrub-week-1","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/5-4-bug-scrub-week-1\/","title":{"rendered":"5.4 Bug Scrub Week 1"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2673"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2673"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2674,"date":"2020-01-20T22:38:43","date_gmt":"2020-01-20T22:38:43","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2674"},"modified":"2020-01-20T22:38:43","modified_gmt":"2020-01-20T22:38:43","slug":"5-4-bug-scrub-week-2","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/5-4-bug-scrub-week-2\/","title":{"rendered":"5.4 Bug Scrub Week 2"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2674"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2674"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2675,"date":"2020-01-20T22:39:25","date_gmt":"2020-01-20T22:39:25","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2675"},"modified":"2020-01-20T22:39:25","modified_gmt":"2020-01-20T22:39:25","slug":"5-4-bug-scrub-week-3","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/5-4-bug-scrub-week-3\/","title":{"rendered":"5.4 Bug Scrub Week 3"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2675"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2675"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2676,"date":"2020-01-20T22:40:05","date_gmt":"2020-01-20T22:40:05","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2676"},"modified":"2020-01-20T22:40:05","modified_gmt":"2020-01-20T22:40:05","slug":"5-4-bug-scrub-week-4","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/5-4-bug-scrub-week-4\/","title":{"rendered":"5.4 Bug Scrub Week 4"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2676"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2676"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2677,"date":"2020-01-20T22:40:44","date_gmt":"2020-01-20T22:40:44","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2677"},"modified":"2020-01-20T22:40:44","modified_gmt":"2020-01-20T22:40:44","slug":"5-4-bug-scrub-week-5","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/5-4-bug-scrub-week-5\/","title":{"rendered":"5.4 Bug Scrub Week 5"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2677"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2677"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2690,"date":"2020-01-28T18:15:05","date_gmt":"2020-01-28T18:15:05","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2690"},"modified":"2020-01-28T18:16:36","modified_gmt":"2020-01-28T18:16:36","slug":"block-based-themes-chat","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/block-based-themes-chat\/","title":{"rendered":"Block Based Themes Chat"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2690"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2690"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2689,"date":"2020-01-28T18:13:16","date_gmt":"2020-01-28T18:13:16","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2689"},"modified":"2020-01-28T18:17:23","modified_gmt":"2020-01-28T18:17:23","slug":"themes-team-triage","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/themes-team-triage\/","title":{"rendered":"Themes Team Triage"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2689"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2689"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2678,"date":"2020-01-20T22:41:26","date_gmt":"2020-01-20T22:41:26","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2678"},"modified":"2020-01-20T22:41:26","modified_gmt":"2020-01-20T22:41:26","slug":"5-4-bug-scrub-week-6","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/5-4-bug-scrub-week-6\/","title":{"rendered":"5.4 Bug Scrub Week 6"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2678"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2678"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2679,"date":"2020-01-20T22:42:08","date_gmt":"2020-01-20T22:42:08","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2679"},"modified":"2020-01-20T22:42:08","modified_gmt":"2020-01-20T22:42:08","slug":"5-4-bug-scrub-week-7","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/5-4-bug-scrub-week-7\/","title":{"rendered":"5.4 Bug Scrub Week 7"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2679"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2679"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}},{"id":2612,"date":"2019-10-17T14:43:02","date_gmt":"2019-10-17T14:43:02","guid":{"rendered":"https:\/\/make.wordpress.org\/?post_type=meeting&#038;p=2612"},"modified":"2020-01-14T11:53:45","modified_gmt":"2020-01-14T11:53:45","slug":"polyglots-team-monthly-chat-americas","status":"publish","type":"meeting","link":"https:\/\/make.wordpress.org\/meetings\/polyglots-team-monthly-chat-americas\/","title":{"rendered":"Polyglots Team Monthly Chat (Americas)"},"template":"","_links":{"self":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting\/2612"}],"collection":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/meeting"}],"about":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/types\/meeting"}],"wp:attachment":[{"href":"https:\/\/make.wordpress.org\/wp-json\/wp\/v2\/media?parent=2612"}],"curies":[{"name":"wp","href":"https:\/\/api.w.org\/{rel}","templated":true}]}}]';
+	$meetings = getMeetingData( 12 );
 
     return sprintf(
         '<div id="%s" data-meetings="%s">Loading Calendar ...</div>',
         'a8c-meeting-calendar-js',
-        htmlspecialchars( $temporaryData, ENT_QUOTES ) );
+        htmlspecialchars( $meetings, ENT_QUOTES ) );
 }
 
 function a8c_meeting_calendar_register() {
@@ -63,26 +80,19 @@ add_action('init', 'a8c_meeting_calendar_register');
 
 // TODO - We probably don't always want to load this if they don't have a calendar block on the page
 function enqueue_calendar_frontend() {
-	wp_enqueue_script( 'a8c-meeting-full-calendar-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js' );
-
-	wp_enqueue_script( 'a8c-meeting-full-calendar-moment-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment/main.min.js' );
-	wp_enqueue_script( 'a8c-meeting-full-calendar-daygrid-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js' );
-	wp_enqueue_script( 'a8c-meeting-full-calendar-list-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js' );
-	wp_enqueue_script( 'a8c-meeting-full-calendar-timegrid-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js' );
-
-
-	wp_enqueue_script( 'a8c-meeting-calendar-js', plugin_dir_url( __FILE__ ) . 'assets/js/calendar.js' );
-
+	// TODO - Assets should probably not be CDN hosted
 	wp_enqueue_style( 'a8c-meeting-fullcalendar-core-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css' );
 	wp_enqueue_style( 'a8c-meeting-fullcalendar-daygrid-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css' );
 	wp_enqueue_style( 'a8c-meeting-fullcalendar-list-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.css' );
 	wp_enqueue_style( 'a8c-meeting-fullcalendar-timegrid-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css' );
 
+	wp_enqueue_script( 'a8c-meeting-fullcalendar-core-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js' );
+	wp_enqueue_script( 'a8c-meeting-fullcalendar-daygrid-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js' );
+	wp_enqueue_script( 'a8c-meeting-fullcalendar-list-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js' );
+	wp_enqueue_script( 'a8c-meeting-fullcalendar-timegrid-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js' );
+	wp_enqueue_script( 'a8c-meeting-fullcalendar-moment-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment/main.min.js' );
 
-
-
-
-
+	wp_enqueue_script( 'a8c-meeting-calendar-js', plugin_dir_url( __FILE__ ) . 'assets/js/calendar.js' );
 }
 
 add_action('wp_footer', 'enqueue_calendar_frontend');
