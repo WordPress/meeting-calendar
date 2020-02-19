@@ -31,4 +31,10 @@ function a8c_meeting_calendar_register() {
 	));
 }
 
+function wporg_meeting_calendar_init_back_end() {
+	require_once( __DIR__ . '/includes/wporg-meeting-posttype.php' );
+	new Meeting_Post_Type();
+}
+
+add_action('plugins_loaded', 'wporg_meeting_calendar_init_back_end');
 add_action('init', 'a8c_meeting_calendar_register');
