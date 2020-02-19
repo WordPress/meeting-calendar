@@ -12,11 +12,9 @@
 			return {
 				...i,
 				title: i.title.rendered,
-				start: i.date,
+				start: i.date,gi
 			};
 		} );
-
-		console.log( events );
 
 		//Empty calendar
 		calendarEl.innerHTML = '';
