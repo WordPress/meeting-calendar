@@ -2,7 +2,7 @@
 	'use strict';
 
 	document.addEventListener( 'DOMContentLoaded', function() {
-		var calendarEl = document.getElementById( 'a8c-meeting-calendar-js' );
+		var calendarEl = document.getElementById( 'wporg-meeting-calendar-js' );
 
 		var meetingData = JSON.parse(
 			calendarEl.getAttribute( 'data-meetings' )
