@@ -27,7 +27,6 @@ function getMeetingData( $perPage ) {
 
 function wporg_meeting_calendar_callback( $attributes, $content ) {
 	$meetings = getMeetingData( 12 );
-
     return sprintf(
         '<div id="%s" data-meetings="%s">Loading Calendar ...</div>',
         'wporg-meeting-calendar-js',
@@ -49,12 +48,11 @@ function wporg_meeting_calendar_register() {
 	);
 
 	// Enqueue the script in the editor
-	register_block_type('wporg-meeting-calendar/main', array(
+	register_block_type( 'wporg-meeting-calendar/main', array(
 		'editor_script' => 'wporg-meeting-calendar',
-		'editor_style' => 'wporg-meeting-calendar-edit-style',
 		'style' => 'wporg-meeting-calendar-style',
 		'render_callback' => 'wporg_meeting_calendar_callback'
-	));
+	) );
 }
 
 function wporg_meeting_calendar_init_back_end() {
@@ -86,13 +84,13 @@ function enqueue_calendar_frontend() {
 	wp_enqueue_style( 'wporg-meeting-fullcalendar-list-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.css' );
 	wp_enqueue_style( 'wporg-meeting-fullcalendar-timegrid-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css' );
 
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-core-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-daygrid-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-list-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-timegrid-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-moment-js', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment/main.min.js' );
+	wp_enqueue_script( 'wporg-meeting-fullcalendar-core-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js' );
+	wp_enqueue_script( 'wporg-meeting-fullcalendar-daygrid-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js' );
+	wp_enqueue_script( 'wporg-meeting-fullcalendar-list-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js' );
+	wp_enqueue_script( 'wporg-meeting-fullcalendar-timegrid-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js' );
+	wp_enqueue_script( 'wporg-meeting-fullcalendar-moment-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment/main.min.js' );
 
-	wp_enqueue_script( 'wporg-meeting-calendar-js', plugin_dir_url( __FILE__ ) . 'assets/js/calendar.js' );
+	wp_enqueue_script( 'wporg-meeting-calendar-script', plugin_dir_url( __FILE__ ) . 'assets/js/calendar.js' );
 }
 
 add_action('wp_footer', 'enqueue_calendar_frontend');

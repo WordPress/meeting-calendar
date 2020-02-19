@@ -12,7 +12,7 @@
 			return {
 				...i,
 				title: i.title.rendered,
-				start: i.date,gi
+				start: i.date
 			};
 		} );
 

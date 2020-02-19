@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
 import { registerBlockType } from '@wordpress/blocks'
 
 /**
