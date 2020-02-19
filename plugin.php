@@ -31,4 +31,23 @@ function a8c_meeting_calendar_register() {
 	));
 }
 
+function wporg_meeting_calendar_init_back_end() {
+	require_once( __DIR__ . '/includes/wporg-meeting-posttype.php' );
+	new Meeting_Post_Type();
+}
+
+// Create some sample data on first install
+function wporg_meeting_calendar_install() {
+
+	// We need the CPT to be registered to install
+	wporg_meeting_calendar_init_back_end();
+	$meeting_post_type = new Meeting_Post_Type();
+	$meeting_post_type->getInstance()->register_meeting_post_type();
+
+	require_once( __DIR__ . '/includes/wporg-meeting-install.php' );
+	wporg_meeting_install();
+}
+
+register_activation_hook( __FILE__, 'wporg_meeting_calendar_install' );
+add_action('plugins_loaded', 'wporg_meeting_calendar_init_back_end');
 add_action('init', 'a8c_meeting_calendar_register');

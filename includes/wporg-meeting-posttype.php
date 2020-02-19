@@ -22,6 +22,7 @@ class Meeting_Post_Type {
 	public static function init() {
 		$mpt = Meeting_Post_Type::getInstance();
 		add_action( 'init',                               array( $mpt, 'register_meeting_post_type' ) );
+		add_action( 'init',                               array( $mpt, 'register_meta' ) );
 		add_action( 'save_post_meeting',                  array( $mpt, 'save_meta_boxes' ), 10, 2 );
 		add_filter( 'pre_get_posts',                      array( $mpt, 'meeting_archive_page_query' ) );
 		add_filter( 'the_posts',                          array( $mpt, 'meeting_set_next_meeting' ), 10, 2 );
@@ -203,7 +204,7 @@ class Meeting_Post_Type {
 	        'label'               => __( 'meeting', 'wporg' ),
 	        'description'         => __( 'Meeting', 'wporg' ),
 	        'labels'              => $labels,
-	        'supports'            => array( 'title' ),
+	        'supports'            => array( 'title', 'custom-fields' ),
 	        'hierarchical'        => false,
 	        'public'              => true,
 	        'show_ui'             => true,
@@ -212,6 +213,7 @@ class Meeting_Post_Type {
 	        'menu_icon'           => 'dashicons-calendar',
 	        'show_in_admin_bar'   => true,
 	        'show_in_nav_menus'   => false,
+	        'show_in_rest'        => true,
 	        'can_export'          => false,
 	        'has_archive'         => true,
 	        'exclude_from_search' => true,
@@ -223,7 +225,29 @@ class Meeting_Post_Type {
 				'slug'            => __( 'meetings', 'wporg' ),
 			),
 	    );
-		register_post_type( 'meeting', $args );
+		register_post_type( 'meeting', $args );		
+	}
+
+	public function register_meta() {
+		$meta_keys = array(
+			'team',
+			'start_date',
+			'end_date',
+			'time',
+			'recurring',
+			'occurrence',
+			'link',
+			'location',
+		);
+		foreach ( $meta_keys as $key ) {
+			register_meta( 'post', $key, array(
+					'object_subtype' => 'meeting',
+					'type' => 'string',
+					'single' => true,
+					'show_in_rest' => true,
+				)
+			);
+		}
 	}
 
 	public function add_meta_boxes() {
