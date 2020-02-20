@@ -1,0 +1,9 @@
+#wporg-meeting-calendar-js {
+	margin: 0 auto;
+	max-width: 800px;
+}
+
+/** There is a global style that is adding a bottom margin to tables **/
+#wporg-meeting-calendar-js table {
+	margin-bottom: 0;
+}

@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import { Calendar as FullCalendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,6 +10,11 @@ import '@fullcalendar/core/main.css';
 import '@fullcalendar/daygrid/main.css';
 import '@fullcalendar/timegrid/main.css';
 import '@fullcalendar/list/main.css';
+
+/**
+ * Internal dependencies
+ */
+import './styles.css';
 
 const getMeetings = ( calendarEl ) => {
 	return JSON.parse( calendarEl.getAttribute( 'data-meetings' ) );
@@ -29,6 +37,7 @@ const getCalendar = ( calendarEl, events ) => {
 			center: 'title',
 			right: 'dayGridMonth, timeGridWeek, timeGridDay',
 		},
+		height: 'auto'
 	} );
 };
 
