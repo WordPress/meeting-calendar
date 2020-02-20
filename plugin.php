@@ -90,7 +90,7 @@ function enqueue_calendar_frontend() {
 	wp_enqueue_script( 'wporg-meeting-fullcalendar-timegrid-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js' );
 	wp_enqueue_script( 'wporg-meeting-fullcalendar-moment-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment/main.min.js' );
 
-	wp_enqueue_script( 'wporg-meeting-calendar-script', plugin_dir_url( __FILE__ ) . 'assets/js/calendar.js' );
+	wp_enqueue_script( 'wporg-meeting-calendar-script', plugin_dir_url( __FILE__ ) . 'build/calendar.js' );
 }
 
 add_action('wp_footer', 'enqueue_calendar_frontend');
