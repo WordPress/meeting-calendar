@@ -8,6 +8,10 @@ import '@fullcalendar/daygrid/main.css';
 import '@fullcalendar/timegrid/main.css';
 import '@fullcalendar/list/main.css';
 
+const getMeetings = ( calendarEl ) => {
+	return JSON.parse( calendarEl.getAttribute( 'data-meetings' ) );
+};
+
 const formatMeeting = ( i ) => {
 	return {
 		...i,
@@ -29,17 +33,13 @@ const getCalendar = ( calendarEl, events ) => {
 };
 
 const removeLoadingState = ( calendarEl ) => {
-	//Empty calendar
 	calendarEl.innerHTML = '';
 };
 
 const initCalendar = () => {
 	const calendarEl = document.getElementById( 'wporg-meeting-calendar-js' );
 
-	const meetingData = JSON.parse(
-		calendarEl.getAttribute( 'data-meetings' )
-	);
-
+	const meetingData = getMeetings( calendarEl );
 	const events = meetingData.map( formatMeeting );
 	const calendar = getCalendar( calendarEl, events );
 
