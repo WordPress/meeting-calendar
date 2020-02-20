@@ -78,18 +78,6 @@ add_action('init', 'wporg_meeting_calendar_register');
 
 // TODO - We probably don't always want to load this if they don't have a calendar block on the page
 function enqueue_calendar_frontend() {
-	// TODO - Assets should probably not be CDN hosted
-	wp_enqueue_style( 'wporg-meeting-fullcalendar-core-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css' );
-	wp_enqueue_style( 'wporg-meeting-fullcalendar-daygrid-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css' );
-	wp_enqueue_style( 'wporg-meeting-fullcalendar-list-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.css' );
-	wp_enqueue_style( 'wporg-meeting-fullcalendar-timegrid-css', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css' );
-
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-core-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-daygrid-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-list-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-timegrid-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js' );
-	wp_enqueue_script( 'wporg-meeting-fullcalendar-moment-script', 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment/main.min.js' );
-
 	wp_enqueue_script( 'wporg-meeting-calendar-script', plugin_dir_url( __FILE__ ) . 'build/calendar.js' );
 }
 
