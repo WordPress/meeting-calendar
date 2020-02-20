@@ -1,34 +1,33 @@
-( function( $ ) {
-	'use strict';
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 
-	document.addEventListener( 'DOMContentLoaded', function() {
-		var calendarEl = document.getElementById( 'wporg-meeting-calendar-js' );
+document.addEventListener( 'DOMContentLoaded', function() {
+	const calendarEl = document.getElementById( 'wporg-meeting-calendar-js' );
 
-		var meetingData = JSON.parse(
-			calendarEl.getAttribute( 'data-meetings' )
-		);
+	const meetingData = JSON.parse( calendarEl.getAttribute( 'data-meetings' ) );
 
-		var events = meetingData.map( ( i ) => {
-			return {
-				...i,
-				title: i.title.rendered,
-				start: i.date
-			};
-		} );
-
-		//Empty calendar
-		calendarEl.innerHTML = '';
-
-		var calendar = new FullCalendar.Calendar( calendarEl, {
-			plugins: [ 'dayGrid', 'timeGrid', 'list' ],
-			events,
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'dayGridMonth, timeGridWeek, timeGridDay',
-			},
-		} );
-
-		calendar.render();
+	const events = meetingData.map( ( i ) => {
+		return {
+			...i,
+			title: i.title.rendered,
+			start: i.date,
+		};
 	} );
-} )( jQuery );
+
+	//Empty calendar
+	calendarEl.innerHTML = '';
+
+	const calendar = new Calendar( calendarEl, {
+		plugins: [ dayGridPlugin, timeGridPlugin, listPlugin ],
+		events,
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'dayGridMonth, timeGridWeek, timeGridDay',
+		},
+	} );
+
+	calendar.render();
+} );

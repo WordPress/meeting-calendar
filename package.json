@@ -30,5 +30,11 @@
   "homepage": "https://github.com/Automattic/meeting-calendar#readme",
   "devDependencies": {
     "@wordpress/scripts": "^7.1.0"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^4.4.0",
+    "@fullcalendar/daygrid": "^4.4.0",
+    "@fullcalendar/list": "^4.4.0",
+    "@fullcalendar/timegrid": "^4.4.0"
   }
 }
