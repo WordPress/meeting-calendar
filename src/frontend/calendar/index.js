@@ -13,7 +13,11 @@ import CalendarGrid from './grid';
 import { EventsProvider } from './event-context';
 
 function Calendar( { events } ) {
-	const [ { month, year }, setDate ] = useState( { month: 2, year: 2020 } );
+	const today = new Date();
+	const [ { month, year }, setDate ] = useState( {
+		month: today.getMonth(),
+		year: today.getFullYear(),
+	} );
 
 	return (
 		<EventsProvider value={ events }>
@@ -23,7 +27,7 @@ function Calendar( { events } ) {
 				>
 					{ __( 'Previous', 'wordcamporg' ) }
 				</Button>
-				<h2>{ date( 'F Y', new Date( year, month - 1, 1 ) ) }</h2>
+				<h2>{ date( 'F Y', new Date( year, month, 1 ) ) }</h2>
 				<Button
 					onClick={ () => void setDate( { month: month + 1, year } ) }
 				>

@@ -8,7 +8,7 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 		return <td aria-hidden />;
 	}
 
-	const date = new Date( year, month - 1, day );
+	const date = new Date( year, month, day );
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
 
