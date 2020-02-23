@@ -18,7 +18,7 @@ function CalendarGrid( { month, year } ) {
 					<tr key={ `row-${ i }` }>
 						{ row.map( ( day, index ) => (
 							<CalendarCell
-								key={ `cell-${ index }` }
+								key={ `cell-${ i }-${ index }` }
 								{ ...day }
 								events={ events }
 							/>
