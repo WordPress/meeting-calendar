@@ -8,7 +8,7 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 import edit from './edit';
 
-registerBlockType( 'a8c-meeting-calendar/main', {
+registerBlockType( 'wporg-meeting-calendar/main', {
 	title: 'Meeting Calendar',
 	icon: 'calendar',
 	category: 'widgets',
