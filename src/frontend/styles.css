@@ -1,0 +1,41 @@
+.wporg-block-meeting-calendar {
+	margin: 0 auto;
+}
+
+.wporg-block-meeting-calendar table {
+	table-layout: fixed;
+	margin-bottom: 0; /* There is a global style that is adding a bottom margin to tables */
+}
+
+.wporg-meeting-calendar__header {
+	display: flex;
+	align-items: center;
+}
+
+.wporg-meeting-calendar__header h2 {
+	flex: 1;
+	text-align: center;
+}
+
+.wporg-meeting-calendar__header h2:before {
+	display: none;
+}
+
+.wporg-meeting-calendar__cell {
+	padding: 12px;
+	vertical-align: top;
+	height: 5em; /* height acts as min-height on table cells */
+}
+
+.wporg-meeting-calendar__cell strong {
+	display: block;
+	margin: -12px -12px 0;
+	padding: 6px 12px;
+	font-size: 0.8em;
+	background: #ddd;
+}
+
+.wporg-meeting-calendar__cell h3 {
+	font-size: 0.8em;
+	font-weight: normal;
+}
