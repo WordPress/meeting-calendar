@@ -39,7 +39,7 @@ function wporg_meeting_install() {
 		) );
 
 		$meeting_ids[] = wp_insert_post( array(
-			'post_title' => __( 'Third Wednesday of each month, ', 'wporg-meeting-calendar' ),
+			'post_title' => __( 'Third Wednesday of each month', 'wporg-meeting-calendar' ),
 			'post_type'  => 'meeting',
 			'post_status' => 'publish',
 			'meta_input' => array(
