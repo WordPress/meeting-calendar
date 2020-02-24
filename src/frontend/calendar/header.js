@@ -11,7 +11,7 @@ function CalendarHeader() {
 				{ l10n.weekdaysShort.map( ( day, i ) => {
 					return (
 						<th scope="col" key={ day }>
-							<span class="screen-reader-text">
+							<span className="screen-reader-text">
 								{ l10n.weekdays[ i ] }
 							</span>
 							<span aria-hidden>{ day }</span>

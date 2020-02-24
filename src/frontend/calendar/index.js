@@ -27,7 +27,9 @@ function Calendar( { events } ) {
 				>
 					{ __( 'Previous', 'wordcamporg' ) }
 				</Button>
-				<h2 aria-live="polite" aria-atomic>{ date( 'F Y', new Date( year, month, 1 ) ) }</h2>
+				<h2 aria-live="polite" aria-atomic>
+					{ date( 'F Y', new Date( year, month, 1 ) ) }
+				</h2>
 				<Button
 					onClick={ () => void setDate( { month: month + 1, year } ) }
 				>

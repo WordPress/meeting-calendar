@@ -6,10 +6,7 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		...defaultConfig.entry,
-		calendar: path.resolve(
-			__dirname,
-			'src/frontend/index.js'
-		),
+		calendar: path.resolve( __dirname, 'src/frontend/index.js' ),
 	},
 	module: {
 		...defaultConfig.module,
