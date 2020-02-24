@@ -49,12 +49,10 @@ function Calendar( { events } ) {
 						{ date( 'F Y', new Date( year, month, 1 ) ) }
 					</h2>
 				</div>
-				<div>
-					<ButtonGroup>
-						<Button>{ __( 'Month', 'wporg' ) }</Button>
-						<Button>{ __( 'List', 'wporg' ) }</Button>
-					</ButtonGroup>
-				</div>
+				<ButtonGroup>
+					<Button>{ __( 'Month', 'wporg' ) }</Button>
+					<Button>{ __( 'List', 'wporg' ) }</Button>
+				</ButtonGroup>
 			</div>
 			<CalendarGrid month={ month } year={ year } />
 		</EventsProvider>
