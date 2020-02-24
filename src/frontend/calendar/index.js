@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
+import { Button, ButtonGroup } from '@wordpress/components';
 import { date } from '@wordpress/date';
 import { useState } from '@wordpress/element';
 
@@ -14,27 +14,45 @@ import { EventsProvider } from './event-context';
 
 function Calendar( { events } ) {
 	const today = new Date();
-	const [ { month, year }, setDate ] = useState( {
-		month: today.getMonth(),
-		year: today.getFullYear(),
-	} );
+	const currentMonth = today.getMonth();
+	const currentYear = today.getFullYear();
+	const currentMonthYear = {
+		month: currentMonth,
+		year: currentYear,
+	};
+	const [ { month, year }, setDate ] = useState( currentMonthYear );
 
 	return (
 		<EventsProvider value={ events }>
 			<div className="wporg-meeting-calendar__header">
-				<Button
-					onClick={ () => void setDate( { month: month - 1, year } ) }
-				>
-					{ __( 'Previous', 'wordcamporg' ) }
-				</Button>
-				<h2 aria-live="polite" aria-atomic>
-					{ date( 'F Y', new Date( year, month, 1 ) ) }
-				</h2>
-				<Button
-					onClick={ () => void setDate( { month: month + 1, year } ) }
-				>
-					{ __( 'Next', 'wordcamporg' ) }
-				</Button>
+				<div className="wporg-meeting-calendar__btn-group">
+					<Button onClick={ () => void setDate( currentMonthYear ) }>
+						{ __( 'Today', 'wporg' ) }
+					</Button>
+					<Button
+						onClick={ () =>
+							void setDate( { month: month - 1, year } )
+						}
+					>
+						{ __( 'Previous', 'wporg' ) }
+					</Button>
+					<Button
+						onClick={ () =>
+							void setDate( { month: month + 1, year } )
+						}
+					>
+						{ __( 'Next', 'wporg' ) }
+					</Button>
+				</div>
+				<div>
+					<h2 aria-live="polite" aria-atomic>
+						{ date( 'F Y', new Date( year, month, 1 ) ) }
+					</h2>
+				</div>
+				<ButtonGroup>
+					<Button>{ __( 'Month', 'wporg' ) }</Button>
+					<Button>{ __( 'List', 'wporg' ) }</Button>
+				</ButtonGroup>
 			</div>
 			<CalendarGrid month={ month } year={ year } />
 		</EventsProvider>

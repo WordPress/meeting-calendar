@@ -12,8 +12,15 @@
 	align-items: center;
 }
 
+.wporg-meeting-calendar__header div {
+	flex: 1 1 0;
+}
+
+.wporg-meeting-calendar__header div:last-child {
+	text-align: right;
+}
+
 .wporg-meeting-calendar__header h2 {
-	flex: 1;
 	text-align: center;
 }
 
@@ -38,4 +45,12 @@
 .wporg-meeting-calendar__cell h3 {
 	font-size: 0.8em;
 	font-weight: normal;
+}
+
+.wporg-meeting-calendar__btn-group button {
+	margin-right: 6px;
+}
+
+.wporg-meeting-calendar__btn-group button:last-child {
+	margin-right: 0;
 }
