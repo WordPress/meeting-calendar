@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { Button } from '@wordpress/components';
 import { format } from '@wordpress/date';
 
 /**
@@ -8,7 +9,14 @@ import { format } from '@wordpress/date';
  */
 import MoreEvents from './more-events';
 
-function CalendarCell( { blank = false, year, month, day, events } ) {
+function CalendarCell( {
+	blank = false,
+	year,
+	month,
+	day,
+	events,
+	onEventClick,
+} ) {
 	if ( blank ) {
 		return <td aria-hidden />;
 	}
@@ -26,12 +34,16 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
-			{ dayEvents.slice( 0, maxEventsToDisplay ).map( ( e ) => {
+			{ dayEvents.slice( 0, maxEventsToDisplay ).map( ( event ) => {
 				return (
-					<h3 key={ e.instance_id }>
-						{ format( 'g:i a: ', e.datetime ) }
-						{ e.title }
-					</h3>
+					<Button
+						key={ event.instance_id }
+						isLink
+						onClick={ () => void onEventClick( event ) }
+					>
+						{ format( 'g:i a: ', event.datetime ) }
+						{ event.title }
+					</Button>
 				);
 			} ) }
 
