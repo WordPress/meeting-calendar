@@ -9,45 +9,117 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-function a8c_meeting_calendar_register() {
+namespace WPorg\Meeting_Calendar;
 
-	// Register our block script with WordPress
+/**
+ * Retrieves meetings
+ *
+ * @param integer $per_page Number of meetings per page.
+ * @return string List of meetings in JSON format
+ */
+function get_meeting_data( $per_page ) {
+	$request = new \WP_REST_Request( 'GET', '/wp/v2/meeting' );
+	$request->set_query_params( [ 'per_page' => $per_page ] );
+	$response = rest_do_request( $request );
+	$server = rest_get_server();
+	$data = $server->response_to_data( $response, false );
+	return wp_json_encode( $data );
+}
+
+/**
+ * Render the block content (html) on the frontend of the site.
+ *
+ * @param array  $attributes
+ * @param string $content
+ * @return string HTML output used by the calendar JS.
+ */
+function render_callback( $attributes, $content ) {
+	$meetings = get_meeting_data( 12 );
+	return sprintf(
+		'<div class="alignwide wporg-block-meeting-calendar" id="%s" data-meetings="%s">Loading Calendar ...</div>',
+		'wporg-meeting-calendar-js',
+		htmlspecialchars( $meetings, ENT_QUOTES )
+	);
+}
+
+/**
+ * Register scripts, styles, and block.
+ */
+function register_assets() {
+	$block_deps_path = __DIR__ . '/build/index.asset.php';
+	$frontend_deps_path = __DIR__ . '/build/calendar.asset.php';
+	if ( ! file_exists( $block_deps_path ) || ! file_exists( $frontend_deps_path ) ) {
+		return;
+	}
+
+	$block_info = require $block_deps_path;
+	$frontend_info = require $frontend_deps_path;
+
+	// Register our block script with WordPress.
 	wp_register_script(
-		'a8c-meeting-calendar',
-		plugins_url('build/index.js', __FILE__)
+		'wporg-calendar-block-script',
+		plugins_url('build/index.js', __FILE__),
+		$block_info['dependencies'],
+		$block_info['version'],
+		false
 	);
 
-	// Register our block's base CSS
+	// Register our block's base CSS.
 	wp_register_style(
-		'a8c-meeting-calendar-style',
-		plugins_url( 'style.css', __FILE__ )
+		'wporg-calendar-block-style',
+		plugins_url( 'style.css', __FILE__ ),
+		[],
+		$block_info['version'],
 	);
 
-	// Enqueue the script in the editor
-	register_block_type('a8c-meeting-calendar/main', array(
-		'editor_script' => 'a8c-meeting-calendar',
-		'editor_style' => 'a8c-meeting-calendar-edit-style',
-		'style' => 'a8c-meeting-calendar-style'
-	));
-}
+	wp_register_script(
+		'wporg-calendar-script',
+		plugin_dir_url( __FILE__ ) . 'build/calendar.js',
+		$frontend_info['dependencies'],
+		$frontend_info['version'],
+		false
+	);
 
-function wporg_meeting_calendar_init_back_end() {
+	wp_register_style(
+		'wporg-calendar-style',
+		plugin_dir_url( __FILE__ ) . 'build/calendar.css',
+		array(), // Might need `wp-components` for wporg.
+		$frontend_info['version']
+	);
+
+	// Enqueue the script in the editor.
+	register_block_type(
+		'wporg-meeting-calendar/main',
+		array(
+			'editor_script' => 'wporg-calendar-block-script',
+			'editor_style' => 'wporg-calendar-block-style',
+			'script' => 'wporg-calendar-script',
+			'style' => 'wporg-calendar-style',
+			'render_callback' => __NAMESPACE__ . '\render_callback',
+		)
+	);
+}
+add_action('init', __NAMESPACE__ . '\register_assets');
+
+/**
+ * Set up the Meetings post type.
+ */
+function init() {
 	require_once( __DIR__ . '/includes/wporg-meeting-posttype.php' );
-	new Meeting_Post_Type();
+	new \Meeting_Post_Type();
 }
+add_action('plugins_loaded', __NAMESPACE__ . '\init');
 
-// Create some sample data on first install
-function wporg_meeting_calendar_install() {
-
-	// We need the CPT to be registered to install
-	wporg_meeting_calendar_init_back_end();
-	$meeting_post_type = new Meeting_Post_Type();
+/**
+ * Create some sample data on first install.
+ */
+function install() {
+	// We need the CPT to be registered to install.
+	init();
+	$meeting_post_type = new \Meeting_Post_Type();
 	$meeting_post_type->getInstance()->register_meeting_post_type();
 
 	require_once( __DIR__ . '/includes/wporg-meeting-install.php' );
 	wporg_meeting_install();
 }
-
-register_activation_hook( __FILE__, 'wporg_meeting_calendar_install' );
-add_action('plugins_loaded', 'wporg_meeting_calendar_init_back_end');
-add_action('init', 'a8c_meeting_calendar_register');
+register_activation_hook( __FILE__, __NAMESPACE__ . '\install' );
