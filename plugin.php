@@ -69,7 +69,7 @@ function register_assets() {
 		'wporg-calendar-block-style',
 		plugins_url( 'style.css', __FILE__ ),
 		[],
-		$block_info['version'],
+		$block_info['version']
 	);
 
 	wp_register_script(
