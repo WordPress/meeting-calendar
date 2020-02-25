@@ -165,7 +165,7 @@ class Meeting_Post_Type {
 				$day_index = date( 'w', strtotime( sprintf( '%s %s GMT', $post->start_date, $post->time ) ) );
 				$day_name  = $GLOBALS['wp_locale']->get_weekday( $day_index );
 				$numerals  = array( 'first', 'second', 'third', 'fourth' );
-				$months    = array( 'this month', 'next month' );
+				$months    = array( 'this month', 'next month', "+2 month" );
 
 				foreach ( $months as $month ) {
 					foreach ( $post->occurrence as $index ) {

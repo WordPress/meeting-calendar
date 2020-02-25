@@ -153,7 +153,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( array(3),        $meeting['meta']['occurrence'] );
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
-		$this->assertEquals( 5, count( $meeting['future_occurrences'] ) );
+		$this->assertEquals( 2, count( $meeting['future_occurrences'] ) );
 		// There should be no duplicates
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
@@ -172,8 +172,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 			if ( $last ) {
 				$interval = $last->diff( $dt );
-				// Should be exactly 7 days after the prior date
-				$this->assertEquals( '+7 days', $interval->format( '%R%a days' ) );
+				// Should be between 28 and 31 days since the last meeting
+				$this->assertGreaterThanOrEqual( 28, $interval->format( '%R%a' ) );
+				$this->assertLessThanOrEqual( 31, $interval->format( '%R%a' ) );
 			}
 
 			$last = $dt;
