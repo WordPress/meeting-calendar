@@ -3,23 +3,20 @@
  */
 import { format } from '@wordpress/date';
 
-function ListItem( { row, events } ) {
-	const date = new Date( row.year, row.month, row.day );
-	const key = format( 'Y-m-d', date );
-	const dayEvents = events[ key ] || [];
+function ListItem( { date, events } ) {
 
 	return (
-		<li key={ `row-${ key }` }>
+		<li key={ `row-${ date }` }>
 			<strong className="wporg-meeting-calendar__list-title">
 				<span>{ format( 'l - F j, Y', date ) }</span>
 			</strong>
 
-			{ dayEvents.map( ( e, i ) => {
+			{ events.map( ( e, i ) => {
 				const eventDate = e.meta.start_date + 'T' + e.meta.time + 'Z';
 				return (
 					<article
 						className="wporg-meeting-calendar__list-event"
-						key={ `cell-${ i }-${ i }` }
+						key={ `cell-${ e.id }-${ i }` }
 					>
 						<div>{ format( 'g:i a: ', eventDate ) }</div>
 						<div>
