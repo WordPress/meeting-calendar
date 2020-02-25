@@ -65,6 +65,32 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 'weekly',        $meeting['meta']['recurring'] );
 		$this->assertEquals( 'wordpress.org', $meeting['meta']['link'] );
 		$this->assertEquals( array(),         $meeting['meta']['occurrence'] );
+
+		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
+		$this->assertEquals( 5, count( $meeting['future_occurrences'] ) );
+		// There should be no duplicates
+		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
+		$last = false;
+		foreach ( $meeting['future_occurrences'] as $future_date ) {
+			// Make sure it's in the expected date format
+			$this->assertEquals( 1, preg_match( '/^(\d\d\d\d)-(\d\d)-(\d\d)$/', $future_date, $matches ) );
+			// And it's a valid date
+			$this->assertTrue( checkdate( $matches[2], $matches[3], $matches[1] ) );
+
+			$dt = new DateTime( $future_date );
+			// It should be in the future
+			$this->assertGreaterThanOrEqual( new DateTime(), $dt );
+			// Day of week should be Wednesday, same as the original
+			$this->assertEquals( 3, $dt->format( 'N' ) );
+
+			if ( $last ) {
+				$interval = $last->diff( $dt );
+				// Should be exactly 7 days after the prior date
+				$this->assertEquals( '+7 days', $interval->format( '%R%a days' ) );
+			}
+
+			$last = $dt;
+		}
 	}
 
 	public function test_meeting_monthly() {
@@ -82,6 +108,32 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 'monthly',       $meeting['meta']['recurring'] );
 		$this->assertEquals( 'wordpress.org', $meeting['meta']['link'] );
 		$this->assertEquals( array(),         $meeting['meta']['occurrence'] );
+
+		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
+		$this->assertEquals( 2, count( $meeting['future_occurrences'] ) );
+		// There should be no duplicates
+		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
+		$last = false;
+		foreach ( $meeting['future_occurrences'] as $future_date ) {
+			// Make sure it's in the expected date format
+			$this->assertEquals( 1, preg_match( '/^(\d\d\d\d)-(\d\d)-(\d\d)$/', $future_date, $matches ) );
+			// And it's a valid date
+			$this->assertTrue( checkdate( $matches[2], $matches[3], $matches[1] ) );
+
+			$dt = new DateTime( $future_date );
+			// It should be in the future
+			$this->assertGreaterThanOrEqual( new DateTime(), $dt );
+			// Day of week should be the first of the month, same as the original
+			$this->assertEquals( 1, $dt->format( 'd' ) );
+
+			if ( $last ) {
+				$interval = $last->diff( $dt );
+				// Should be exactly 7 days after the prior date
+				$this->assertEquals( '+1 month 0 days', $interval->format( '%R%m month %d days' ) );
+			}
+
+			$last = $dt;
+		}
 	}
 
 	public function test_meeting_third_wednesday() {
@@ -99,6 +151,33 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 'occurrence',    $meeting['meta']['recurring'] );
 		$this->assertEquals( 'wordpress.org', $meeting['meta']['link'] );
 		$this->assertEquals( array(3),        $meeting['meta']['occurrence'] );
+
+		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
+		$this->assertEquals( 5, count( $meeting['future_occurrences'] ) );
+		// There should be no duplicates
+		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
+		$last = false;
+		foreach ( $meeting['future_occurrences'] as $future_date ) {
+			// Make sure it's in the expected date format
+			$this->assertEquals( 1, preg_match( '/^(\d\d\d\d)-(\d\d)-(\d\d)$/', $future_date, $matches ) );
+			// And it's a valid date
+			$this->assertTrue( checkdate( $matches[2], $matches[3], $matches[1] ) );
+
+			$dt = new DateTime( $future_date );
+			// It should be in the future
+			$this->assertGreaterThanOrEqual( new DateTime(), $dt );
+
+			// Day of week should be Wednesday, same as the original
+			$this->assertEquals( 3, $dt->format( 'N' ) );
+
+			if ( $last ) {
+				$interval = $last->diff( $dt );
+				// Should be exactly 7 days after the prior date
+				$this->assertEquals( '+7 days', $interval->format( '%R%a days' ) );
+			}
+
+			$last = $dt;
+		}
 	}
 
 
