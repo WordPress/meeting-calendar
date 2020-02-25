@@ -10,6 +10,7 @@ import { useState } from '@wordpress/element';
  * Internal dependencies
  */
 import CalendarGrid from './grid';
+import List from '../list';
 import { EventsProvider } from './event-context';
 
 function Calendar( { events } ) {
@@ -54,7 +55,8 @@ function Calendar( { events } ) {
 					<Button>{ __( 'List', 'wporg' ) }</Button>
 				</ButtonGroup>
 			</div>
-			<CalendarGrid month={ month } year={ year } />
+			{/* <CalendarGrid month={ month } year={ year } /> */}
+			<List month={ month } year={ year } />
 		</EventsProvider>
 	);
 }
