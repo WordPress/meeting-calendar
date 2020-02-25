@@ -23,6 +23,7 @@ class Meeting_Post_Type {
 		$mpt = Meeting_Post_Type::getInstance();
 		add_action( 'init',                               array( $mpt, 'register_meeting_post_type' ) );
 		add_action( 'init',                               array( $mpt, 'register_meta' ) );
+		add_action( 'rest_api_init',                      array( $mpt, 'register_rest_field' ) );
 		add_action( 'save_post_meeting',                  array( $mpt, 'save_meta_boxes' ), 10, 2 );
 		add_filter( 'pre_get_posts',                      array( $mpt, 'meeting_archive_page_query' ) );
 		add_filter( 'the_posts',                          array( $mpt, 'meeting_set_next_meeting' ), 10, 2 );
@@ -82,88 +83,11 @@ class Meeting_Post_Type {
 
 		// for each entry, set a fake meta value to show the next date for recurring meetings
 		array_walk( $posts, function ( &$post ) {
-			if ( 'weekly' === $post->recurring || '1' === $post->recurring ) {
-				try {
-					// from the start date, advance the week until it's past now
-					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
-					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
-					$now   = new DateTime( '-30 minutes' );
-
-					if ( $next < $now ) {
-						$interval = $start->diff( $now );
-						// add one to days to account for events that happened earlier today
-						$weekdiff = ceil( ( $interval->days + 1 ) / 7 );
-						$next->modify( '+ ' . $weekdiff . ' weeks' );
-					}
-
-					$post->next_date = $next->format( 'Y-m-d' );
-				} catch ( Exception $e ) {
-					// if the datetime is invalid, then set the post->next_date to the start date instead
-					$post->next_date = $post->start_date;
-				}
-			} else if ( 'biweekly' === $post->recurring ) {
-				try {
-					// advance the start date 2 weeks at a time until it's past now
-					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
-					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
-					$now   = new DateTime( '-30 minutes' );
-
-					while ( $next < $now ) {
-						$next->modify( '+2 weeks' );
-					}
-
-					$post->next_date = $next->format( 'Y-m-d' );
-				} catch ( Exception $e ) {
-					// if the datetime is invalid, then set the post->next_date to the start date instead
-					$post->next_date = $post->start_date;
-				}
-			} else if ( 'occurrence' === $post->recurring ) {
-				try {
-					// advance the occurrence day in the current month until it's past now
-					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
-					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
-					$now   = new DateTime( '-30 minutes' );
-
-					$day_index = date( 'w', strtotime( sprintf( '%s %s GMT', $post->start_date, $post->time ) ) );
-					$day_name  = $GLOBALS['wp_locale']->get_weekday( $day_index );
-					$numerals  = array( 'first', 'second', 'third', 'fourth' );
-					$months    = array( 'this month', 'next month' );
-
-					foreach ( $months as $month ) {
-						foreach ( $post->occurrence as $index ) {
-							$next = new DateTime( sprintf( '%s %s of %s %s GMT', $numerals[ $index - 1 ], $day_name, $month, $post->time ) );
-							if ( $next > $now ) {
-								break 2;
-							}
-						}
-					}
-
-					$post->next_date = $next->format( 'Y-m-d' );
-				} catch ( Exception $e ) {
-					// if the datetime is invalid, then set the post->next_date to the start date instead
-					$post->next_date = $post->start_date;
-				}
-			} else if ( 'monthly' === $post->recurring ) {
-				try {
-					// advance the start date 1 month at a time until it's past now
-					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
-					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
-					$now   = new DateTime( '-30 minutes' );
-
-					while ( $next < $now ) {
-						$next->modify( '+1 month' );
-					}
-
-					$post->next_date = $next->format( 'Y-m-d' );
-				} catch ( Exception $e ) {
-					// if the datetime is invalid, then set the post->next_date to the start date instead
-					$post->next_date = $post->start_date;
-				}
+			$next = $this->get_next_occurrence( $post );
+			if ( $next ) {
+				$post->next_date = $next;
 			} else {
+				// if the datetime is invalid, then set the post->next_date to the start date instead
 				$post->next_date = $post->start_date;
 			}
 		});
@@ -179,6 +103,104 @@ class Meeting_Post_Type {
 		});
 
 		return $posts;
+	}
+
+	/*
+	 * Returns the date of the next occurrence of the meeting.
+	 *
+	 * @param object $post A meeting post object.
+	 * @param string $after_datetime Find the next occurrence after this date.
+	 *
+	 * @return string|bool A date string representing the date of the next occurrence; false if there is no next meeting.
+	 */
+	function get_next_occurrence( $post, $after_datetime = '-30 minutes' ) {
+		if ( !is_object( $post ) || 'meeting' !== $post->post_type )
+			return false;
+
+		$next_date = false;
+
+		if ( 'weekly' === $post->recurring || '1' === $post->recurring ) {
+			try {
+				// from the start date, advance the week until it's past now
+				$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
+				$next  = $start;
+				// minus 30 minutes to account for currently ongoing meetings
+				$now   = new DateTime( $after_datetime );
+
+				if ( $next <= $now ) {
+					$interval = $start->diff( $now );
+					// add one to days to account for events that happened earlier today
+					$weekdiff = ceil( ( $interval->days + 1 ) / 7 );
+					$next->modify( '+ ' . $weekdiff . ' weeks' );
+				}
+
+				$next_date = $next->format( 'Y-m-d' );
+			} catch ( Exception $e ) {
+				$next_date = false;
+			}
+		} else if ( 'biweekly' === $post->recurring ) {
+			try {
+				// advance the start date 2 weeks at a time until it's past now
+				$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
+				$next  = $start;
+				// minus 30 minutes to account for currently ongoing meetings
+				$now   = new DateTime( $after_datetime );
+
+				while ( $next <= $now ) {
+					$next->modify( '+2 weeks' );
+				}
+
+				$next_date = $next->format( 'Y-m-d' );
+			} catch ( Exception $e ) {
+				$next_date = false;
+			}
+		} else if ( 'occurrence' === $post->recurring ) {
+			try {
+				// advance the occurrence day in the current month until it's past now
+				$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
+				$next  = $start;
+				// minus 30 minutes to account for currently ongoing meetings
+				$now   = new DateTime( $after_datetime );
+
+				$day_index = date( 'w', strtotime( sprintf( '%s %s GMT', $post->start_date, $post->time ) ) );
+				$day_name  = $GLOBALS['wp_locale']->get_weekday( $day_index );
+				$numerals  = array( 'first', 'second', 'third', 'fourth' );
+				$months    = array( 'this month', 'next month', "+2 month" );
+
+				foreach ( $months as $month ) {
+					foreach ( $post->occurrence as $index ) {
+						$next = new DateTime( sprintf( '%s %s of %s %s GMT', $numerals[ $index - 1 ], $day_name, $month, $post->time ) );
+						if ( $next > $now ) {
+							break 2;
+						}
+					}
+				}
+
+				$next_date = $next->format( 'Y-m-d' );
+			} catch ( Exception $e ) {
+				$next_date = false;
+			}
+		} else if ( 'monthly' === $post->recurring ) {
+			try {
+				// advance the start date 1 month at a time until it's past now
+				$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
+				$next  = $start;
+				// minus 30 minutes to account for currently ongoing meetings
+				$now   = new DateTime( $after_datetime );
+
+				while ( $next <= $now ) {
+					$next->modify( '+1 month' );
+				}
+
+				$next_date = $next->format( 'Y-m-d' );
+			} catch ( Exception $e ) {
+				$next_date = false;
+			}
+		} else {
+			$next_date = $post->start_date;
+		}
+
+		return $next_date;
 	}
 
 	public function register_meeting_post_type() {
@@ -263,6 +285,34 @@ class Meeting_Post_Type {
 				),
 			)
 		);
+	}
+
+	public function register_rest_field() {
+		register_rest_field( 'meeting', 'future_occurrences', array(
+			'get_callback' => array( $this, 'get_future_occurrences' )
+			)
+		);	
+	}
+
+	public function get_future_occurrences( $meeting ) {
+		if ( is_array( $meeting ) && !empty( $meeting['id'] ) ) {
+			// The register_rest_field callback passes a prepared array but we need the post object
+			$meeting = get_post( $meeting['id'] );
+		}
+
+		$from = new DateTime( '-30 minutes' );
+		$end = new DateTime( '+1 month' );
+		$max = 12;
+		$occurrences = array();
+		do {
+			$next = $this->get_next_occurrence( $meeting, $from->format( 'Y-m-d H:i:s P' ) );
+			if ( $next ) {
+				$occurrences[] = $next;
+				$from = new DateTime( "{$next} {$meeting->time}" );
+			}
+		} while ( --$max > 0 && $next && $from && $from < $end );
+
+		return $occurrences;
 	}
 
 	public function add_meta_boxes() {
