@@ -294,15 +294,22 @@ class Meeting_Post_Type {
 		);	
 	}
 
-	public function get_future_occurrences( $meeting ) {
+	public function get_future_occurrences( $meeting, $attr, $request ) {
 		if ( is_array( $meeting ) && !empty( $meeting['id'] ) ) {
 			// The register_rest_field callback passes a prepared array but we need the post object
 			$meeting = get_post( $meeting['id'] );
 		}
 
-		$from = new DateTime( '-30 minutes' );
-		$end = new DateTime( '+1 month' );
-		$max = 12;
+		// The month the occurrences should be within.
+		// Passed to the API endpoint as /meetings?month=2020-09-01
+		$now = time();
+		if ( isset( $request['month'] ) ) {
+			$now = strtotime( $request['month'] );
+		}
+
+		$from = DateTime::createFromFormat( 'U', strtotime( '-30 minutes', $now ) );
+		$end  = DateTime::createFromFormat( 'U', strtotime( '+1 month', $now ) );
+		$max  = 12;
 		$occurrences = array();
 		do {
 			$next = $this->get_next_occurrence( $meeting, $from->format( 'Y-m-d H:i:s P' ) );
