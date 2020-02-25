@@ -48,6 +48,19 @@ export function getRows( year, month ) {
 }
 
 /**
+ * Adds event to list of events.
+ *
+ * @param {Array} events
+ */
+function pushEvent( arr, key, event ) {
+	if ( arr.hasOwnProperty( key ) ) {
+		arr[ key ].push( event );
+	} else {
+		arr[ key ] = [ event ];
+	}
+}
+
+/**
  * Get the list of events in day-buckets.
  *
  * @param {Array} events
@@ -56,10 +69,13 @@ export function getSortedEvents( events ) {
 	const sortedEvents = {};
 	events.forEach( ( event ) => {
 		const key = format( 'Y-m-d', event.start );
-		if ( sortedEvents.hasOwnProperty( key ) ) {
-			sortedEvents[ key ].push( event );
-		} else {
-			sortedEvents[ key ] = [ event ];
+		pushEvent( sortedEvents, key, event );
+
+		if ( event.future_occurrences ) {
+			event.future_occurrences.forEach( ( formattedDate ) => {
+				// formattedDate: IE: 2020-01-01
+				pushEvent( sortedEvents, formattedDate, event );
+			} );
 		}
 	} );
 	return sortedEvents;
