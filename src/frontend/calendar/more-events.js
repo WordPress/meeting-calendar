@@ -9,7 +9,7 @@ import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
  */
 import { getFormattedEventDate } from './utils';
 
-const MoreEvents = ( { count, events, onClick } ) => (
+const MoreEvents = ( { events, onClick } ) => (
 	<Dropdown
 		className="my-container-class-name"
 		contentClassName="my-popover-content-classname"
@@ -17,7 +17,10 @@ const MoreEvents = ( { count, events, onClick } ) => (
 		renderToggle={ ( { isOpen, onToggle } ) => (
 			<Button isLink onClick={ onToggle } aria-expanded={ isOpen }>
 				{ // translators: %d: Count of hidden events, ie: 4.
-				sprintf( _n( '%d more', '%d more', count, 'wporg' ), count ) }
+				sprintf(
+					_n( '%d more', '%d more', events.length, 'wporg' ),
+					events.length
+				) }
 			</Button>
 		) }
 		renderContent={ () => (

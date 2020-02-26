@@ -18,7 +18,6 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
 	const maxEventsToDisplay = 3;
-	const hiddenEventCount = dayEvents.length - maxEventsToDisplay;
 
 	return (
 		<td className="wporg-meeting-calendar__cell">
@@ -43,7 +42,6 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 
 			{ dayEvents.length > maxEventsToDisplay && (
 				<MoreEvents
-					count={ hiddenEventCount }
 					events={ dayEvents.slice( maxEventsToDisplay ) }
 					// @todo Add an onClick that displays the event
 				/>
