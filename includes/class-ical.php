@@ -27,22 +27,6 @@ class Plugin {
 	 * Instantiates a new Plugin object.
 	 */
 	private function __construct() {
-		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
-	}
-
-	public function plugins_loaded() {
-		// Stop loading if "Meeting Post Type" plugin not available.
-		if ( ! class_exists( '\WordPressdotorg\Meetings\PostType\Plugin' ) ) {
-			add_action(
-				'admin_notices',
-				function () {
-					echo '<div class="error"><p><strong>' . 'The Meetings iCalendar API requires the "Meetings Post Type" plugin to be installed and active' . '</strong></p></div>';
-				}
-			);
-
-			return;
-		}
-
 		register_activation_hook( __FILE__, array( $this, 'on_activate' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'on_deactivate' ) );
 
