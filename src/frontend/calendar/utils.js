@@ -64,3 +64,16 @@ export function getSortedEvents( events ) {
 	} );
 	return sortedEvents;
 }
+
+/**
+ * Get the event date
+ *
+ * @param {string} startDate
+ * @param {string} time
+ */
+export function getFormattedEventDate( startDate, time ) {
+	// Get the event date + time from the event using RFC3339 for `format`.
+	// @todo Get the recurring event time, not just first instance.
+	const eventDate = startDate + 'T' + time + 'Z';
+	return format( 'g:i a: ', eventDate );
+}
