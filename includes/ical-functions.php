@@ -11,7 +11,6 @@ function on_activate() {
 	add_rewrite_rules();
 	flush_rewrite_rules();
 }
-register_activation_hook( __FILE__, __NAMESPACE__ . '\on_activate' );
 
 /**
  * Add Rewrite rules to allow for ICS access.
@@ -66,7 +65,6 @@ function parse_request( $request ) {
 	return;
 }
 add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
-
 
 /**
  * Generate a ICS feed
