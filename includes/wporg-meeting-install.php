@@ -1,4 +1,6 @@
 <?php
+namespace WordPressdotorg\Meeting_Calendar;
+
 /*
 * Install hook with sample post data.
 */
