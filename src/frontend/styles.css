@@ -12,8 +12,15 @@
 	align-items: center;
 }
 
+.wporg-meeting-calendar__header div {
+	flex: 1 1 0;
+}
+
+.wporg-meeting-calendar__header div:last-child {
+	text-align: right;
+}
+
 .wporg-meeting-calendar__header h2 {
-	flex: 1;
 	text-align: center;
 }
 
@@ -38,4 +45,47 @@
 .wporg-meeting-calendar__cell h3 {
 	font-size: 0.8em;
 	font-weight: normal;
+}
+
+.wporg-meeting-calendar__btn-group button {
+	margin-right: 6px;
+}
+
+.wporg-meeting-calendar__btn-group button:last-child {
+	margin-right: 0;
+}
+
+.wporg-meeting-calendar__list {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.wporg-meeting-calendar__list-title {
+	padding: 6px 12px;
+	display: block;
+	background: #ddd;
+}
+
+.wporg-meeting-calendar__list-event {
+	display: flex;
+	border-bottom: 1px solid #aaa;
+	background: #fff;
+}
+
+.wporg-meeting-calendar__list-event > div {
+	padding: 12px;
+}
+
+.wporg-meeting-calendar__list-event-team {
+	font-size: 0.7rem;
+}
+
+.wporg-meeting-calendar__list-event-title {
+	font-size: 1rem;
+	margin: 0;
+}
+
+.wporg-meeting-calendar__list-event-subtitle {
+	font-size: 0.75rem;
 }

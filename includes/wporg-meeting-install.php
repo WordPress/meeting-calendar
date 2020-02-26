@@ -8,7 +8,9 @@ function wporg_meeting_install() {
 	if ( wp_count_posts('meeting')->publish + wp_count_posts('meeting')->draft <= 0 ) {
 		// No posts of any status exist, so insert a few sample meetings.
 
-		wp_insert_post( array(
+		$meeting_ids = array();
+
+		$meeting_ids[] = wp_insert_post( array(
 			'post_title' => __( 'A weekly meeting', 'wporg-meeting-calendar' ),
 			'post_type'  => 'meeting',
 			'post_status' => 'publish',
@@ -22,7 +24,7 @@ function wporg_meeting_install() {
 				),
 		) );
 
-		wp_insert_post( array(
+		$meeting_ids[] = wp_insert_post( array(
 			'post_title' => __( 'A monthly meeting', 'wporg-meeting-calendar' ),
 			'post_type'  => 'meeting',
 			'post_status' => 'publish',
@@ -36,8 +38,8 @@ function wporg_meeting_install() {
 				),
 		) );
 
-		wp_insert_post( array(
-			'post_title' => __( 'Third Wednesday of each month, ', 'wporg-meeting-calendar' ),
+		$meeting_ids[] = wp_insert_post( array(
+			'post_title' => __( 'Third Wednesday of each month', 'wporg-meeting-calendar' ),
 			'post_type'  => 'meeting',
 			'post_status' => 'publish',
 			'meta_input' => array(
@@ -52,6 +54,8 @@ function wporg_meeting_install() {
 		) );
 
 		flush_rewrite_rules();
+
+		return $meeting_ids;
 	}
 	
 }
