@@ -1,117 +1,96 @@
 <?php
-namespace WordPressdotorg\Meeting_Calendar;
+namespace WordPressdotorg\Meeting_Calendar\ICS;
 
-class ICal {
+define( 'QUERY_KEY',      'meeting_ical' );
+define( 'QUERY_TEAM_KEY', 'meeting_team' );
 
-	const QUERY_KEY      = 'meeting_ical';
-	const QUERY_TEAM_KEY = 'meeting_team';
+/**
+ * Activation hook for ICS Support.
+ */
+function on_activate() {
+	add_rewrite_rules();
+	flush_rewrite_rules();
+}
+register_activation_hook( __FILE__, __NAMESPACE__ . '\on_activate' );
 
-	/**
-	 * @var Plugin The singleton instance.
-	 */
-	private static $instance;
+/**
+ * Add Rewrite rules to allow for ICS access.
+ *
+ * This adds rules such as /meetings.ics and /meetings-$team.ics
+ */
+function add_rewrite_rules() {
+	add_rewrite_rule(
+		'^meetings(-[a-zA-Z\d\s_-]+)?\.ics$',
+		array(
+			QUERY_KEY      => 1,
+			QUERY_TEAM_KEY => '$matches[1]',
+		),
+		'top'
+	);
+}
+add_action( 'init', __NAMESPACE__ . '\add_rewrite_rules' );
 
-	/**
-	 * Returns always the same instance of this plugin.
-	 *
-	 * @return Plugin
-	 */
-	public static function get_instance() {
-		if ( ! ( self::$instance instanceof Plugin ) ) {
-			self::$instance = new Plugin();
-		}
-		return self::$instance;
-	}
+/**
+ * Add the Query Var for the Rewrite Rules.
+ */
+function query_vars( $query_vars ) {
+	$query_vars[] = QUERY_KEY;
+	$query_vars[] = QUERY_TEAM_KEY;
+	return $query_vars;
+}
+add_filter( 'query_vars', __NAMESPACE__ . '\query_vars' );
 
-	/**
-	 * Instantiates a new Plugin object.
-	 */
-	private function __construct() {
-		register_activation_hook( __FILE__, array( $this, 'on_activate' ) );
-		register_deactivation_hook( __FILE__, array( $this, 'on_deactivate' ) );
-
-		add_action( 'init', array( $this, 'add_rewrite_rules' ) );
-		add_action( 'parse_request', array( $this, 'parse_request' ) );
-
-		add_filter( 'query_vars', array( $this, 'query_vars' ) );
-	}
-
-	public function on_activate() {
-		$this->add_rewrite_rules();
-		flush_rewrite_rules();
-	}
-
-	public function on_deactivate() {
-		flush_rewrite_rules(); // remove custom rewrite rule
-	}
-
-	/**
-	 * Add Rewrite rules to allow for ICS access.
-	 *
-	 * This adds rules such as /meetings.ics and /meetings-$team.ics
-	 */
-	public function add_rewrite_rules() {
-		add_rewrite_rule(
-			'^meetings(-[a-zA-Z\d\s_-]+)?\.ics$',
-			array(
-				self::QUERY_KEY      => 1,
-				self::QUERY_TEAM_KEY => '$matches[1]',
-			),
-			'top'
-		);
-	}
-
-	public function parse_request( $request ) {
-		if ( ! isset( $request->query_vars[ self::QUERY_KEY ] ) ) {
-			return;
-		}
-
-		$team = strtolower( $request->query_vars[ self::QUERY_TEAM_KEY ] );
-
-		// Generate a calendar if such a team exists
-		$ical = $this->get_ical_contents( $team );
-
-		if ( null !== $ical ) {
-			/**
-			 * If the calendar has a 'method' property, the 'Content-Type' header must also specify it
-			 */
-			header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
-			header( 'Content-Disposition: inline; filename=calendar.ics' );
-			echo $ical;
-			exit;
-		}
-
+/**
+ * Main handler for ICS output for matching requests.
+ */
+function parse_request( $request ) {
+	if ( ! isset( $request->query_vars[ QUERY_KEY ] ) ) {
 		return;
 	}
 
-	public function query_vars( $query_vars ) {
-		$query_vars[] = self::QUERY_KEY;
-		$query_vars[] = self::QUERY_TEAM_KEY;
-		return $query_vars;
+	$team = strtolower( $request->query_vars[ QUERY_TEAM_KEY ] );
+
+	// Generate a calendar if such a team exists
+	$ical = get_ical_contents( $team );
+
+	if ( null !== $ical ) {
+		/**
+		 * If the calendar has a 'method' property, the 'Content-Type' header must also specify it
+		 */
+		header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
+		header( 'Content-Disposition: inline; filename=calendar.ics' );
+		echo $ical;
+		exit;
 	}
 
-	private function get_ical_contents( $team ) {
-		$posts = $this->get_meeting_posts( $team );
+	return;
+}
+add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
 
-		// Don't generate a calendar if there are no meetings for that team
-		if ( empty( $posts ) ) {
-			return null;
-		}
 
-		$ical_generator = new ICAL_Generator();
-		return $ical_generator->generate( $posts );
+/**
+ * Generate a ICS feed
+ */
+function get_ical_contents( $team ) {
+	$posts = $this->get_meeting_posts( $team );
+
+	// Don't generate a calendar if there are no meetings for that team
+	if ( empty( $posts ) ) {
+		return null;
 	}
 
-	/**
-	 * Get all meetings for a team. If the 'team' parameter is empty, all meetings are returned.
-	 *
-	 * @param string $team Name of the team to fetch meetings for.
-	 * @return array
-	 */
-	private function get_meeting_posts( $team = '' ) {
-		$query = new Meeting_Query( $team );
-
-		return $query->get_posts();
-	}
+	$ical_generator = new ICAL_Generator();
+	return $ical_generator->generate( $posts );
 }
 
+/**
+ * Get all meetings for a team. If the 'team' parameter is empty, all meetings are returned.
+ *
+ * @param string $team Name of the team to fetch meetings for.
+ * @return array
+ */
+function get_meeting_posts( $team = '' ) {
+	$query = new Meeting_Query( $team );
+
+	return $query->get_posts();
+}
