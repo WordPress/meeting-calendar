@@ -43,7 +43,6 @@ class Plugin {
 
 	public function on_deactivate() {
 		flush_rewrite_rules(); // remove custom rewrite rule
-		delete_option( self::QUERY_KEY ); // remove cache
 	}
 
 	public function add_rewrite_rules() {
@@ -87,28 +86,7 @@ class Plugin {
 	}
 
 	private function get_ical_contents( $team ) {
-		$ttl    = 1; // in seconds
-		$option = $team ? self::QUERY_KEY . "_{$team}" : self::QUERY_KEY;
-		$cache  = get_option( $option, false );
-
-		if ( is_array( $cache ) && $cache['timestamp'] > time() - $ttl ) {
-			return $cache['contents'];
-		}
-
-		$contents = $this->generate_ical_contents( $team );
-
-		if ( null !== $contents ) {
-			$cache = array(
-				'contents'  => $contents,
-				'timestamp' => time(),
-			);
-			delete_option( $option );
-			add_option( $option, $cache, false, false );
-
-			return $cache['contents'];
-		}
-
-		return null;
+		return $this->generate_ical_contents( $team );
 	}
 
 	private function generate_ical_contents( $team ) {
