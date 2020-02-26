@@ -9,7 +9,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-namespace WPorg\Meeting_Calendar;
+namespace WordPressdotorg\Meeting_Calendar;
 
 /**
  * Retrieves meetings
