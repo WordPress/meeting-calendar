@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { format } from '@wordpress/date';
-import { __ } from '@wordpress/i18n';
+import { sprintf, _n } from '@wordpress/i18n';
 
 function CalendarCell( { blank = false, year, month, day, events } ) {
 	if ( blank ) {
@@ -13,6 +13,7 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
 	const maxEventsToDisplay = 2;
+	const hiddenEventCount = dayEvents.length - maxEventsToDisplay;
 
 	return (
 		<td className="wporg-meeting-calendar__cell">
@@ -43,8 +44,11 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 						// @todo trigger list view
 					} }
 				>
-					{ dayEvents.length - maxEventsToDisplay }
-					{ __( 'more', 'wporg' ) }
+					{ // translators: %d: Count of hidden events, ie: 4.
+					sprintf(
+						_n( '%d more', '%d more', hiddenEventCount, 'wporg' ),
+						hiddenEventCount
+					) }
 				</a>
 			) }
 		</td>
