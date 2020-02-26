@@ -11,7 +11,7 @@ import { useState, Fragment } from '@wordpress/element';
  */
 import CalendarGrid from './grid';
 import List from '../list';
-import { useViews } from '../app/view-context';
+import { useViews } from '../store/view-context';
 
 function Calendar() {
 	const today = new Date();

@@ -4,7 +4,7 @@
 import CalendarCell from './cell';
 import CalendarHeader from './header';
 import { getRows, getSortedEvents } from './utils';
-import { useEvents } from '../app/event-context';
+import { useEvents } from '../store/event-context';
 
 function CalendarGrid( { month, year } ) {
 	const rows = getRows( year, month );

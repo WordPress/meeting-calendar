@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getRows, getSortedEvents } from '../calendar/utils';
-import { useEvents } from '../app/event-context';
+import { useEvents } from '../store/event-context';
 import ListItem from './list-item';
 
 function List( { month, year } ) {
