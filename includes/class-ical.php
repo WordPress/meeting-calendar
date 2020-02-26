@@ -1,7 +1,7 @@
 <?php
 namespace WordPressdotorg\Meeting_Calendar;
 
-class Plugin {
+class ICal {
 
 	const QUERY_KEY      = 'meeting_ical';
 	const QUERY_TEAM_KEY = 'meeting_team';
@@ -45,9 +45,14 @@ class Plugin {
 		flush_rewrite_rules(); // remove custom rewrite rule
 	}
 
+	/**
+	 * Add Rewrite rules to allow for ICS access.
+	 *
+	 * This adds rules such as /meetings.ics and /meetings-$team.ics
+	 */
 	public function add_rewrite_rules() {
 		add_rewrite_rule(
-			'^meetings/?([a-zA-Z\d\s_-]+)?/calendar\.ics$',
+			'^meetings(-[a-zA-Z\d\s_-]+)?\.ics$',
 			array(
 				self::QUERY_KEY      => 1,
 				self::QUERY_TEAM_KEY => '$matches[1]',
@@ -57,7 +62,7 @@ class Plugin {
 	}
 
 	public function parse_request( $request ) {
-		if ( ! array_key_exists( self::QUERY_KEY, $request->query_vars ) ) {
+		if ( ! isset( $request->query_vars[ self::QUERY_KEY ] ) ) {
 			return;
 		}
 
@@ -80,16 +85,12 @@ class Plugin {
 	}
 
 	public function query_vars( $query_vars ) {
-		array_push( $query_vars, self::QUERY_KEY );
-		array_push( $query_vars, self::QUERY_TEAM_KEY );
+		$query_vars[] = self::QUERY_KEY;
+		$query_vars[] = self::QUERY_TEAM_KEY;
 		return $query_vars;
 	}
 
 	private function get_ical_contents( $team ) {
-		return $this->generate_ical_contents( $team );
-	}
-
-	private function generate_ical_contents( $team ) {
 		$posts = $this->get_meeting_posts( $team );
 
 		// Don't generate a calendar if there are no meetings for that team
