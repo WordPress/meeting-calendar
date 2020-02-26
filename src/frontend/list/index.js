@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { format } from '@wordpress/date';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -36,7 +37,7 @@ function List( { month, year } ) {
 		.filter( ( i ) => !! i );
 
 	if ( ! days.length ) {
-		return <div>No Events Scheduled</div>;
+		return <div>{ __( 'No Events Scheduled', 'wporg' ) }</div>;
 	}
 
 	return <ul className="wporg-meeting-calendar__list">{ days }</ul>;
