@@ -13,6 +13,9 @@ import CalendarGrid from './grid';
 import List from '../list';
 import { EventsProvider } from './event-context';
 
+const CALENDAR_VIEW = 'calendar_view';
+const LIST_VIEW = 'list_view';
+
 function Calendar( { events } ) {
 	const today = new Date();
 	const currentMonth = today.getMonth();
@@ -22,6 +25,8 @@ function Calendar( { events } ) {
 		year: currentYear,
 	};
 	const [ { month, year }, setDate ] = useState( currentMonthYear );
+	const [ currentView, setView ] = useState( CALENDAR_VIEW );
+	const isView = ( toMatch ) => currentView === toMatch;
 
 	return (
 		<EventsProvider value={ events }>
@@ -51,12 +56,26 @@ function Calendar( { events } ) {
 					</h2>
 				</div>
 				<ButtonGroup>
-					<Button>{ __( 'Month', 'wporg' ) }</Button>
-					<Button>{ __( 'List', 'wporg' ) }</Button>
+					<Button
+						isSecondary={ ! isView( CALENDAR_VIEW ) }
+						isPrimary={ isView( CALENDAR_VIEW ) }
+						onClick={ () => void setView( CALENDAR_VIEW ) }
+					>
+						{ __( 'Month', 'wporg' ) }
+					</Button>
+					<Button
+						isSecondary={ ! isView( LIST_VIEW ) }
+						isPrimary={ isView( LIST_VIEW ) }
+						onClick={ () => void setView( LIST_VIEW ) }
+					>
+						{ __( 'List', 'wporg' ) }
+					</Button>
 				</ButtonGroup>
 			</div>
-			{/* <CalendarGrid month={ month } year={ year } /> */}
-			<List month={ month } year={ year } />
+			{ isView( CALENDAR_VIEW ) && (
+				<CalendarGrid month={ month } year={ year } />
+			) }
+			{ isView( LIST_VIEW ) && <List month={ month } year={ year } /> }
 		</EventsProvider>
 	);
 }
