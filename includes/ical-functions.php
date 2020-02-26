@@ -72,15 +72,14 @@ add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
  * Generate a ICS feed
  */
 function get_ical_contents( $team ) {
-	$posts = $this->get_meeting_posts( $team );
+	$posts = get_meeting_posts( $team );
 
 	// Don't generate a calendar if there are no meetings for that team
 	if ( empty( $posts ) ) {
 		return null;
 	}
 
-	$ical_generator = new ICAL_Generator();
-	return $ical_generator->generate( $posts );
+	return Generator\generate( $posts );
 }
 
 /**
