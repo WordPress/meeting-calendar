@@ -24,6 +24,7 @@ class Meeting_Post_Type {
 		add_action( 'init',                               array( $mpt, 'register_meeting_post_type' ) );
 		add_action( 'init',                               array( $mpt, 'register_meta' ) );
 		add_action( 'rest_api_init',                      array( $mpt, 'register_rest_field' ) );
+		add_action( 'rest_api_init',                      array( $mpt, 'register_rest_routes' ) );
 		add_action( 'save_post_meeting',                  array( $mpt, 'save_meta_boxes' ), 10, 2 );
 		add_filter( 'pre_get_posts',                      array( $mpt, 'meeting_archive_page_query' ) );
 		add_filter( 'the_posts',                          array( $mpt, 'meeting_set_next_meeting' ), 10, 2 );
@@ -165,17 +166,21 @@ class Meeting_Post_Type {
 				$day_index = date( 'w', strtotime( sprintf( '%s %s GMT', $post->start_date, $post->time ) ) );
 				$day_name  = $GLOBALS['wp_locale']->get_weekday( $day_index );
 				$numerals  = array( 'first', 'second', 'third', 'fourth' );
-				$months    = array( 'this month', 'next month', "+2 month" );
+				$months    = array( 'last month', 'this month', 'next month', "+2 month" );
 
-				foreach ( $months as $month ) {
+				$next = clone $now;
+
+				$limit = 12;
+				do {
+					$month_year = $next->format( 'F Y' );
 					foreach ( $post->occurrence as $index ) {
-						$next = new DateTime( sprintf( '%s %s of %s %s GMT', $numerals[ $index - 1 ], $day_name, $month, $post->time ) );
+						$next = new DateTime( sprintf( '%s %s of %s %s GMT', $numerals[ $index - 1 ], $day_name, $month_year, $post->time ) );
 						if ( $next > $now ) {
 							break 2;
 						}
 					}
-				}
-
+					$next->modify( '+1 month' );
+				} while ( --$limit > 0 );
 				$next_date = $next->format( 'Y-m-d' );
 			} catch ( Exception $e ) {
 				$next_date = false;
@@ -292,6 +297,43 @@ class Meeting_Post_Type {
 			'get_callback' => array( $this, 'get_future_occurrences' )
 			)
 		);	
+	}
+
+	public function get_occurrences_for_period( $request ) {
+		var_dump( $request->get_param('month') );
+
+		$meetings = get_posts( array( 'post_type' => 'meeting', 'numberposts' => -1 ) );
+		$out = array();
+		foreach ( $meetings as $meeting ) {
+			$occurrences = $this->get_future_occurrences( $meeting, null, $request );
+			foreach ( $occurrences as $occurrence ) {
+				$out[] = array(
+					'meeting_id' => $meeting->ID,
+					'date'       => $occurrence,
+					'time'       => $meeting->time,
+					'datetime'   => "{$occurrence}T{$meeting->time}+00:00",
+					'team'       => $meeting->team,
+					'link'       => $meeting->link,
+					'title'      => $meeting->post_title,
+					'recurring'  => $meeting->recurring,
+					'occurrence' => $meeting->occurrence,
+					'status'     => 'active', // TODO: support 'cancelled'
+				);
+			}
+		}
+
+		usort( $out, function( $a, $b ) {
+			return $a['datetime'] <=> $b['datetime']; 
+		} );
+		return $out;
+	}
+
+	public function register_rest_routes() {
+		register_rest_route( 'wp/v2/meetings', '/from/(?P<month>\d\d\d\d-\d\d-\d\d)', array(
+			'methods' => 'GET',
+			'callback' => array( $this, 'get_occurrences_for_period')
+			)
+		);
 	}
 
 	public function get_future_occurrences( $meeting, $attr, $request ) {
