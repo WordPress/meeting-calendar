@@ -25,6 +25,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 		// Make sure the meta keys are registered - setUp/tearDown nukes these
 		Meeting_Post_Type::getInstance()->register_meta();
+		Meeting_Post_Type::getInstance()->register_rest_routes();
 
 	}
 
@@ -181,5 +182,198 @@ class MeetingAPITest extends WP_UnitTestCase {
 		}
 	}
 
+	public function _january_meetings() {
+		return array (
+		  0 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-01',
+		    'date' => '2020-01-01',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-01-01T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  1 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[1],
+		    'instance_id' => $this->meeting_ids[1] . ':2020-01-01',
+		    'date' => '2020-01-01',
+		    'time' => '15:00:00',
+		    'datetime' => '2020-01-01T15:00:00+00:00',
+		    'team' => 'Team-B',
+		    'link' => 'wordpress.org',
+		    'title' => 'A monthly meeting',
+		    'recurring' => 'monthly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  2 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-08',
+		    'date' => '2020-01-08',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-01-08T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  3 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-15',
+		    'date' => '2020-01-15',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-01-15T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  4 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[2],
+		    'instance_id' => $this->meeting_ids[2] . ':2020-01-15',
+		    'date' => '2020-01-15',
+		    'time' => '16:00:00',
+		    'datetime' => '2020-01-15T16:00:00+00:00',
+		    'team' => 'Team-C',
+		    'link' => 'wordpress.org',
+		    'title' => 'Third Wednesday of each month',
+		    'recurring' => 'occurrence',
+		    'occurrence' => 
+		    array (
+		      0 => 3,
+		    ),
+		    'status' => 'active',
+		  ),
+		  5 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-22',
+		    'date' => '2020-01-22',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-01-22T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  6 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-29',
+		    'date' => '2020-01-29',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-01-29T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  7 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[1],
+		    'instance_id' => $this->meeting_ids[1] . ':2020-02-01',
+		    'date' => '2020-02-01',
+		    'time' => '15:00:00',
+		    'datetime' => '2020-02-01T15:00:00+00:00',
+		    'team' => 'Team-B',
+		    'link' => 'wordpress.org',
+		    'title' => 'A monthly meeting',
+		    'recurring' => 'monthly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  8 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-05',
+		    'date' => '2020-02-05',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-02-05T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  9 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[2],
+		    'instance_id' => $this->meeting_ids[2] . ':2020-02-19',
+		    'date' => '2020-02-19',
+		    'time' => '16:00:00',
+		    'datetime' => '2020-02-19T16:00:00+00:00',
+		    'team' => 'Team-C',
+		    'link' => 'wordpress.org',
+		    'title' => 'Third Wednesday of each month',
+		    'recurring' => 'occurrence',
+		    'occurrence' => 
+		    array (
+		      0 => 3,
+		    ),
+		    'status' => 'active',
+		  ),
+		);
+	}
+
+	public function test_meetings_january_2020() {
+		$request = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+		$meetings = $response->get_data();
+
+		$this->assertEquals( $this->_january_meetings(), $meetings );
+	}
+
+	public function test_meetings_february_2020() {
+		$request = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-02-01' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+		$meetings = $response->get_data();
+
+		$expected_datetimes = array (
+		  0 => '2020-02-01T15:00:00+00:00',
+		  1 => '2020-02-05T14:00:00+00:00',
+		  2 => '2020-02-12T14:00:00+00:00',
+		  3 => '2020-02-19T14:00:00+00:00',
+		  4 => '2020-02-19T16:00:00+00:00',
+		  5 => '2020-02-26T14:00:00+00:00',
+		  6 => '2020-03-01T15:00:00+00:00',
+		  7 => '2020-03-04T14:00:00+00:00',
+		  8 => '2020-03-18T16:00:00+00:00',
+		);
+		$this->assertEquals( $expected_datetimes, wp_list_pluck( $meetings, 'datetime' ) );
+
+		$expected_teams = array (
+		  0 => 'Team-B',
+		  1 => 'Team-A',
+		  2 => 'Team-A',
+		  3 => 'Team-A',
+		  4 => 'Team-C',
+		  5 => 'Team-A',
+		  6 => 'Team-B',
+		  7 => 'Team-A',
+		  8 => 'Team-C',
+		);
+		$this->assertEquals( $expected_teams, wp_list_pluck( $meetings, 'team' ) );
+
+	}
 
 }
