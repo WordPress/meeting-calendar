@@ -61,11 +61,10 @@ function parse_request( $request ) {
 		);
 	}
 
-	/**
-	 * If the calendar has a 'method' property, the 'Content-Type' header must also specify it
-	 */
+	// If the calendar has a 'method' property, the 'Content-Type' header must also specify it
 	header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
 	header( 'Content-Disposition: inline; filename=' . ( $team ? "calendar-$team.ics" : 'calendar.ics' ) );
+
 	echo Generator\generate( $posts );
 
 	exit;
