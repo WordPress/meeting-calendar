@@ -90,6 +90,10 @@ function generate_event( $post ) {
 
 	if ( ! is_null( $frequency ) ) {
 		$event .= "RRULE:FREQ={$frequency}" . NEWLINE;
+
+		/* if ( Some dates are cancelled ) {
+			$event .= "EXDATE:date,date,date" . NEWLINE;
+		} */
 	}
 
 	$event .= 'END:VEVENT' . NEWLINE;
