@@ -6,7 +6,7 @@ import { createElement, render } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import Calendar from './calendar';
+import App from './app';
 import './styles.css';
 
 const getMeetings = ( calendarEl ) => {
@@ -25,7 +25,7 @@ const initCalendar = () => {
 	const calendarEl = document.getElementById( 'wporg-meeting-calendar-js' );
 	const events = getMeetings( calendarEl ).map( formatMeeting );
 
-	render( createElement( Calendar, { events } ), calendarEl );
+	render( createElement( App, { events } ), calendarEl );
 };
 
 document.addEventListener( 'DOMContentLoaded', initCalendar );
