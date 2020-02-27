@@ -67,7 +67,7 @@ class Meeting_Post_Type {
 		$query->set( 'nopaging', true );
 
 		// meta query to eliminate expired meetings from query
-		$query->set( 'meta_query', $this->meeting_meta_query );
+		$query->set( 'meta_query', $this->meeting_meta_query() );
 
 		// WP doesn't understand CURDATE() and prepares it as a quoted string. Repair this:
 		add_filter( 'get_meta_sql', function ($sql) {
@@ -566,7 +566,7 @@ class Meeting_Post_Type {
 						'value'   => $attr['team'],
 						'compare' => 'EQUALS',
 					),
-					$this->meeting_meta_query
+					$this->meeting_meta_query()
 				)
 			)
 		);
@@ -607,8 +607,9 @@ class Meeting_Post_Type {
 		return $out;
 	}
 
-	private $meeting_meta_query = array(
-		'relation'=>'OR',
+	public function meeting_meta_query() {
+		return array(
+			'relation'=>'OR',
 			// not recurring  AND start_date >= CURDATE() = one-time meeting today or still in future
 			array(
 				'relation'=>'AND',
@@ -648,6 +649,7 @@ class Meeting_Post_Type {
 				)
 			),
 		);
+	}
 
 	public function time_conversion_script() {
 		echo <<<EOF
