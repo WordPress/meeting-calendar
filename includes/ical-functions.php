@@ -19,7 +19,7 @@ function on_activate() {
  */
 function add_rewrite_rules() {
 	add_rewrite_rule(
-		'^meetings(-[a-zA-Z\d\s_-]+)?\.ics$',
+		'^meetings(?:-([a-zA-Z\d\s_-]+))?\.ics$',
 		array(
 			QUERY_KEY      => 1,
 			QUERY_TEAM_KEY => '$matches[1]',
@@ -87,7 +87,26 @@ function get_ical_contents( $team ) {
  * @return array
  */
 function get_meeting_posts( $team = '' ) {
-	$query = new Meeting_Query( $team );
+
+	$meta_query = \Meeting_Post_Type::getInstance()->meeting_meta_query();
+	if ( $team ) {
+		$meta_query = [
+			'relation' => 'AND',
+			[
+				'key'     => 'team',
+				'value'   => $team,
+				'compare' => 'EQUALS',
+			],
+			$meta_query
+		];
+	}
+
+	$query = new \WP_Query( [
+		'post_type'   => 'meeting',
+		'post_status' => 'publish',
+		'nopaging'    => true,
+		'meta_query'  => $meta_query,
+	] );
 
 	return $query->get_posts();
 }
