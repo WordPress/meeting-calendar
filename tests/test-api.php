@@ -187,6 +187,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  0 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-01',
 		    'date' => '2020-01-01',
 		    'time' => '14:00:00',
 		    'datetime' => '2020-01-01T14:00:00+00:00',
@@ -200,6 +201,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  1 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[1],
+		    'instance_id' => $this->meeting_ids[1] . ':2020-01-01',
 		    'date' => '2020-01-01',
 		    'time' => '15:00:00',
 		    'datetime' => '2020-01-01T15:00:00+00:00',
@@ -213,6 +215,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  2 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-08',
 		    'date' => '2020-01-08',
 		    'time' => '14:00:00',
 		    'datetime' => '2020-01-08T14:00:00+00:00',
@@ -226,6 +229,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  3 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-15',
 		    'date' => '2020-01-15',
 		    'time' => '14:00:00',
 		    'datetime' => '2020-01-15T14:00:00+00:00',
@@ -239,6 +243,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  4 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[2],
+		    'instance_id' => $this->meeting_ids[2] . ':2020-01-15',
 		    'date' => '2020-01-15',
 		    'time' => '16:00:00',
 		    'datetime' => '2020-01-15T16:00:00+00:00',
@@ -255,6 +260,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  5 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-22',
 		    'date' => '2020-01-22',
 		    'time' => '14:00:00',
 		    'datetime' => '2020-01-22T14:00:00+00:00',
@@ -268,6 +274,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  6 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-01-29',
 		    'date' => '2020-01-29',
 		    'time' => '14:00:00',
 		    'datetime' => '2020-01-29T14:00:00+00:00',
@@ -281,6 +288,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  7 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[1],
+		    'instance_id' => $this->meeting_ids[1] . ':2020-02-01',
 		    'date' => '2020-02-01',
 		    'time' => '15:00:00',
 		    'datetime' => '2020-02-01T15:00:00+00:00',
@@ -294,6 +302,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  8 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-05',
 		    'date' => '2020-02-05',
 		    'time' => '14:00:00',
 		    'datetime' => '2020-02-05T14:00:00+00:00',
@@ -307,6 +316,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  9 => 
 		  array (
 		    'meeting_id' => $this->meeting_ids[2],
+		    'instance_id' => $this->meeting_ids[2] . ':2020-02-19',
 		    'date' => '2020-02-19',
 		    'time' => '16:00:00',
 		    'datetime' => '2020-02-19T16:00:00+00:00',
@@ -330,7 +340,15 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$meetings = $response->get_data();
 
 		$this->assertEquals( $this->_january_meetings(), $meetings );
+	}
 
+	public function test_meetings_february_2020() {
+		$request = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-02-01' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+		$meetings = $response->get_data();
+
+		#$this->assertEquals( $this->_january_meetings(), $meetings );
 
 	}
 

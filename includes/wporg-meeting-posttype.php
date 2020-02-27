@@ -308,16 +308,17 @@ class Meeting_Post_Type {
 			$occurrences = $this->get_future_occurrences( $meeting, null, $request );
 			foreach ( $occurrences as $occurrence ) {
 				$out[] = array(
-					'meeting_id' => $meeting->ID,
-					'date'       => $occurrence,
-					'time'       => $meeting->time,
-					'datetime'   => "{$occurrence}T{$meeting->time}+00:00",
-					'team'       => $meeting->team,
-					'link'       => $meeting->link,
-					'title'      => $meeting->post_title,
-					'recurring'  => $meeting->recurring,
-					'occurrence' => $meeting->occurrence,
-					'status'     => 'active', // TODO: support 'cancelled'
+					'meeting_id'  => $meeting->ID,
+					'instance_id' => "{$meeting->ID}:{$occurrence}",
+					'date'        => $occurrence,
+					'time'        => $meeting->time,
+					'datetime'    => "{$occurrence}T{$meeting->time}+00:00",
+					'team'        => $meeting->team,
+					'link'        => $meeting->link,
+					'title'       => $meeting->post_title,
+					'recurring'   => $meeting->recurring,
+					'occurrence'  => $meeting->occurrence,
+					'status'      => 'active', // TODO: support 'cancelled'
 				);
 			}
 		}
