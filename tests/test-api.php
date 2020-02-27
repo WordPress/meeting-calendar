@@ -348,7 +348,31 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$meetings = $response->get_data();
 
-		#$this->assertEquals( $this->_january_meetings(), $meetings );
+		$expected_datetimes = array (
+		  0 => '2020-02-01T15:00:00+00:00',
+		  1 => '2020-02-05T14:00:00+00:00',
+		  2 => '2020-02-12T14:00:00+00:00',
+		  3 => '2020-02-19T14:00:00+00:00',
+		  4 => '2020-02-19T16:00:00+00:00',
+		  5 => '2020-02-26T14:00:00+00:00',
+		  6 => '2020-03-01T15:00:00+00:00',
+		  7 => '2020-03-04T14:00:00+00:00',
+		  8 => '2020-03-18T16:00:00+00:00',
+		);
+		$this->assertEquals( $expected_datetimes, wp_list_pluck( $meetings, 'datetime' ) );
+
+		$expected_teams = array (
+		  0 => 'Team-B',
+		  1 => 'Team-A',
+		  2 => 'Team-A',
+		  3 => 'Team-A',
+		  4 => 'Team-C',
+		  5 => 'Team-A',
+		  6 => 'Team-B',
+		  7 => 'Team-A',
+		  8 => 'Team-C',
+		);
+		$this->assertEquals( $expected_teams, wp_list_pluck( $meetings, 'team' ) );
 
 	}
 
