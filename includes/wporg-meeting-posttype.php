@@ -300,8 +300,6 @@ class Meeting_Post_Type {
 	}
 
 	public function get_occurrences_for_period( $request ) {
-		var_dump( $request->get_param('month') );
-
 		$meetings = get_posts( array( 'post_type' => 'meeting', 'numberposts' => -1 ) );
 		$out = array();
 		foreach ( $meetings as $meeting ) {
