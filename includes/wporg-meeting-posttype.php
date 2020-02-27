@@ -68,12 +68,6 @@ class Meeting_Post_Type {
 
 		// meta query to eliminate expired meetings from query
 		$query->set( 'meta_query', $this->meeting_meta_query() );
-
-		// WP doesn't understand CURDATE() and prepares it as a quoted string. Repair this:
-		add_filter( 'get_meta_sql', function ($sql) {
-			return str_replace( "'CURDATE()'", 'CURDATE()', $sql );
-		} );
-
 	}
 
 	public function meeting_set_next_meeting( $posts, $query ) {
@@ -547,12 +541,6 @@ class Meeting_Post_Type {
 			add_action( 'wp_footer', array( $this, 'time_conversion_script' ), 999 );
 		}
 
-
-		// meta query to eliminate expired meetings from query
-		add_filter( 'get_meta_sql', function ($sql) {
-			return str_replace( "'CURDATE()'", 'CURDATE()', $sql );
-		} );
-
 		switch_to_blog( get_main_site_id() );
 
 		$query = new WP_Query(
@@ -612,39 +600,39 @@ class Meeting_Post_Type {
 			'relation'=>'OR',
 			// not recurring  AND start_date >= CURDATE() = one-time meeting today or still in future
 			array(
-				'relation'=>'AND',
+				'relation' => 'AND',
 				array(
-					'key'=>'recurring',
-					'value'=>array( 'weekly', 'biweekly', 'occurrence', 'monthly', '1' ),
-					'compare'=>'NOT IN',
+					'key'     => 'recurring',
+					'value'   => array( 'weekly', 'biweekly', 'occurrence', 'monthly', '1' ),
+					'compare' => 'NOT IN',
 				),
 				array(
-					'key'=>'start_date',
-					'type'=>'DATE',
-					'compare'=>'>=',
-					'value'=>'CURDATE()',
+					'key'     => 'start_date',
+					'type'    => 'DATE',
+					'compare' => '>=',
+					'value'   => gmdate( 'Y-m-d' ),
 				)
 			),
 			// recurring = 1 AND ( end_date = '' OR end_date > CURDATE() ) = recurring meeting that has no end or has not ended yet
 			array(
-				'relation'=>'AND',
+				'relation' => 'AND',
 				array(
-					'key'=>'recurring',
-					'value'=>array( 'weekly', 'biweekly', 'occurrence', 'monthly', '1' ),
-					'compare'=>'IN',
+					'key'     => 'recurring',
+					'value'   => array( 'weekly', 'biweekly', 'occurrence', 'monthly', '1' ),
+					'compare' => 'IN',
 				),
 				array(
-					'relation'=>'OR',
+					'relation' => 'OR',
 					array(
-						'key'=>'end_date',
-						'value'=>'',
-						'compare'=>'=',
+						'key'     => 'end_date',
+						'value'   => '',
+						'compare' => '=',
 					),
 					array(
-						'key'=>'end_date',
-						'type'=>'DATE',
-						'compare'=>'>',
-						'value'=>'CURDATE()',
+						'key'     => 'end_date',
+						'type'    => 'DATE',
+						'compare' => '>',
+						'value'   => gmdate( 'Y-m-d' ),
 					)
 				)
 			),
