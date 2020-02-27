@@ -49,36 +49,28 @@ function parse_request( $request ) {
 
 	$team = strtolower( $request->query_vars[ QUERY_TEAM_KEY ] );
 
-	// Generate a calendar if such a team exists
-	$ical = get_ical_contents( $team );
-
-	if ( null !== $ical ) {
-		/**
-		 * If the calendar has a 'method' property, the 'Content-Type' header must also specify it
-		 */
-		header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
-		header( 'Content-Disposition: inline; filename=calendar.ics' );
-		echo $ical;
-		exit;
-	}
-
-	return;
-}
-add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
-
-/**
- * Generate a ICS feed
- */
-function get_ical_contents( $team ) {
+	// Grab the meetings, optionally 
 	$posts = get_meeting_posts( $team );
 
-	// Don't generate a calendar if there are no meetings for that team
-	if ( empty( $posts ) ) {
-		return null;
+	// Output a 404 if there's no meetings, but still generate a ICS feed.
+	if ( ! $posts ) {
+		header(
+			( $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.0' ) . ' 404 No Meetings Found',
+			true,
+			404
+		);
 	}
 
-	return Generator\generate( $posts );
+	/**
+	 * If the calendar has a 'method' property, the 'Content-Type' header must also specify it
+	 */
+	header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
+	header( 'Content-Disposition: inline; filename=calendar.ics' );
+	echo Generator\generate( $posts );
+
+	exit;
 }
+add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
 
 /**
  * Get all meetings for a team. If the 'team' parameter is empty, all meetings are returned.
