@@ -12,7 +12,7 @@ define( 'NEWLINE', "\r\n" );
 function generate( $posts ) {
 	$ical  = 'BEGIN:VCALENDAR' . NEWLINE;
 	$ical .= 'VERSION:2.0' . NEWLINE;
-	$ical .= 'PRODID:-//WPORG Make//Meeting Events Calendar//EN' . NEWLINE;
+	$ical .= 'PRODID:-//Make WordPress//Meeting Events Calendar//EN' . NEWLINE;
 	$ical .= 'METHOD:PUBLISH' . NEWLINE;
 	$ical .= 'CALSCALE:GREGORIAN' . NEWLINE;
 
