@@ -11,6 +11,7 @@ import { useState, Fragment } from '@wordpress/element';
  */
 import CalendarGrid from './grid';
 import List from '../list';
+import Filter from '../filter';
 import { useViews } from '../store/view-context';
 
 function Calendar() {
@@ -78,6 +79,7 @@ function Calendar() {
 					</Button>
 				</ButtonGroup>
 			</div>
+			<Filter />
 			{ isCalendarView() && (
 				<CalendarGrid month={ month } year={ year } />
 			) }

@@ -89,3 +89,7 @@
 .wporg-meeting-calendar__list-event-subtitle {
 	font-size: 0.75rem;
 }
+
+.wporg-meeting-calendar__filter {
+	margin-bottom: 12px;
+}

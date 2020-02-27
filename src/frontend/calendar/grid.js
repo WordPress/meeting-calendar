@@ -8,7 +8,8 @@ import { useEvents } from '../store/event-context';
 
 function CalendarGrid( { month, year } ) {
 	const rows = getRows( year, month );
-	const events = getSortedEvents( useEvents() );
+	const { events: unsortedEvents } = useEvents();
+	const events = getSortedEvents( unsortedEvents );
 
 	return (
 		<table>

@@ -13,7 +13,8 @@ import ListItem from './list-item';
 
 function List( { month, year } ) {
 	const rows = getRows( year, month );
-	const events = getSortedEvents( useEvents() );
+	const { events: unsortedEvents } = useEvents();
+	const events = getSortedEvents( unsortedEvents );
 	const allDays = rows.flat().filter( ( i ) => ! i.blank );
 
 	const days = allDays
