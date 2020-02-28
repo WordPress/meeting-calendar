@@ -1,5 +1,5 @@
 /**
- * External Dependencies
+ * WordPress dependencies
  */
 import { createContext, useContext, useState } from '@wordpress/element';
 
@@ -12,6 +12,10 @@ function getTeamOnLoad() {
 	const { location } = window;
 	const matches = location.href.match( /(?<=#).+/ );
 	return matches ? matches[ 0 ] : '';
+}
+
+function clearTeamFromUrl() {
+	window.history.pushState( '', document.title, window.location.pathname );
 }
 
 export function EventsProvider( { children, value } ) {
@@ -29,7 +33,10 @@ export function EventsProvider( { children, value } ) {
 		events: eventsToDisplay,
 		team,
 		setTeam,
-		clearTeam: () => setTeam( '' ),
+		clearTeam() {
+			clearTeamFromUrl();
+			setTeam( '' );
+		},
 	};
 
 	return (
