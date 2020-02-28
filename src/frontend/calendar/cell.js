@@ -6,7 +6,6 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getFormattedEventDate } from './utils';
 import MoreEvents from './more-events';
 
 function CalendarCell( { blank = false, year, month, day, events } ) {
@@ -27,14 +26,10 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
-			{ dayEvents.slice( 0, maxEventsToDisplay ).map( ( e ) => {
-				const eventDate = getFormattedEventDate(
-					e.meta.start_date,
-					e.meta.time
-				);
+			{ dayEvents.map( ( e ) => {
 				return (
-					<h3 key={ e.id }>
-						{ eventDate }
+					<h3 key={ e.instance_id }>
+						{ format( 'g:i a: ', e.datetime ) }
 						{ e.title }
 					</h3>
 				);

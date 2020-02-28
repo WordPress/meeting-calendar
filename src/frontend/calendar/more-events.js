@@ -3,11 +3,7 @@
  */
 import { sprintf, _n } from '@wordpress/i18n';
 import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
-
-/**
- * Internal dependencies
- */
-import { getFormattedEventDate } from './utils';
+import { format } from '@wordpress/date';
 
 const MoreEvents = ( { events, onClick } ) => (
 	<Dropdown
@@ -26,13 +22,9 @@ const MoreEvents = ( { events, onClick } ) => (
 		renderContent={ () => (
 			<MenuGroup>
 				{ events.map( ( e ) => {
-					const eventDate = getFormattedEventDate(
-						e.meta.start_date,
-						e.meta.time
-					);
 					return (
-						<MenuItem key={ e.id } onClick={ onClick }>
-							{ eventDate }
+						<MenuItem key={ e.instance_id } onClick={ onClick }>
+							{ format( 'g:i a: ', e.datetime ) }
 							{ e.title }
 						</MenuItem>
 					);

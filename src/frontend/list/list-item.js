@@ -11,20 +11,19 @@ function ListItem( { date, events } ) {
 				<span>{ format( 'l - F j, Y', date ) }</span>
 			</strong>
 
-			{ events.map( ( e, i ) => {
-				const eventDate = e.meta.start_date + 'T' + e.meta.time + 'Z';
+			{ events.map( ( e ) => {
 				return (
 					<article
 						className="wporg-meeting-calendar__list-event"
-						key={ `cell-${ e.id }-${ i }` }
+						key={ e.instance_id }
 					>
-						<div>{ format( 'g:i a: ', eventDate ) }</div>
+						<div>{ format( 'g:i a: ', e.datetime ) }</div>
 						<div>
 							<a
 								className="wporg-meeting-calendar__list-event-team"
-								href={ `/${ e.meta.team }` }
+								href={ `/${ e.team }` }
 							>
-								{ e.meta.team }
+								{ e.team }
 							</a>
 							<h3
 								className="wporg-meeting-calendar__list-event-title"
@@ -33,7 +32,7 @@ function ListItem( { date, events } ) {
 								<a href={ e.link }>{ e.title }</a>
 							</h3>
 							<span className="wporg-meeting-calendar__list-event-subtitle">
-								Location: { e.meta.location }
+								Location: { e.location }
 							</span>
 						</div>
 					</article>
