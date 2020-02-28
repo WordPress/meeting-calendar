@@ -17,8 +17,15 @@ function getTeamOnLoad() {
 	return matches ? matches[ 0 ] : '';
 }
 
-function clearTeamFromUrl() {
-	window.history.pushState( '', document.title, window.location.pathname );
+/**
+ * Add the team to the current URL, pushing to history for browser navigation support.
+ */
+function setTeamEffect( team = '' ) {
+	if ( '' === team ) {
+		window.history.pushState( team, document.title, window.location.pathname );
+	} else {
+		window.history.pushState( team, document.title, '#' + team );
+	}
 }
 
 const StateContext = createContext();
@@ -37,10 +44,10 @@ export function EventsProvider( { children, value } ) {
 	const initialState = {
 		events: getSortedEvents( eventsToDisplay ),
 		team,
-		setTeam,
-		clearTeam() {
-			clearTeamFromUrl();
-			setTeam( '' );
+		setTeam: ( team ) => {
+			team = team.toLowerCase();
+			setTeam( team );
+			setTeamEffect( team );
 		},
 	};
 

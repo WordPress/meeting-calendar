@@ -10,15 +10,15 @@ import { Button } from '@wordpress/components';
 import { useEvents } from '../store/event-context';
 
 const Filter = () => {
-	const { team, clearTeam } = useEvents();
+	const { team, setTeam } = useEvents();
 
-	if( ! team.length ) {
+	if ( ! team.length ) {
 		return null;
 	}
 
 	return (
 		<div className="wporg-meeting-calendar__filter">
-			<Button isLink onClick={ () => void clearTeam() }>
+			<Button isLink onClick={ () => void setTeam( '' ) }>
 				{ __( 'Show meetings for other teams', 'wporg' ) }
 			</Button>
 		</div>
