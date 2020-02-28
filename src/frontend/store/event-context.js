@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { createContext, useContext, useState } from '@wordpress/element';
+import { uniqBy } from 'lodash';
 
 /**
  * Internal dependencies
@@ -45,9 +46,16 @@ export function EventsProvider( { children, value } ) {
 		);
 	}
 
+	// Get a list of all teams available.
+	const teams = uniqBy( value.map( ( e ) => ( {
+		label: e.team,
+		value: e.team.toLowerCase(),
+	} ) ), 'value' );
+
 	const initialState = {
 		events: getSortedEvents( eventsToDisplay ),
 		team,
+		teams,
 		setTeam: ( team ) => {
 			team = team.toLowerCase();
 			setTeam( team );
