@@ -308,6 +308,7 @@ class Meeting_Post_Type {
 					'team'        => $meeting->team,
 					'link'        => $meeting->link,
 					'title'       => $meeting->post_title,
+					'location'    => $meeting->location,
 					'recurring'   => $meeting->recurring,
 					'occurrence'  => $meeting->occurrence,
 					'status'      => 'active', // TODO: support 'cancelled'

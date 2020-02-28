@@ -21,12 +21,9 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				<span aria-hidden>{ day }</span>
 			</strong>
 			{ dayEvents.map( ( e ) => {
-				// Get the event date + time from the event using RFC3339 for `format`.
-				// @todo Get the recurring event time, not just first instance.
-				const eventDate = e.meta.start_date + 'T' + e.meta.time + 'Z';
 				return (
-					<h3 key={ e.id }>
-						{ format( 'g:i a: ', eventDate ) }
+					<h3 key={ e.instance_id }>
+						{ format( 'g:i a: ', e.datetime ) }
 						{ e.title }
 					</h3>
 				);

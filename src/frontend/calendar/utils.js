@@ -55,7 +55,7 @@ export function getRows( year, month ) {
 export function getSortedEvents( events ) {
 	const sortedEvents = {};
 	events.forEach( ( event ) => {
-		const key = format( 'Y-m-d', event.start );
+		const key = format( 'Y-m-d', event.date );
 		if ( sortedEvents.hasOwnProperty( key ) ) {
 			sortedEvents[ key ].push( event );
 		} else {
