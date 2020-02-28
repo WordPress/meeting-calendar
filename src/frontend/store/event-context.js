@@ -41,10 +41,8 @@ export function EventsProvider( { children, value } ) {
 
 export function useEvents() {
 	const context = useContext( StateContext );
-
 	if ( context === undefined ) {
 		throw new Error( 'useEvents must be used within a Provider' );
 	}
-
 	return context;
 }
