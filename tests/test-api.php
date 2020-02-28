@@ -1,4 +1,5 @@
 <?php
+use WordPressdotorg\Meeting_Calendar;
 /**
  * Class MeetingAPI
  *
@@ -21,7 +22,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		do_action( 'rest_api_init' );
 
 		// Install test data
-		$this->meeting_ids = wporg_meeting_install();
+		$this->meeting_ids = Meeting_Calendar\wporg_meeting_install();
 
 		// Make sure the meta keys are registered - setUp/tearDown nukes these
 		Meeting_Post_Type::getInstance()->register_meta();
