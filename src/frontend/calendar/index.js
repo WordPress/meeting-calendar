@@ -33,10 +33,14 @@ function Calendar() {
 		<Fragment>
 			<div className="wporg-meeting-calendar__header">
 				<div className="wporg-meeting-calendar__btn-group">
-					<Button onClick={ () => void setDate( currentMonthYear ) }>
+					<Button
+						isSecondary
+						onClick={ () => void setDate( currentMonthYear ) }
+					>
 						{ __( 'Today', 'wporg' ) }
 					</Button>
 					<Button
+						isSecondary
 						onClick={ () =>
 							void setDate( { month: month - 1, year } )
 						}
@@ -44,6 +48,7 @@ function Calendar() {
 						{ __( 'Previous', 'wporg' ) }
 					</Button>
 					<Button
+						isSecondary
 						onClick={ () =>
 							void setDate( { month: month + 1, year } )
 						}
