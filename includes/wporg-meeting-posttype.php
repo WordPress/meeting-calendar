@@ -298,7 +298,6 @@ class Meeting_Post_Type {
 			'post_type' => 'meeting',
 			'post_status' => 'publish',
 			'numberposts' => -1,
-			'meta_query' => $this->meeting_meta_query(),
 		) );
 		$out = array();
 		foreach ( $meetings as $meeting ) {
