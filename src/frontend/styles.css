@@ -29,22 +29,39 @@
 }
 
 .wporg-meeting-calendar__cell {
-	padding: 12px;
+	padding: 4px;
 	vertical-align: top;
 	height: 5em; /* height acts as min-height on table cells */
 }
 
 .wporg-meeting-calendar__cell strong {
 	display: block;
-	margin: -12px -12px 0;
-	padding: 6px 12px;
+	margin: -4px -4px 0;
+	padding: 2px 4px;
 	font-size: 0.8em;
 	background: #ddd;
 }
 
-.wporg-meeting-calendar__cell h3 {
-	font-size: 0.8em;
+.wporg-meeting-calendar__cellevent {
+	position: relative;
+	padding: 4px;
+	margin: 4px 0;
+	font-size: 0.65rem;
 	font-weight: normal;
+	background: #0085ba;
+	border-radius: 2px;
+	color: #fff;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.wporg-meeting-calendar__cellevent-team-a {
+	background: #33b150;
+}
+
+.wporg-meeting-calendar__cellevent_title {
+	font-weight: bold;
+	display: block;
 }
 
 .wporg-meeting-calendar__btn-group button {

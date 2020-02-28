@@ -12,6 +12,8 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
 
+	console.log( dayEvents );
+
 	return (
 		<td className="wporg-meeting-calendar__cell">
 			<strong>
@@ -22,9 +24,19 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 			</strong>
 			{ dayEvents.map( ( e ) => {
 				return (
-					<h3 key={ e.instance_id }>
-						{ format( 'g:i a: ', e.datetime ) }
-						{ e.title }
+					<h3
+						key={ e.instance_id }
+						className={ [
+							'wporg-meeting-calendar__cellevent',
+							`wporg-meeting-calendar__cellevent-${ e.team.toLowerCase() }`,
+						].join( ' ' ) }
+					>
+						<span className="wporg-meeting-calendar__cellevent_time">
+							{ format( 'g:i a: ', e.datetime ) }
+						</span>
+						<span className="wporg-meeting-calendar__cellevent_title">
+							{ e.title }
+						</span>
 					</h3>
 				);
 			} ) }
