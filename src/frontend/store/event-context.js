@@ -7,7 +7,7 @@ import { uniqBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import { getSortedEvents } from '../calendar/utils';
+import { getSortedEvents } from './utils';
 
 /**
  * Gets the team name if present in url.
@@ -20,6 +20,8 @@ function getTeamOnLoad() {
 
 /**
  * Add the team to the current URL, pushing to history for browser navigation support.
+ *
+ * @param {string} team
  */
 function setTeamEffect( team = '' ) {
 	if ( '' === team ) {
@@ -47,19 +49,22 @@ export function EventsProvider( { children, value } ) {
 	}
 
 	// Get a list of all teams available.
-	const teams = uniqBy( value.map( ( e ) => ( {
-		label: e.team,
-		value: e.team.toLowerCase(),
-	} ) ), 'value' );
+	const teams = uniqBy(
+		value.map( ( e ) => ( {
+			label: e.team,
+			value: e.team.toLowerCase(),
+		} ) ),
+		'value'
+	);
 
 	const initialState = {
 		events: getSortedEvents( eventsToDisplay ),
 		team,
 		teams,
-		setTeam: ( team ) => {
-			team = team.toLowerCase();
-			setTeam( team );
-			setTeamEffect( team );
+		setTeam: ( newTeam ) => {
+			newTeam = newTeam.toLowerCase();
+			setTeam( newTeam );
+			setTeamEffect( newTeam );
 		},
 	};
 

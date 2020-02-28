@@ -10,7 +10,7 @@ import { Button, SelectControl } from '@wordpress/components';
 import { useEvents } from '../store/event-context';
 
 const Filter = () => {
-	const { events, teams, team, setTeam } = useEvents();
+	const { teams, team, setTeam } = useEvents();
 
 	return (
 		<div className="wporg-meeting-calendar__filter">
