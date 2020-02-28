@@ -91,5 +91,10 @@
 }
 
 .wporg-meeting-calendar__filter {
+	display: flex;
 	margin-bottom: 12px;
+}
+
+.wporg-meeting-calendar__filter p {
+	flex: 1;
 }

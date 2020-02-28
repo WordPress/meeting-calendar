@@ -22,7 +22,11 @@ function getTeamOnLoad() {
  */
 function setTeamEffect( team = '' ) {
 	if ( '' === team ) {
-		window.history.pushState( team, document.title, window.location.pathname );
+		window.history.pushState(
+			team,
+			document.title,
+			window.location.pathname
+		);
 	} else {
 		window.history.pushState( team, document.title, '#' + team );
 	}

@@ -18,8 +18,19 @@ const Filter = () => {
 
 	return (
 		<div className="wporg-meeting-calendar__filter">
-			<Button isLink onClick={ () => void setTeam( '' ) }>
-				{ __( 'Show meetings for other teams', 'wporg' ) }
+			<p>
+				Showing meetings for{ ' ' }
+				<span style={ { textTransform: 'capitalize' } }>
+					{ team } team.
+				</span>
+			</p>
+			<Button
+				icon="no-alt"
+				isLink
+				isDestructive
+				onClick={ () => void setTeam( '' ) }
+			>
+				{ __( 'Remove team filter', 'wporg' ) }
 			</Button>
 		</div>
 	);
