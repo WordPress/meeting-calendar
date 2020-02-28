@@ -294,7 +294,12 @@ class Meeting_Post_Type {
 	}
 
 	public function get_occurrences_for_period( $request ) {
-		$meetings = get_posts( array( 'post_type' => 'meeting', 'numberposts' => -1 ) );
+		$meetings = get_posts( array( 
+			'post_type' => 'meeting',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+			'meta_query' => $this->meeting_meta_query(),
+		) );
 		$out = array();
 		foreach ( $meetings as $meeting ) {
 			$occurrences = $this->get_future_occurrences( $meeting, null, $request );
