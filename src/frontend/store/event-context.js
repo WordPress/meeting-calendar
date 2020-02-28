@@ -21,7 +21,7 @@ export function EventsProvider( { children, value } ) {
 
 	if ( team && team.trim().length ) {
 		eventsToDisplay = value.filter(
-			( e ) => e.meta.team.toLowerCase() === team.toLowerCase()
+			( e ) => e.team.toLowerCase() === team.toLowerCase()
 		);
 	}
 
