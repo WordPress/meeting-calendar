@@ -18,7 +18,8 @@ namespace WordPressdotorg\Meeting_Calendar;
  * @return string List of meetings in JSON format
  */
 function get_meeting_data( $per_page ) {
-	$request = new \WP_REST_Request( 'GET', '/wp/v2/meeting' );
+	$date = date( 'Y-m-d', strtotime( '-1 week' ) );
+	$request = new \WP_REST_Request( 'GET', '/wp/v2/meetings/from/' . $date );
 	$request->set_query_params( [ 'per_page' => $per_page ] );
 	$response = rest_do_request( $request );
 	$server = rest_get_server();
