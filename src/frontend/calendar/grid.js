@@ -3,13 +3,12 @@
  */
 import CalendarCell from './cell';
 import CalendarHeader from './header';
-import { getRows, getSortedEvents } from './utils';
+import { getRows } from './utils';
 import { useEvents } from '../store/event-context';
 
 function CalendarGrid( { month, year } ) {
 	const rows = getRows( year, month );
-	const { events: unsortedEvents } = useEvents();
-	const events = getSortedEvents( unsortedEvents );
+	const { events } = useEvents();
 
 	return (
 		<table>

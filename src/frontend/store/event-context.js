@@ -3,7 +3,10 @@
  */
 import { createContext, useContext, useState } from '@wordpress/element';
 
-const StateContext = createContext();
+/**
+ * Internal dependencies
+ */
+import { getSortedEvents } from '../calendar/utils';
 
 /**
  * Gets the team name if present in url.
@@ -18,6 +21,8 @@ function clearTeamFromUrl() {
 	window.history.pushState( '', document.title, window.location.pathname );
 }
 
+const StateContext = createContext();
+
 export function EventsProvider( { children, value } ) {
 	const [ team, setTeam ] = useState( getTeamOnLoad() );
 
@@ -30,7 +35,7 @@ export function EventsProvider( { children, value } ) {
 	}
 
 	const initialState = {
-		events: eventsToDisplay,
+		events: getSortedEvents( eventsToDisplay ),
 		team,
 		setTeam,
 		clearTeam() {
