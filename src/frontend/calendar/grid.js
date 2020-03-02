@@ -40,6 +40,7 @@ function CalendarGrid( { month, year } ) {
 			{ activeEvent && (
 				<Modal
 					title={ activeEvent.title }
+					overlayClassName="wporg-meeting-calendar__modal-overlay"
 					onRequestClose={ () => void setActiveEvent( null ) }
 				>
 					Time: { format( 'g:i a', activeEvent.datetime ) }
