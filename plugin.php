@@ -9,7 +9,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-namespace WPorg\Meeting_Calendar;
+namespace WordPressdotorg\Meeting_Calendar;
 
 /**
  * Retrieves meetings
@@ -112,7 +112,19 @@ function init() {
 add_action('plugins_loaded', __NAMESPACE__ . '\init');
 
 /**
- * Create some sample data on first install.
+ * Set up the ICS support.
+ */
+function ics_init() {
+	require __DIR__ . '/includes/ical-functions.php';
+	require __DIR__ . '/includes/ical-generator-functions.php';
+
+}
+add_action('plugins_loaded', __NAMESPACE__ . '\ics_init');
+
+/**
+ * First-Install activation hook.
+ *
+ * Creates some sample data, and sets up the Rewrite rules.
  */
 function install() {
 	// We need the CPT to be registered to install.
@@ -122,5 +134,8 @@ function install() {
 
 	require_once( __DIR__ . '/includes/wporg-meeting-install.php' );
 	wporg_meeting_install();
+
+	ics_init();
+	ICS\on_activate();
 }
 register_activation_hook( __FILE__, __NAMESPACE__ . '\install' );
