@@ -14,8 +14,8 @@ import { getSortedEvents } from './utils';
  */
 function getTeamOnLoad() {
 	const { location } = window;
-	const matches = location.href.match( /(?<=#).+/ );
-	return matches ? matches[ 0 ] : '';
+	const matches = location.href.match( /#(.+)/ );
+	return matches ? matches[ 1 ] : '';
 }
 
 /**
