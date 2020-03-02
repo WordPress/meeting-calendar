@@ -11,6 +11,7 @@ import { useState, Fragment } from '@wordpress/element';
  */
 import CalendarGrid from './grid';
 import List from '../list';
+import Filter from '../filter';
 import { useViews } from '../store/view-context';
 
 function Calendar() {
@@ -33,10 +34,14 @@ function Calendar() {
 		<Fragment>
 			<div className="wporg-meeting-calendar__header">
 				<div className="wporg-meeting-calendar__btn-group">
-					<Button onClick={ () => void setDate( currentMonthYear ) }>
+					<Button
+						isSecondary
+						onClick={ () => void setDate( currentMonthYear ) }
+					>
 						{ __( 'Today', 'wporg' ) }
 					</Button>
 					<Button
+						isSecondary
 						onClick={ () =>
 							void setDate( { month: month - 1, year } )
 						}
@@ -44,6 +49,7 @@ function Calendar() {
 						{ __( 'Previous', 'wporg' ) }
 					</Button>
 					<Button
+						isSecondary
 						onClick={ () =>
 							void setDate( { month: month + 1, year } )
 						}
@@ -73,6 +79,7 @@ function Calendar() {
 					</Button>
 				</ButtonGroup>
 			</div>
+			<Filter />
 			{ isCalendarView() && (
 				<CalendarGrid month={ month } year={ year } />
 			) }

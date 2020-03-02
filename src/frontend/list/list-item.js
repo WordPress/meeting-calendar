@@ -3,7 +3,13 @@
  */
 import { format } from '@wordpress/date';
 
+/**
+ * Internal dependencies
+ */
+import { useEvents } from '../store/event-context';
+
 function ListItem( { date, events } ) {
+	const { setTeam } = useEvents();
 
 	return (
 		<li key={ `row-${ date }` }>
@@ -11,28 +17,29 @@ function ListItem( { date, events } ) {
 				<span>{ format( 'l - F j, Y', date ) }</span>
 			</strong>
 
-			{ events.map( ( e ) => {
+			{ events.map( ( event ) => {
 				return (
 					<article
 						className="wporg-meeting-calendar__list-event"
-						key={ e.instance_id }
+						key={ event.instance_id }
 					>
-						<div>{ format( 'g:i a: ', e.datetime ) }</div>
+						<div>{ format( 'g:i a: ', event.datetime ) }</div>
 						<div>
 							<a
 								className="wporg-meeting-calendar__list-event-team"
-								href={ `/${ e.team }` }
+								href={ `#${ event.team.toLowerCase() }` }
+								onClick={ ( clickEvent ) => {
+									clickEvent.preventDefault();
+									setTeam( event.team );
+								} }
 							>
-								{ e.team }
+								{ event.team }
 							</a>
-							<h3
-								className="wporg-meeting-calendar__list-event-title"
-								key={ e.id }
-							>
-								<a href={ e.link }>{ e.title }</a>
+							<h3 className="wporg-meeting-calendar__list-event-title">
+								<a href={ event.link }>{ event.title }</a>
 							</h3>
 							<span className="wporg-meeting-calendar__list-event-subtitle">
-								Location: { e.location }
+								Location: { event.location }
 							</span>
 						</div>
 					</article>
