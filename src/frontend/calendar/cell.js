@@ -3,6 +3,11 @@
  */
 import { format } from '@wordpress/date';
 
+/**
+ * Internal dependencies
+ */
+import MoreEvents from './more-events';
+
 function CalendarCell( { blank = false, year, month, day, events } ) {
 	if ( blank ) {
 		return <td aria-hidden />;
@@ -11,6 +16,7 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 	const date = new Date( year, month, day );
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
+	const maxEventsToDisplay = 3;
 
 	return (
 		<td className="wporg-meeting-calendar__cell">
@@ -20,7 +26,7 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
-			{ dayEvents.map( ( e ) => {
+			{ dayEvents.slice( 0, maxEventsToDisplay ).map( ( e ) => {
 				return (
 					<h3 key={ e.instance_id }>
 						{ format( 'g:i a: ', e.datetime ) }
@@ -28,6 +34,13 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 					</h3>
 				);
 			} ) }
+
+			{ dayEvents.length > maxEventsToDisplay && (
+				<MoreEvents
+					events={ dayEvents.slice( maxEventsToDisplay ) }
+					// @todo Add an onClick that displays the event
+				/>
+			) }
 		</td>
 	);
 }
