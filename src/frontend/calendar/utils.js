@@ -64,3 +64,12 @@ export function getSortedEvents( events ) {
 	} );
 	return sortedEvents;
 }
+
+/**
+ * Get a classname based on team name
+ *
+ * @param {string} team
+ */
+export function getTeamClass( team ) {
+	return team.replace( ' ', '' ).toLowerCase();
+}

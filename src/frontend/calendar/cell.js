@@ -3,6 +3,11 @@
  */
 import { format } from '@wordpress/date';
 
+/**
+ * Internal dependencies
+ */
+import { getTeamClass } from './utils';
+
 function CalendarCell( { blank = false, year, month, day, events } ) {
 	if ( blank ) {
 		return <td aria-hidden />;
@@ -11,8 +16,6 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 	const date = new Date( year, month, day );
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
-
-	console.log( dayEvents );
 
 	return (
 		<td className="wporg-meeting-calendar__cell">
@@ -26,10 +29,9 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				return (
 					<h3
 						key={ e.instance_id }
-						className={ [
-							'wporg-meeting-calendar__cellevent',
-							`wporg-meeting-calendar__cellevent-${ e.team.toLowerCase() }`,
-						].join( ' ' ) }
+						className={ `wporg-meeting-calendar__cellevent wporg-meeting-calendar__cellevent-${ getTeamClass(
+							e.team
+						) }` }
 					>
 						<span className="wporg-meeting-calendar__cellevent_time">
 							{ format( 'g:i a: ', e.datetime ) }
