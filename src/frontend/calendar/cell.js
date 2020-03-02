@@ -26,7 +26,7 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
-			{ dayEvents.map( ( e ) => {
+			{ dayEvents.slice( 0, maxEventsToDisplay ).map( ( e ) => {
 				return (
 					<h3 key={ e.instance_id }>
 						{ format( 'g:i a: ', e.datetime ) }
