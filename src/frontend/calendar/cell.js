@@ -1,13 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { Button } from '@wordpress/components';
+import { _n, sprintf } from '@wordpress/i18n';
+import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { format } from '@wordpress/date';
 
-/**
- * Internal dependencies
- */
-import MoreEvents from './more-events';
+const MAX_EVENTS = 3;
 
 function CalendarCell( {
 	blank = false,
@@ -24,7 +22,7 @@ function CalendarCell( {
 	const date = new Date( year, month, day );
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
-	const maxEventsToDisplay = 3;
+	const restOfEvents = dayEvents.slice( MAX_EVENTS );
 
 	return (
 		<td className="wporg-meeting-calendar__cell">
@@ -34,7 +32,7 @@ function CalendarCell( {
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
-			{ dayEvents.slice( 0, maxEventsToDisplay ).map( ( event ) => {
+			{ dayEvents.slice( 0, MAX_EVENTS ).map( ( event ) => {
 				return (
 					<Button
 						key={ event.instance_id }
@@ -47,10 +45,46 @@ function CalendarCell( {
 				);
 			} ) }
 
-			{ dayEvents.length > maxEventsToDisplay && (
-				<MoreEvents
-					events={ dayEvents.slice( maxEventsToDisplay ) }
-					// @todo Add an onClick that displays the event
+			{ !! restOfEvents.length && (
+				<Dropdown
+					className="wporg-meeting-calendar__dropdown"
+					position="bottom center"
+					renderToggle={ ( { isOpen, onToggle } ) => (
+						<Button
+							isLink
+							onClick={ onToggle }
+							aria-expanded={ isOpen }
+						>
+							{ // translators: %d: Count of hidden events, ie: 4.
+							sprintf(
+								_n(
+									'%d more',
+									'%d more',
+									restOfEvents.length,
+									'wporg'
+								),
+								restOfEvents.length
+							) }
+						</Button>
+					) }
+					renderContent={ () => (
+						<MenuGroup>
+							{ restOfEvents.map( ( event ) => {
+								return (
+									<MenuItem
+										key={ event.instance_id }
+										isSecondary
+										onClick={ () =>
+											void onEventClick( event )
+										}
+									>
+										{ format( 'g:i a: ', event.datetime ) }
+										{ event.title }
+									</MenuItem>
+								);
+							} ) }
+						</MenuGroup>
+					) }
 				/>
 			) }
 		</td>
