@@ -103,10 +103,6 @@ CALSCALE:GREGORIAN
 {$expected_posts}END:VCALENDAR
 EOF;
 
-echo $expected;
-echo "\n\nactual:\n\n";
-echo $ical_feed;
-
 		$this->assertEquals( preg_split('/\r\n|\r|\n/',$expected), preg_split('/\r\n|\r|\n/',$ical_feed) );
 	}
 }
