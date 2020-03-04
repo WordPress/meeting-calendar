@@ -1,4 +1,5 @@
 <?php
+use WordPressdotorg\Meeting_Calendar;
 /**
  * Class MeetingAPI
  *
@@ -21,7 +22,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		do_action( 'rest_api_init' );
 
 		// Install test data
-		$this->meeting_ids = wporg_meeting_install();
+		$this->meeting_ids = Meeting_Calendar\wporg_meeting_install();
 
 		// Make sure the meta keys are registered - setUp/tearDown nukes these
 		Meeting_Post_Type::getInstance()->register_meta();
@@ -41,7 +42,12 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 	public function test_register_route() {
 		$routes = $this->server->get_routes();
+		// Standard route for the CPT
 		$this->assertArrayHasKey( '/wp/v2/meeting', $routes );
+		// Main endpoint for listing events
+		$this->assertArrayHasKey( '/wp/v2/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)', $routes );
+		// Endpoint for cancelling
+		$this->assertArrayHasKey( '/wp/v2/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', $routes );
 	}
 
 	public function test_get_meetings() {
@@ -68,7 +74,8 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( array(),         $meeting['meta']['occurrence'] );
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
-		$this->assertEquals( 5, count( $meeting['future_occurrences'] ) );
+		$this->assertGreaterThanOrEqual( 4, count( $meeting['future_occurrences'] ) );
+		$this->assertLessThanOrEqual( 6, count( $meeting['future_occurrences'] ) );
 		// There should be no duplicates
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
@@ -385,5 +392,65 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( $expected_teams, wp_list_pluck( $meetings, 'team' ) );
 
 	}
+
+	public function test_cancel_meeting_permissions_noauth() {
+
+		$request = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+
+		$request = new WP_REST_Request( 'PUT', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_cancel_meeting_permissions_valid() {
+
+		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $user_id );
+
+		$request = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+
+		$request = new WP_REST_Request( 'PUT', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+	}
+
+	public function test_cancel_meeting_output() {
+		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $user_id );
+
+		// Cancel the meeting on 2020-01-15
+		$request = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+
+		// The feed should show that one meeting as cancelled
+		$request = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+		$meetings = $response->get_data();
+
+		$january_meetings = $this->_january_meetings();
+		$january_meetings[3]['status'] = 'cancelled';
+		$this->assertEquals( $january_meetings, $meetings );
+
+		// Now uncancel it
+		$request = new WP_REST_Request( 'PUT', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+
+		// The feed should be as before
+		$request = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+		$meetings = $response->get_data();
+
+		$january_meetings[3]['status'] = 'active';
+		$this->assertEquals( $january_meetings, $meetings );
+	}
+
 
 }

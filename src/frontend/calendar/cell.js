@@ -1,6 +1,8 @@
 /**
  * WordPress dependencies
  */
+import { _n, sprintf } from '@wordpress/i18n';
+import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { format } from '@wordpress/date';
 
 /**
@@ -8,7 +10,15 @@ import { format } from '@wordpress/date';
  */
 import { getTeamClass } from './utils';
 
-function CalendarCell( { blank = false, year, month, day, events } ) {
+function CalendarCell( {
+	blank = false,
+	year,
+	month,
+	day,
+	events,
+	onEventClick,
+} ) {
+	const MAX_EVENTS = 3;
 	if ( blank ) {
 		return <td aria-hidden />;
 	}
@@ -16,6 +26,7 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 	const date = new Date( year, month, day );
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
+	const restOfEvents = dayEvents.slice( MAX_EVENTS );
 
 	return (
 		<td className="wporg-meeting-calendar__cell">
@@ -25,23 +36,68 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
-			{ dayEvents.map( ( e ) => {
+			{ dayEvents.slice( 0, MAX_EVENTS ).map( ( event ) => {
 				return (
-					<h3
-						key={ e.instance_id }
+					<Button
+						key={ event.instance_id }
+						isLink
+						onClick={ () => void onEventClick( event ) }
 						className={ `wporg-meeting-calendar__cellevent wporg-meeting-calendar__cellevent-${ getTeamClass(
-							e.team
+							event.team
 						) }` }
 					>
-						<span className="wporg-meeting-calendar__cellevent_time">
-							{ format( 'g:i a: ', e.datetime ) }
-						</span>
-						<span className="wporg-meeting-calendar__cellevent_title">
-							{ e.title }
-						</span>
-					</h3>
+						<div className="wporg-meeting-calendar__cellevent_time">
+							{ format( 'g:i a: ', event.datetime ) }
+						</div>
+						<div className="wporg-meeting-calendar__cellevent_title">
+							{ event.title }
+						</div>
+					</Button>
 				);
 			} ) }
+
+			{ !! restOfEvents.length && (
+				<Dropdown
+					className="wporg-meeting-calendar__dropdown"
+					position="bottom center"
+					renderToggle={ ( { isOpen, onToggle } ) => (
+						<Button
+							isLink
+							onClick={ onToggle }
+							aria-expanded={ isOpen }
+						>
+							{ // translators: %d: Count of hidden events, ie: 4.
+							sprintf(
+								_n(
+									'%d more',
+									'%d more',
+									restOfEvents.length,
+									'wporg'
+								),
+								restOfEvents.length
+							) }
+						</Button>
+					) }
+					renderContent={ () => (
+						<MenuGroup>
+							{ restOfEvents.map( ( event ) => {
+								return (
+									<MenuItem
+										key={ event.instance_id }
+										isSecondary
+										onClick={ () =>
+											void onEventClick( event )
+										}
+									>
+										{ format( 'g:i a: ', event.datetime ) }
+										{ event.title }
+									</MenuItem>
+								);
+							} ) }
+						</MenuGroup>
+					) }
+				/>
+			) }
 		</td>
 	);
 }

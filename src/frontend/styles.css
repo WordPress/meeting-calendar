@@ -42,22 +42,29 @@
 	background: #ddd;
 }
 
-.wporg-meeting-calendar__cellevent {
+.wporg-meeting-calendar__cellevent.is-link {
+	display: block;
 	position: relative;
 	padding: 4px;
 	margin: 4px 0;
-	font-size: 0.65rem;
+	font-size: 0.5rem;
 	font-weight: normal;
 	background: #0085ba;
 	border-radius: 2px;
 	color: #fff;
-	white-space: nowrap;
-	overflow: hidden;
+	text-decoration: none;
+	width: 100%;
+}
+
+.wporg-meeting-calendar__cellevent_time {
+	font-weight: normal;
 }
 
 .wporg-meeting-calendar__cellevent_title {
 	font-weight: bold;
 	display: block;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .wporg-meeting-calendar__btn-group button {
@@ -101,7 +108,7 @@
 	border-radius: 4px;
 	text-decoration: none !important;
 	background: DodgerBlue;
-	color: #fff;
+	color: #fff !important;
 	display: inline-block;
 	font-family: sans-serif;
 }
@@ -122,89 +129,103 @@
 /** Colors for each team */
 .wporg-meeting-calendar__cellevent-core,
 .wporg-meeting-calendar__list-event-team-core {
-	background: #cd0000;
+	background: #cd0000 !important;
 }
 .wporg-meeting-calendar__cellevent-design,
 .wporg-meeting-calendar__list-event-team-design {
-	background: #eec26a;
+	background: #eec26a !important;
 }
 .wporg-meeting-calendar__cellevent-mobile,
 .wporg-meeting-calendar__list-event-team-mobile {
-	background: #fba16c;
+	background: #fba16c !important;
 }
 .wporg-meeting-calendar__cellevent-accessibility,
 .wporg-meeting-calendar__list-event-team-accessibility {
-	background: #11799d;
+	background: #11799d !important;
 }
 .wporg-meeting-calendar__cellevent-polyglots,
 .wporg-meeting-calendar__list-event-team-polyglots {
-	background: #c32283;
+	background: #c32283 !important;
 }
 .wporg-meeting-calendar__cellevent-support,
 .wporg-meeting-calendar__list-event-team-support {
-	background: #33b4ce;
+	background: #33b4ce !important;
 }
 .wporg-meeting-calendar__cellevent-documentation,
 .wporg-meeting-calendar__list-event-team-documentation {
-	background: #3b7236;
+	background: #3b7236 !important;
 }
 .wporg-meeting-calendar__cellevent-themes,
 .wporg-meeting-calendar__list-event-team-themes {
-	background: #4e3288;
+	background: #4e3288 !important;
 }
 .wporg-meeting-calendar__cellevent-plugins,
 .wporg-meeting-calendar__list-event-team-plugins {
-	background: #f06723;
+	background: #f06723 !important;
 }
 .wporg-meeting-calendar__cellevent-community,
 .wporg-meeting-calendar__list-event-team-community {
-	background: #11799d;
+	background: #11799d !important;
 }
 .wporg-meeting-calendar__cellevent-meetup_organizer,
 .wporg-meeting-calendar__list-event-team-meetup_organizer {
-	background: #f7ad43;
+	background: #f7ad43 !important;
 }
 .wporg-meeting-calendar__cellevent-wordcamp_organizer,
 .wporg-meeting-calendar__list-event-team-wordcamp_organizer {
-	background: #f7ad43;
+	background: #f7ad43 !important;
 }
 .wporg-meeting-calendar__cellevent-wordcamp_speaker,
 .wporg-meeting-calendar__list-event-team-wordcamp_speaker {
-	background: #f7ad43;
+	background: #f7ad43 !important;
 }
 .wporg-meeting-calendar__cellevent-meta,
 .wporg-meeting-calendar__list-event-team-meta {
-	background: #aeadad;
+	background: #aeadad !important;
 }
 .wporg-meeting-calendar__cellevent-training,
 .wporg-meeting-calendar__list-event-team-training {
-	background: #e9c02d;
+	background: #e9c02d !important;
 }
 .wporg-meeting-calendar__cellevent-wordpress.tv,
 .wporg-meeting-calendar__list-event-team-tv {
-	background: #73ad30;
+	background: #73ad30 !important;
 }
 .wporg-meeting-calendar__cellevent-marketing,
 .wporg-meeting-calendar__list-event-team-marketing {
-	background: #47bea7;
+	background: #47bea7 !important;
 }
 .wporg-meeting-calendar__cellevent-cli,
 .wporg-meeting-calendar__list-event-team-cli {
-	background: #424242;
+	background: #424242 !important;
 }
 .wporg-meeting-calendar__cellevent-hosting,
 .wporg-meeting-calendar__list-event-team-hosting {
-	background: #5358a6;
+	background: #5358a6 !important;
 }
 .wporg-meeting-calendar__cellevent-tide,
 .wporg-meeting-calendar__list-event-team-tide {
-	background: #1526ff;
+	background: #1526ff !important;
 }
 .wporg-meeting-calendar__cellevent-bbpress,
 .wporg-meeting-calendar__list-event-team-bbpress {
-	background: #2d8e42;
+	background: #2d8e42 !important;
 }
 .wporg-meeting-calendar__cellevent-buddypress,
 .wporg-meeting-calendar__list-event-team-buddypress {
-	background: #d84800;
+	background: #d84800 !important;
+}
+.wporg-meeting-calendar__filter {
+	display: flex;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.wporg-meeting-calendar__filter p {
+	flex: 1;
+	margin: 0 1em;
+}
+
+.wporg-meeting-calendar__modal-overlay {
+	z-index: 1000001; /* popover z-index + 1 */
 }

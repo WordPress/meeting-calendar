@@ -7,13 +7,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getRows, getSortedEvents } from '../calendar/utils';
+import { getRows } from '../calendar/utils';
 import { useEvents } from '../store/event-context';
 import ListItem from './list-item';
 
 function List( { month, year } ) {
 	const rows = getRows( year, month );
-	const events = getSortedEvents( useEvents() );
+	const { events } = useEvents();
 	const allDays = rows.flat().filter( ( i ) => ! i.blank );
 
 	const days = allDays

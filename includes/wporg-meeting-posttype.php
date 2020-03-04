@@ -293,8 +293,18 @@ class Meeting_Post_Type {
 		);	
 	}
 
+	public function is_meeting_cancelled( $meeting_id, $date ) {
+		// Note: this assumes the meeting does occur on $date
+		$cancellations = get_post_meta( $meeting_id, 'meeting_cancelled', false );
+		return in_array( $date, $cancellations, true );
+	}
+
 	public function get_occurrences_for_period( $request ) {
-		$meetings = get_posts( array( 'post_type' => 'meeting', 'numberposts' => -1 ) );
+		$meetings = get_posts( array( 
+			'post_type' => 'meeting',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+		) );
 		$out = array();
 		foreach ( $meetings as $meeting ) {
 			$occurrences = $this->get_future_occurrences( $meeting, null, $request );
@@ -311,7 +321,7 @@ class Meeting_Post_Type {
 					'location'    => $meeting->location,
 					'recurring'   => $meeting->recurring,
 					'occurrence'  => $meeting->occurrence,
-					'status'      => 'active', // TODO: support 'cancelled'
+					'status'      => ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? 'cancelled' : 'active' ),
 				);
 			}
 		}
@@ -328,6 +338,31 @@ class Meeting_Post_Type {
 			'callback' => array( $this, 'get_occurrences_for_period')
 			)
 		);
+		register_rest_route( 'wp/v2/meetings', '/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', array(
+			array(
+				'methods' => 'DELETE',
+				'callback' => array( $this, 'cancel_meeting'),
+				'permission_callback' => array( $this, 'can_cancel_meeting' ),
+			),
+			array(
+				'methods' => 'PUT',
+				'callback' => array( $this, 'uncancel_meeting'),
+				'permission_callback' => array( $this, 'can_cancel_meeting' ),
+			)
+		) );
+	}
+
+	public function cancel_meeting( $request ) {
+		// TODO: should validate that the meeting does occur on the given date
+		return add_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'], false );
+	}
+
+	public function uncancel_meeting( $request ) {
+		return delete_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'] );
+	}
+
+	public function can_cancel_meeting( $request ) {
+		return current_user_can( 'edit_post', $request['meeting_id'] );
 	}
 
 	public function get_future_occurrences( $meeting, $attr, $request ) {
