@@ -12,6 +12,7 @@ import CalendarCell from './cell';
 import CalendarHeader from './header';
 import { getFrequencyLabel, getRows, getSlackLink } from './utils';
 import { useEvents } from '../store/event-context';
+import Container from '../container';
 
 function CalendarGrid( { month, year } ) {
 	const [ activeEvent, setActiveEvent ] = useState( null );
@@ -24,7 +25,12 @@ function CalendarGrid( { month, year } ) {
 				<CalendarHeader />
 				<tbody>
 					{ rows.map( ( row, i ) => (
-						<tr key={ `row-${ i }` }>
+						<Container
+							as="tr"
+							display={ [ 'flex', 'table-row' ] }
+							flexDirection={ [ 'column', 'row' ] }
+							key={ `row-${ i }` }
+						>
 							{ row.map( ( day, index ) => (
 								<CalendarCell
 									key={ `cell-${ i }-${ index }` }
@@ -33,7 +39,7 @@ function CalendarGrid( { month, year } ) {
 									onEventClick={ setActiveEvent }
 								/>
 							) ) }
-						</tr>
+						</Container>
 					) ) }
 				</tbody>
 			</table>

@@ -8,12 +8,17 @@ import { Button, SelectControl } from '@wordpress/components';
  * Internal dependencies
  */
 import { useEvents } from '../store/event-context';
+import Container from '../container';
 
 const Filter = () => {
 	const { teams, team, setTeam } = useEvents();
 
 	return (
-		<div className="wporg-meeting-calendar__filter">
+		<Container
+			as="div"
+			className="wporg-meeting-calendar__filter"
+			flexDirection={ [ 'column', 'row' ] }
+		>
 			<SelectControl
 				label={ __( 'Filter by team', 'wporg' ) }
 				value={ team }
@@ -43,7 +48,7 @@ const Filter = () => {
 					</Button>
 				</>
 			) }
-		</div>
+		</Container>
 	);
 };
 

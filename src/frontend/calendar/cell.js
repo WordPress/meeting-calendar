@@ -5,6 +5,11 @@ import { _n, sprintf } from '@wordpress/i18n';
 import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { format } from '@wordpress/date';
 
+/**
+ * Internal dependencies
+ */
+import Container from '../container';
+
 const MAX_EVENTS = 3;
 
 function CalendarCell( {
@@ -16,7 +21,13 @@ function CalendarCell( {
 	onEventClick,
 } ) {
 	if ( blank ) {
-		return <td aria-hidden />;
+		return (
+			<Container
+				as="td"
+				display={ [ 'none', 'table-cell' ] }
+				aria-hidden
+			/>
+		);
 	}
 
 	const date = new Date( year, month, day );
@@ -25,7 +36,12 @@ function CalendarCell( {
 	const restOfEvents = dayEvents.slice( MAX_EVENTS );
 
 	return (
-		<td className="wporg-meeting-calendar__cell">
+		<Container
+			as="td"
+			display={ [ 'flex', 'table-cell' ] }
+			flexDirection={ [ 'column' ] }
+			className="wporg-meeting-calendar__cell"
+		>
 			<strong>
 				<span className="screen-reader-text">
 					{ format( 'F j', date ) }
@@ -87,7 +103,7 @@ function CalendarCell( {
 					) }
 				/>
 			) }
-		</td>
+		</Container>
 	);
 }
 

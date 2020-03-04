@@ -13,6 +13,7 @@ import CalendarGrid from './grid';
 import List from '../list';
 import Filter from '../filter';
 import { useViews } from '../store/view-context';
+import Container from '../container';
 
 function Calendar() {
 	const today = new Date();
@@ -32,7 +33,12 @@ function Calendar() {
 
 	return (
 		<Fragment>
-			<div className="wporg-meeting-calendar__header">
+			<Container
+				as="div"
+				display={ [ 'flex' ] }
+				flexDirection={ [ 'column', 'row' ] }
+				className="wporg-meeting-calendar__header"
+			>
 				<div className="wporg-meeting-calendar__btn-group">
 					<Button
 						isSecondary
@@ -62,7 +68,7 @@ function Calendar() {
 						{ date( 'F Y', new Date( year, month, 1 ) ) }
 					</h2>
 				</div>
-				<ButtonGroup>
+				<Container margin={ [ '0 0 1rem 0', '0' ] } as={ ButtonGroup }>
 					<Button
 						isSecondary={ ! isCalendarView() }
 						isPrimary={ isCalendarView() }
@@ -77,8 +83,8 @@ function Calendar() {
 					>
 						{ __( 'List', 'wporg' ) }
 					</Button>
-				</ButtonGroup>
-			</div>
+				</Container>
+			</Container>
 			<Filter />
 			{ isCalendarView() && (
 				<CalendarGrid month={ month } year={ year } />
