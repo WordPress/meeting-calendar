@@ -11,12 +11,20 @@ import { useEvents } from '../store/event-context';
 
 const Filter = () => {
 	const { teams, team, setTeam } = useEvents();
+	const ddId = 'dropDownID';
 
 	return (
 		<div className="wporg-meeting-calendar__filter">
+			<label
+				className="wporg-meeting-calendar__filter_label"
+				htmlFor={ ddId }
+			>
+				{ __( 'Filter by team: ', 'wporg' ) }
+			</label>
 			<SelectControl
-				label={ __( 'Filter by team', 'wporg' ) }
+				id={ ddId }
 				value={ team }
+				className="wporg-meeting-calendar__filter_dropdown"
 				options={ [
 					{ label: __( 'All teams', 'wporg' ), value: '' },
 					...teams,
@@ -27,7 +35,7 @@ const Filter = () => {
 			/>
 			{ '' !== team && (
 				<>
-					<p>
+					<p className="wporg-meeting-calendar__filter_applied">
 						Showing meetings for{ ' ' }
 						<span style={ { textTransform: 'capitalize' } }>
 							{ team } team.
