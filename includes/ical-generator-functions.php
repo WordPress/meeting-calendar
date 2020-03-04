@@ -93,7 +93,11 @@ function generate_event( $post ) {
 
 		if ( $cancelled = get_post_meta( $post->ID, 'meeting_cancelled', false ) ) {
 			foreach ( $cancelled as $i => $cancelled_date ) {
-				$cancelled[ $i ] = strftime( '%Y%m%d', strtotime( $cancelled_date ) );
+				$exdate = strtotime( $cancelled_date );
+				// Only list cancelled dates that are valid and in the future or recent past
+				if ( $exdate >= strtotime( 'yesterday' ) ) {
+					$cancelled[ $i ] = strftime( '%Y%m%d', $exdate );
+				}
 			}
 			$event .= "EXDATE:" . implode( ',', $cancelled ) . NEWLINE;
 		}
