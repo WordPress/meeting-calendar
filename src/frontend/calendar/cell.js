@@ -1,14 +1,20 @@
 /**
  * WordPress dependencies
  */
+import { _n, sprintf } from '@wordpress/i18n';
+import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { format } from '@wordpress/date';
 
-/**
- * Internal dependencies
- */
-import MoreEvents from './more-events';
+const MAX_EVENTS = 3;
 
-function CalendarCell( { blank = false, year, month, day, events } ) {
+function CalendarCell( {
+	blank = false,
+	year,
+	month,
+	day,
+	events,
+	onEventClick,
+} ) {
 	if ( blank ) {
 		return <td aria-hidden />;
 	}
@@ -16,7 +22,7 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 	const date = new Date( year, month, day );
 	const key = format( 'Y-m-d', date );
 	const dayEvents = events[ key ] || [];
-	const maxEventsToDisplay = 3;
+	const restOfEvents = dayEvents.slice( MAX_EVENTS );
 
 	return (
 		<td className="wporg-meeting-calendar__cell">
@@ -26,19 +32,59 @@ function CalendarCell( { blank = false, year, month, day, events } ) {
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
-			{ dayEvents.slice( 0, maxEventsToDisplay ).map( ( e ) => {
+			{ dayEvents.slice( 0, MAX_EVENTS ).map( ( event ) => {
 				return (
-					<h3 key={ e.instance_id }>
-						{ format( 'g:i a: ', e.datetime ) }
-						{ e.title }
-					</h3>
+					<Button
+						key={ event.instance_id }
+						isLink
+						onClick={ () => void onEventClick( event ) }
+					>
+						{ format( 'g:i a: ', event.datetime ) }
+						{ event.title }
+					</Button>
 				);
 			} ) }
 
-			{ dayEvents.length > maxEventsToDisplay && (
-				<MoreEvents
-					events={ dayEvents.slice( maxEventsToDisplay ) }
-					// @todo Add an onClick that displays the event
+			{ !! restOfEvents.length && (
+				<Dropdown
+					className="wporg-meeting-calendar__dropdown"
+					position="bottom center"
+					renderToggle={ ( { isOpen, onToggle } ) => (
+						<Button
+							isLink
+							onClick={ onToggle }
+							aria-expanded={ isOpen }
+						>
+							{ // translators: %d: Count of hidden events, ie: 4.
+							sprintf(
+								_n(
+									'%d more',
+									'%d more',
+									restOfEvents.length,
+									'wporg'
+								),
+								restOfEvents.length
+							) }
+						</Button>
+					) }
+					renderContent={ () => (
+						<MenuGroup>
+							{ restOfEvents.map( ( event ) => {
+								return (
+									<MenuItem
+										key={ event.instance_id }
+										isSecondary
+										onClick={ () =>
+											void onEventClick( event )
+										}
+									>
+										{ format( 'g:i a: ', event.datetime ) }
+										{ event.title }
+									</MenuItem>
+								);
+							} ) }
+						</MenuGroup>
+					) }
 				/>
 			) }
 		</td>

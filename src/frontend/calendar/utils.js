@@ -1,3 +1,9 @@
+/**
+ * WordPress dependencies
+ */
+import { __, sprintf } from '@wordpress/i18n';
+import { format } from '@wordpress/date';
+
 // Default value for days not in this month.
 const emptyDate = {
 	blank: true,
@@ -40,4 +46,67 @@ export function getRows( year, month ) {
 	}
 
 	return rows;
+}
+
+/**
+ * Get human-friendly reccurance string.
+ *
+ * @param {Object} event
+ */
+export function getFrequencyLabel( event ) {
+	const occurrences = {
+		1: __( '1st', 'wporg' ),
+		2: __( '2nd', 'wporg' ),
+		3: __( '3rd', 'wporg' ),
+		4: __( '4th', 'wporg' ),
+	};
+	const dayOfWeek = format( 'l', event.datetime );
+
+	switch ( event.recurring ) {
+		case 'weekly':
+			return sprintf( __( 'Every week on %s', 'wporg' ), dayOfWeek );
+
+		case 'biweekly':
+			return sprintf(
+				__( 'Every other week on %s', 'wporg' ),
+				dayOfWeek
+			);
+
+		case 'monthly':
+			return __( 'Every month', 'wporg' );
+
+		case 'occurrence':
+			if ( event.occurrence.length ) {
+				return sprintf(
+					__( 'Every month on the %s %s', 'wporg' ),
+					event.occurrence
+						.map( ( o ) => occurrences[ o ] )
+						.join( ', ' ),
+					dayOfWeek
+				);
+			}
+			return '';
+
+		default:
+			return __( 'Does not repeat', 'wporg' );
+	}
+}
+
+/**
+ * Get link to the slack channel.
+ *
+ * @param {string} location
+ */
+export function getSlackLink( location ) {
+	if ( location[ 0 ] === '#' ) {
+		location = location.slice( 1 );
+	}
+
+	return (
+		<a
+			href={ `https://wordpress.slack.com/app_redirect?channel=${ location }` }
+		>
+			#{ location }
+		</a>
+	);
 }

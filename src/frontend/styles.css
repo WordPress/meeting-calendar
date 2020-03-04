@@ -100,3 +100,7 @@
 	flex: 1;
 	margin: 0 1em;
 }
+
+.wporg-meeting-calendar__modal-overlay {
+	z-index: 1000001; /* popover z-index + 1 */
+}
