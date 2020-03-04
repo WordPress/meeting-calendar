@@ -112,6 +112,11 @@
 	display: inline-block;
 	font-family: sans-serif;
 }
+.wporg-meeting-calendar__list-event-team:focus {
+	background: #fff;
+	color: #000 !important;
+	box-shadow: 0 0 0 1px #000;
+}
 
 .wporg-meeting-calendar__list-event-team:hover {
 	color: #fff;
