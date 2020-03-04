@@ -8,9 +8,13 @@ const StateContext = createContext();
 const CALENDAR_VIEW = 'calendar_view';
 const LIST_VIEW = 'list_view';
 
-export function ViewProvider( { children } ) {
+export function ViewProvider( { children, value: { isMobileOnLoad } } ) {
 	return (
-		<StateContext.Provider value={ null }>
+		<StateContext.Provider
+			value={ {
+				defaultState: isMobileOnLoad ? LIST_VIEW : CALENDAR_VIEW,
+			} }
+		>
 			{ children }
 		</StateContext.Provider>
 	);
@@ -19,11 +23,12 @@ export function ViewProvider( { children } ) {
 export function useViews() {
 	const context = useContext( StateContext );
 	const isView = ( toMatch ) => currentView === toMatch;
-	const [ currentView, setView ] = useState( CALENDAR_VIEW );
+	const [ currentView, setView ] = useState( context.defaultState );
 
 	if ( context === undefined ) {
 		throw new Error( 'useViews must be used within a Provider' );
 	}
+
 	return {
 		isCalendarView: () => isView( CALENDAR_VIEW ),
 		isListView: () => isView( LIST_VIEW ),
