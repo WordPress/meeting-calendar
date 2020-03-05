@@ -6,6 +6,7 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
+import { getTeamClass } from '../calendar/utils';
 import { useEvents } from '../store/event-context';
 
 function ListItem( { date, events } ) {
@@ -26,7 +27,10 @@ function ListItem( { date, events } ) {
 						<div>{ format( 'g:i a: ', event.datetime ) }</div>
 						<div>
 							<a
-								className="wporg-meeting-calendar__list-event-team"
+								className={
+									'wporg-meeting-calendar__list-event-team ' +
+									getTeamClass( event.team )
+								}
 								href={ `#${ event.team.toLowerCase() }` }
 								onClick={ ( clickEvent ) => {
 									clickEvent.preventDefault();

@@ -91,9 +91,16 @@ function generate_event( $post ) {
 	if ( ! is_null( $frequency ) ) {
 		$event .= "RRULE:FREQ={$frequency}" . NEWLINE;
 
-		/* if ( Some dates are cancelled ) {
-			$event .= "EXDATE:date,date,date" . NEWLINE;
-		} */
+		if ( $cancelled = get_post_meta( $post->ID, 'meeting_cancelled', false ) ) {
+			foreach ( $cancelled as $i => $cancelled_date ) {
+				$exdate = strtotime( $cancelled_date );
+				// Only list cancelled dates that are valid and in the future or recent past
+				if ( $exdate >= strtotime( 'yesterday' ) ) {
+					$cancelled[ $i ] = strftime( '%Y%m%d', $exdate );
+				}
+			}
+			$event .= "EXDATE:" . implode( ',', $cancelled ) . NEWLINE;
+		}
 	}
 
 	$event .= 'END:VEVENT' . NEWLINE;

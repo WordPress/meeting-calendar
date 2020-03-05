@@ -87,7 +87,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 			$dt = new DateTime( $future_date );
 			// It should be in the future
-			$this->assertGreaterThanOrEqual( new DateTime(), $dt );
+			$this->assertGreaterThanOrEqual( new DateTime( 'yesterday' ), $dt );
 			// Day of week should be Wednesday, same as the original
 			$this->assertEquals( 3, $dt->format( 'N' ) );
 

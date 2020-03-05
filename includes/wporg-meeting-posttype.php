@@ -388,7 +388,7 @@ class Meeting_Post_Type {
 				$occurrences[] = $next;
 				$from = new DateTime( "{$next} {$meeting->time}" );
 			}
-		} while ( --$max > 0 && $next && $from && $from < $end );
+		} while ( --$max > 0 && $next && $from && $from < $end && $meeting->recurring );
 
 		return $occurrences;
 	}
