@@ -27,9 +27,10 @@ function ListItem( { date, events } ) {
 						<div>{ format( 'g:i a: ', event.datetime ) }</div>
 						<div>
 							<a
-								className={ `wporg-meeting-calendar__list-event-team wporg-meeting-calendar__list-event-team-${ getTeamClass(
-									event.team
-								) }` }
+								className={
+									'wporg-meeting-calendar__list-event-team ' +
+									getTeamClass( event.team )
+								}
 								href={ `#${ event.team.toLowerCase() }` }
 								onClick={ ( clickEvent ) => {
 									clickEvent.preventDefault();

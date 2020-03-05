@@ -42,14 +42,15 @@ function CalendarCell( {
 						key={ event.instance_id }
 						isLink
 						onClick={ () => void onEventClick( event ) }
-						className={ `wporg-meeting-calendar__cellevent wporg-meeting-calendar__cellevent-${ getTeamClass(
-							event.team
-						) }` }
+						className={
+							'wporg-meeting-calendar__cell-event ' +
+							getTeamClass( event.team )
+						}
 					>
-						<div className="wporg-meeting-calendar__cellevent_time">
+						<div className="wporg-meeting-calendar__cell-event-time">
 							{ format( 'g:i a: ', event.datetime ) }
 						</div>
-						<div className="wporg-meeting-calendar__cellevent_title">
+						<div className="wporg-meeting-calendar__cell-event-title">
 							{ event.title }
 						</div>
 					</Button>
@@ -84,9 +85,13 @@ function CalendarCell( {
 								return (
 									<MenuItem
 										key={ event.instance_id }
-										isSecondary
+										isLink
 										onClick={ () =>
 											void onEventClick( event )
+										}
+										className={
+											'wporg-meeting-calendar__cell-event ' +
+											getTeamClass( event.team )
 										}
 									>
 										{ format( 'g:i a: ', event.datetime ) }

@@ -117,5 +117,8 @@ export function getSlackLink( location ) {
  * @param {string} team
  */
 export function getTeamClass( team ) {
-	return team.replace( ' ', '' ).toLowerCase();
+	return (
+		'wporg-meeting-calendar__team-' +
+		team.replace( [ ' ', '.' ], '-' ).toLowerCase()
+	);
 }
