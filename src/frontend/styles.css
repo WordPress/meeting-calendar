@@ -198,6 +198,19 @@
 .wporg-meeting-calendar__team-buddypress {
 	background: #d84800 !important;
 }
+.wporg-meeting-calendar__team-design,
+.wporg-meeting-calendar__team-mobile,
+.wporg-meeting-calendar__team-support,
+.wporg-meeting-calendar__team-plugins,
+.wporg-meeting-calendar__team-meta,
+.wporg-meeting-calendar__team-training,
+.wporg-meeting-calendar__team-tv,
+.wporg-meeting-calendar__team-marketing,
+.wporg-meeting-calendar__team-bbpress,
+.wporg-meeting-calendar__team-buddypress {
+	color: #000 !important;
+}
+
 .wporg-meeting-calendar__filter {
 	display: flex;
 	align-items: center;
