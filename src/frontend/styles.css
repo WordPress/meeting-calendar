@@ -98,6 +98,10 @@
 	list-style: none;
 }
 
+.wporg-meeting-calendar__list li {
+	margin-left: 0;
+}
+
 .wporg-meeting-calendar__list-title {
 	padding: 6px 12px;
 	display: block;
