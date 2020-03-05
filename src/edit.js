@@ -8,7 +8,12 @@ const EditView = ( { className } ) => {
 	return (
 		<div className={ className }>
 			<Icon icon="calendar" />
-			<h6>{ __( 'Meeting Calendar', 'wporg' ) }</h6>
+			<p>
+				{ __(
+					'Go to "Meetings" to add or edit your meetings',
+					'wporg'
+				) }
+			</p>
 		</div>
 	);
 };
