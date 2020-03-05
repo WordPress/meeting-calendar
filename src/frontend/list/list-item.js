@@ -1,12 +1,17 @@
 /**
  * WordPress dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { format } from '@wordpress/date';
 
 /**
  * Internal dependencies
  */
-import { getTeamClass } from '../calendar/utils';
+import {
+	getTeamClass,
+	getSlackLink,
+	getFrequencyLabel,
+} from '../calendar/utils';
 import { useEvents } from '../store/event-context';
 
 function ListItem( { date, events } ) {
@@ -42,9 +47,14 @@ function ListItem( { date, events } ) {
 							<h3 className="wporg-meeting-calendar__list-event-title">
 								<a href={ event.link }>{ event.title }</a>
 							</h3>
-							<span className="wporg-meeting-calendar__list-event-subtitle">
-								Location: { event.location }
-							</span>
+							<p className="wporg-meeting-calendar__list-event-copy">
+								{ __( 'Meets: ', 'wporg' ) }
+								{ getFrequencyLabel( event ) }
+							</p>
+							<p className="wporg-meeting-calendar__list-event-copy">
+								{ __( 'Location: ', 'wporg' ) }
+								{ getSlackLink( event.location ) }
+							</p>
 						</div>
 					</article>
 				);
