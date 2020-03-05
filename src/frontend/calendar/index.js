@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, ButtonGroup } from '@wordpress/components';
 import { date } from '@wordpress/date';
 import { useState, Fragment } from '@wordpress/element';
+import { withViewportMatch } from '@wordpress/viewport';
 
 /**
  * Internal dependencies
@@ -14,7 +15,7 @@ import List from '../list';
 import Filter from '../filter';
 import { useViews } from '../store/view-context';
 
-function Calendar() {
+function Calendar( { shouldForceListView } ) {
 	const today = new Date();
 	const currentMonth = today.getMonth();
 	const currentYear = today.getFullYear();
@@ -29,6 +30,9 @@ function Calendar() {
 		setCalendarView,
 		setListView,
 	} = useViews();
+	if ( shouldForceListView && ! isListView() ) {
+		setListView();
+	}
 
 	return (
 		<Fragment>
@@ -63,6 +67,7 @@ function Calendar() {
 						isSecondary={ ! isCalendarView() }
 						isPrimary={ isCalendarView() }
 						onClick={ () => void setCalendarView() }
+						disabled={ shouldForceListView }
 					>
 						{ __( 'Month', 'wporg' ) }
 					</Button>
@@ -70,6 +75,7 @@ function Calendar() {
 						isSecondary={ ! isListView() }
 						isPrimary={ isListView() }
 						onClick={ () => void setListView() }
+						disabled={ shouldForceListView }
 					>
 						{ __( 'List', 'wporg' ) }
 					</Button>
@@ -84,4 +90,6 @@ function Calendar() {
 	);
 }
 
-export default Calendar;
+export default withViewportMatch( { shouldForceListView: '< medium' } )(
+	Calendar
+);
