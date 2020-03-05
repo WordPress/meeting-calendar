@@ -4,6 +4,7 @@
 
 .wporg-block-meeting-calendar table {
 	table-layout: fixed;
+	margin-top: 0; /* There is a global style that is adding a bottom margin to tables */
 	margin-bottom: 0; /* There is a global style that is adding a bottom margin to tables */
 	width: 100%;
 }
@@ -218,16 +219,29 @@
 	display: flex;
 	align-items: center;
 	margin-bottom: 12px;
+	font-size: 16px;
 }
 
-.wporg-meeting-calendar__filter p {
+.wporg-meeting-calendar__filter-label {
+	padding-right: 6px;
+	margin-bottom: 0;
+}
+
+.wporg-meeting-calendar__filter-applied {
 	flex: 1;
+	font-size: 16px;
 	margin: 0 1em;
+}
+
+/** Overwriting a default rule on the dropdown container */
+.wporg-meeting-calendar__filter-dropdown > div {
+	margin-bottom: 0 !important;
 }
 
 .wporg-meeting-calendar__modal h1 {
 	font-size: 16px !important;
 }
+
 .wporg-meeting-calendar__modal h1::before {
 	display: none !important;
 }
