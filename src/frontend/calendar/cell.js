@@ -5,7 +5,10 @@ import { _n, sprintf } from '@wordpress/i18n';
 import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { format } from '@wordpress/date';
 
-const MAX_EVENTS = 3;
+/**
+ * Internal dependencies
+ */
+import { getTeamClass } from './utils';
 
 function CalendarCell( {
 	blank = false,
@@ -15,6 +18,7 @@ function CalendarCell( {
 	events,
 	onEventClick,
 } ) {
+	const MAX_EVENTS = 3;
 	if ( blank ) {
 		return <td aria-hidden />;
 	}
@@ -38,9 +42,17 @@ function CalendarCell( {
 						key={ event.instance_id }
 						isLink
 						onClick={ () => void onEventClick( event ) }
+						className={
+							'wporg-meeting-calendar__cell-event ' +
+							getTeamClass( event.team )
+						}
 					>
-						{ format( 'g:i a: ', event.datetime ) }
-						{ event.title }
+						<div className="wporg-meeting-calendar__cell-event-time">
+							{ format( 'g:i a: ', event.datetime ) }
+						</div>
+						<div className="wporg-meeting-calendar__cell-event-title">
+							{ event.title }
+						</div>
 					</Button>
 				);
 			} ) }
@@ -73,9 +85,13 @@ function CalendarCell( {
 								return (
 									<MenuItem
 										key={ event.instance_id }
-										isSecondary
+										isLink
 										onClick={ () =>
 											void onEventClick( event )
+										}
+										className={
+											'wporg-meeting-calendar__cell-event ' +
+											getTeamClass( event.team )
 										}
 									>
 										{ format( 'g:i a: ', event.datetime ) }

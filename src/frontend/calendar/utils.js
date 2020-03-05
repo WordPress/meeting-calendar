@@ -110,3 +110,15 @@ export function getSlackLink( location ) {
 		</a>
 	);
 }
+
+/**
+ * Get a classname based on team name
+ *
+ * @param {string} team
+ */
+export function getTeamClass( team ) {
+	return (
+		'wporg-meeting-calendar__team-' +
+		team.replace( [ ' ', '.' ], '-' ).toLowerCase()
+	);
+}
