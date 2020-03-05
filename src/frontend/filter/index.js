@@ -16,7 +16,7 @@ const Filter = () => {
 	return (
 		<div className="wporg-meeting-calendar__filter">
 			<label
-				className="wporg-meeting-calendar__filter_label"
+				className="wporg-meeting-calendar__filter-label"
 				htmlFor={ ddId }
 			>
 				{ __( 'Filter by team: ', 'wporg' ) }
@@ -24,7 +24,7 @@ const Filter = () => {
 			<SelectControl
 				id={ ddId }
 				value={ team }
-				className="wporg-meeting-calendar__filter_dropdown"
+				className="wporg-meeting-calendar__filter-dropdown"
 				options={ [
 					{ label: __( 'All teams', 'wporg' ), value: '' },
 					...teams,
@@ -35,7 +35,7 @@ const Filter = () => {
 			/>
 			{ '' !== team && (
 				<>
-					<p className="wporg-meeting-calendar__filter_applied">
+					<p className="wporg-meeting-calendar__filter-applied">
 						Showing meetings for{ ' ' }
 						<span style={ { textTransform: 'capitalize' } }>
 							{ team } team.

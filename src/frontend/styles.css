@@ -98,19 +98,19 @@
 	font-size: 16px;
 }
 
-.wporg-meeting-calendar__filter_label {
+.wporg-meeting-calendar__filter-label {
 	padding-right: 6px;
 	margin-bottom: 0;
 }
 
-.wporg-meeting-calendar__filter_applied {
+.wporg-meeting-calendar__filter-applied {
 	flex: 1;
 	font-size: 16px;
 	margin: 0 1em;
 }
 
 /** Overwriting a default rule on the dropdown container */
-.wporg-meeting-calendar__filter_dropdown > div {
+.wporg-meeting-calendar__filter-dropdown > div {
 	margin-bottom: 0 !important;
 }
 
