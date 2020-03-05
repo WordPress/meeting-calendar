@@ -1,10 +1,11 @@
 .wporg-block-meeting-calendar {
-	margin: 0 auto;
+	margin: 0 auto 32px;
 }
 
 .wporg-block-meeting-calendar table {
 	table-layout: fixed;
 	margin-bottom: 0; /* There is a global style that is adding a bottom margin to tables */
+	width: 100%;
 }
 
 .wporg-meeting-calendar__header {
