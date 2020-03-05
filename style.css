@@ -1,0 +1,11 @@
+.wp-block-wporg-meeting-calendar-main {
+	padding: 32px;
+	text-align: center;
+	background: #ddd;
+}
+
+.wp-block-wporg-meeting-calendar-main > h6 {
+	margin: 0 !important;
+	font-size: 18px !important;
+	font-weight: normal;
+}
