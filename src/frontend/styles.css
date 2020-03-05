@@ -11,8 +11,8 @@
 
 .wporg-meeting-calendar__header {
 	display: flex;
-  align-items: center;
-  margin-bottom: 18px;
+	align-items: center;
+	margin-bottom: 18px;
 }
 
 .wporg-meeting-calendar__header div {
@@ -147,6 +147,67 @@
 	font-size: 16px;
 }
 
+.wporg-meeting-calendar__filter {
+	display: flex;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.wporg-meeting-calendar__filter p {
+	flex: 1;
+	margin: 0 1em;
+}
+
+.wporg-meeting-calendar__modal h1 {
+	font-size: 16px !important;
+}
+.wporg-meeting-calendar__modal h1::before {
+	display: none !important;
+}
+
+.wporg-meeting-calendar__modal-overlay {
+	z-index: 1000001; /* popover z-index + 1 */
+}
+
+.wporg-meeting-calendar__filter {
+	display: flex;
+	align-items: center;
+	margin-bottom: 12px;
+	font-size: 16px;
+}
+
+.wporg-meeting-calendar__filter-label {
+	padding-right: 6px;
+	margin-bottom: 0;
+}
+
+.wporg-meeting-calendar__filter-applied {
+	flex: 1;
+	font-size: 16px;
+	margin: 0 1em;
+}
+
+/** Overwriting a default rule on the dropdown container */
+.wporg-meeting-calendar__filter-dropdown > div {
+	margin-bottom: 0 !important;
+}
+
+.wporg-meeting-calendar__modal h1 {
+	font-size: 16px !important;
+}
+
+.wporg-meeting-calendar__modal h1::before {
+	display: none !important;
+}
+
+.wporg-meeting-calendar__modal-overlay {
+	z-index: 1000001; /* popover z-index + 1 */
+}
+
+/* ========================================= */
+/* = @todo Move these styles to wporg CSS. = */
+/* ========================================= */
+
 /** Colors for each team */
 .wporg-meeting-calendar__team-core {
 	background: #cd0000 !important;
@@ -214,39 +275,4 @@
 .wporg-meeting-calendar__team-bbpress,
 .wporg-meeting-calendar__team-buddypress {
 	color: #000 !important;
-}
-
-.wporg-meeting-calendar__filter {
-	display: flex;
-	align-items: center;
-	margin-bottom: 12px;
-	font-size: 16px;
-}
-
-.wporg-meeting-calendar__filter-label {
-	padding-right: 6px;
-	margin-bottom: 0;
-}
-
-.wporg-meeting-calendar__filter-applied {
-	flex: 1;
-	font-size: 16px;
-	margin: 0 1em;
-}
-
-/** Overwriting a default rule on the dropdown container */
-.wporg-meeting-calendar__filter-dropdown > div {
-	margin-bottom: 0 !important;
-}
-
-.wporg-meeting-calendar__modal h1 {
-	font-size: 16px !important;
-}
-
-.wporg-meeting-calendar__modal h1::before {
-	display: none !important;
-}
-
-.wporg-meeting-calendar__modal-overlay {
-	z-index: 1000001; /* popover z-index + 1 */
 }
