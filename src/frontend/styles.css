@@ -135,11 +135,12 @@
 
 .wporg-meeting-calendar__list-event-title {
 	font-size: 24px;
-	margin: 0 !important;
+	margin: 0 0 8px 0 !important;
 	padding: 0 !important;
 }
 
-.wporg-meeting-calendar__list-event-subtitle {
+.wporg-meeting-calendar__list-event-copy {
+	margin-top: 0 !important;
 	font-size: 16px;
 }
 
