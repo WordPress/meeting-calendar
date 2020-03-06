@@ -380,14 +380,15 @@ class Meeting_Post_Type {
 		}
 
 		$from = DateTime::createFromFormat( 'U', strtotime( '-30 minutes', $now ) );
-		$end  = DateTime::createFromFormat( 'U', strtotime( '+1 month', $now ) );
+		$end  = DateTime::createFromFormat( 'U', strtotime( '+2 month', $now ) );
 		$max  = 12;
 		$occurrences = array();
 		do {
 			$next = $this->get_next_occurrence( $meeting, $from->format( 'Y-m-d H:i:s P' ) );
 			if ( $next ) {
-				$occurrences[] = $next;
 				$from = new DateTime( "{$next} {$meeting->time}" );
+				if ( $from <= $end )
+					$occurrences[] = $next;
 			}
 		} while ( --$max > 0 && $next && $from && $from < $end && $meeting->recurring );
 
