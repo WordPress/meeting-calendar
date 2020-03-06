@@ -36,15 +36,10 @@ function Calendar() {
 				<div className="wporg-meeting-calendar__btn-group">
 					<Button
 						isSecondary
-						onClick={ () => void setDate( currentMonthYear ) }
-					>
-						{ __( 'Today', 'wporg' ) }
-					</Button>
-					<Button
-						isSecondary
 						onClick={ () =>
 							void setDate( { month: month - 1, year } )
 						}
+						disabled={ month === currentMonth }
 					>
 						{ __( 'Previous', 'wporg' ) }
 					</Button>
@@ -53,6 +48,7 @@ function Calendar() {
 						onClick={ () =>
 							void setDate( { month: month + 1, year } )
 						}
+						disabled={ month > currentMonth }
 					>
 						{ __( 'Next', 'wporg' ) }
 					</Button>
