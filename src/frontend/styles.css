@@ -11,7 +11,8 @@
 
 .wporg-meeting-calendar__header {
 	display: flex;
-	align-items: center;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
 .wporg-meeting-calendar__header div {
