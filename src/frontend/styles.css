@@ -34,7 +34,7 @@
 .wporg-meeting-calendar__cell {
 	padding: 4px;
 	vertical-align: top;
-	height: 5em; /* height acts as min-height on table cells */
+	height: 180px; /* height acts as min-height on table cells */
 }
 
 .wporg-meeting-calendar__cell strong {
