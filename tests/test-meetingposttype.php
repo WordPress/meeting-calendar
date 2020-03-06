@@ -52,4 +52,37 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->assertEquals( 1, $found, 'There should be exactly one instance of a single meeting.' );
 	}
 
+	function test_invalid_time() {
+
+		$meeting_id = $this->factory->post->create( array(
+			'post_title' => __( 'A meeting with an invalid time', 'wporg-meeting-calendar' ),
+			'post_type'  => 'meeting',
+			'post_status' => 'publish',
+			'meta_input' => array(
+				'team'       => 'Team-A',
+				'start_date' => strftime( '%Y-%m-%d', strtotime( 'tomorrow' ) ),
+				'end_date'   => '',
+				'time'       => '0100 UTC', // Some production data is formatted like this
+				'recurring'  => '',
+				'link'       => 'wordpress.org',
+				'location'   => '#meta',
+				),
+		) );
+
+
+		$meetings = $this->mpt->get_occurrences_for_period(null);
+
+		$found = 0;
+		foreach ( $meetings as $meeting ) {
+			if ( $meeting['meeting_id'] === $meeting_id ) {
+				++$found;
+				$this->assertEquals( '01:00:00', $meeting['time'] );
+				$this->assertEquals( "{$meeting['date']}T01:00:00+00:00", $meeting['datetime'] );
+			}
+		}
+		$this->assertGreaterThan( 0, $found, 'Found no meeting to test' );
+	}
+
+
+
 }
