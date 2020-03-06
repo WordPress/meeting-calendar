@@ -533,6 +533,11 @@ class Meeting_Post_Type {
 					<li>
 						<?php printf( __( '%s at %s', 'wporg' ), $occurrence, $meeting->time); ?>
 						<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr($meeting->ID) . ':' . esc_attr( $occurrence ); ?>" checked="<?php echo ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? '' : 'checked' ); ?>" />
+						<label>
+							<?php if ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ) {
+								echo __( 'Cancelled', 'wporg' );
+							} ?>
+						</label>
 					</li>
 				<?php
 			}
@@ -546,10 +551,6 @@ class Meeting_Post_Type {
 			<?php
 		}
 
-		wp_localize_script( 'wp-api', 'wpApiSettings', array(
-		    'root' => esc_url_raw( rest_url() ),
-		    'nonce' => wp_create_nonce( 'wp_rest' )
-		) );
 		?>
 
 		<script>
@@ -557,21 +558,28 @@ class Meeting_Post_Type {
 
 				var root = '<?php echo esc_url_raw( rest_url() ); ?>';
 				var nonce = '<?php echo wp_create_nonce( 'wp_rest' ); ?>';
+				var cancelled = '<?php echo esc_html__( 'Cancelled', 'wporg' ); ?>';
 
 
-				$('input.cancel-meeting').change( function() {
+				$('input.cancel-meeting').click( function() {
 
+					var self = this;
 					var meeting_id = this.value;
 					var method = this.checked ? 'PUT' : 'DELETE';
 
 					$.ajax( {
 					    url: root + 'wp/v2/meetings/' + meeting_id,
 					    method: method,
+					    dataType: 'json',
 					    beforeSend: function ( xhr ) {
 					        xhr.setRequestHeader( 'X-WP-Nonce', nonce );
 					    },
 					} ).done( function ( response ) {
-					    console.log( response );
+					    if ( response ) {
+						    $(self).next('label').text( 'DELETE' == method ? cancelled : '' );
+					    }
+					} ).fail( function ( response ) {
+						self.checked = !self.checked;
 					} );
 				} );
 
