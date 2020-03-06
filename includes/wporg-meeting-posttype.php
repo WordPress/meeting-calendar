@@ -403,6 +403,14 @@ class Meeting_Post_Type {
 			'normal',
 			'high'
 		);
+		add_meta_box(
+			'upcoming-meetings',
+			'Upcoming Meetings',
+			array( $this, 'render_meta_upcoming' ),
+			'meeting',
+			'normal',
+			'high'
+		);
 	}
 
 	function render_meta_boxes( $post ) {
@@ -433,7 +441,7 @@ class Meeting_Post_Type {
 		<p>
 		<label for="start_date">
 			<?php _e( 'Start Date', 'wporg' ); ?>
-			<input type="text" name="start_date" id="start_date" class="date" value="<?php echo esc_attr( $start ); ?>">
+			<input type="text" required="required" name="start_date" id="start_date" class="date" value="<?php echo esc_attr( $start ); ?>">
 		</label>
 		<label for="end_date">
 			<?php _e( 'End Date', 'wporg' ); ?>
@@ -443,7 +451,7 @@ class Meeting_Post_Type {
 		<p>
 		<label for="time">
 			<?php _e( 'Time (UTC)', 'wporg' ); ?>
-			<input type="text" name="time" id="time" class="time" value="<?php echo esc_attr( $time ); ?>">
+			<input type="text" required="required" placeholder="13:00" name="time" id="time" class="time" value="<?php echo esc_attr( $time ); ?>">
 		</label>
 		</p>
 		<p class="recurring">
@@ -513,6 +521,74 @@ class Meeting_Post_Type {
 	<?php
 	}
 
+	function render_meta_upcoming( $meeting ) {
+
+		$occurrences = $this->get_future_occurrences( $meeting, null, null );
+		if ( count( $occurrences ) ) {
+			?>
+				<ul>
+			<?php
+
+			foreach ( $occurrences as $occurrence ) {
+				?>
+					<li>
+						<?php printf( __( '%s at %s', 'wporg' ), $occurrence, $meeting->time); ?>
+						<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr($meeting->ID) . ':' . esc_attr( $occurrence ); ?>" checked="<?php echo ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? '' : 'checked' ); ?>" />
+						<label>
+							<?php if ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ) {
+								echo __( 'Cancelled', 'wporg' );
+							} ?>
+						</label>
+					</li>
+				<?php
+			}
+			?>
+				</ul>
+			<?php
+
+		} else {
+			?>
+				<p><?php _e( 'No upcoming meetings.', 'wporg' ); ?></p>
+			<?php
+		}
+
+		?>
+
+		<script>
+			jQuery(document).ready( function($) {
+
+				var root = '<?php echo esc_url_raw( rest_url() ); ?>';
+				var nonce = '<?php echo wp_create_nonce( 'wp_rest' ); ?>';
+				var cancelled = '<?php echo esc_html__( 'Cancelled', 'wporg' ); ?>';
+
+
+				$('input.cancel-meeting').click( function() {
+
+					var self = this;
+					var meeting_id = this.value;
+					var method = this.checked ? 'PUT' : 'DELETE';
+
+					$.ajax( {
+					    url: root + 'wp/v2/meetings/' + meeting_id,
+					    method: method,
+					    dataType: 'json',
+					    beforeSend: function ( xhr ) {
+					        xhr.setRequestHeader( 'X-WP-Nonce', nonce );
+					    },
+					} ).done( function ( response ) {
+					    if ( response ) {
+						    $(self).next('label').text( 'DELETE' == method ? cancelled : '' );
+					    }
+					} ).fail( function ( response ) {
+						self.checked = !self.checked;
+					} );
+				} );
+
+			} );
+		</script>
+		<?php
+	}
+
 	function save_meta_boxes( $post_id ) {
 
 		global $post;
@@ -536,6 +612,20 @@ class Meeting_Post_Type {
 		if ( !current_user_can( 'edit_post', $post->ID ) ) {
 			return $post_id;
 		}
+
+		// Basic validation
+		if ( empty( trim( $_POST['title'] ) ) )
+			return false;
+		if ( empty( trim( $_POST['start_date'] ) ) )
+			return false;
+		if ( false === strtotime( $_POST['start_date'] ) )
+			return false;
+		if ( !empty( trim( $_POST['end_date'] ) ) && false === strtotime( $_POST['end_date'] ) )
+			return false;
+		if ( empty( trim( $_POST['time'] ) ) )
+			return false;
+		if ( false === strtotime( $_POST['time'] ) )
+			return false;
 
 		$meta['team']        = ( isset( $_POST['team'] ) ? esc_textarea( $_POST['team'] ) : '' );
 		$meta['start_date']  = ( isset( $_POST['start_date'] ) ? esc_textarea( $_POST['start_date'] ) : '' );
