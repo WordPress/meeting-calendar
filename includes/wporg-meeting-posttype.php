@@ -313,7 +313,7 @@ class Meeting_Post_Type {
 					'meeting_id'  => $meeting->ID,
 					'instance_id' => "{$meeting->ID}:{$occurrence}",
 					'date'        => $occurrence,
-					'time'        => $meeting->time,
+					'time'        => strftime( '%H:%M:%S', strtotime( $meeting->time ) ),
 					'datetime'    => "{$occurrence}T{$meeting->time}+00:00",
 					'team'        => $meeting->team,
 					'link'        => $meeting->link,
