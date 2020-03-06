@@ -309,11 +309,12 @@ class Meeting_Post_Type {
 		foreach ( $meetings as $meeting ) {
 			$occurrences = $this->get_future_occurrences( $meeting, null, $request );
 			foreach ( $occurrences as $occurrence ) {
+				$meeting->time = strftime( '%H:%M:%S', strtotime( $meeting->time ) );
 				$out[] = array(
 					'meeting_id'  => $meeting->ID,
 					'instance_id' => "{$meeting->ID}:{$occurrence}",
 					'date'        => $occurrence,
-					'time'        => strftime( '%H:%M:%S', strtotime( $meeting->time ) ),
+					'time'        => $meeting->time,
 					'datetime'    => "{$occurrence}T{$meeting->time}+00:00",
 					'team'        => $meeting->team,
 					'link'        => $meeting->link,
