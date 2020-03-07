@@ -32,7 +32,17 @@ function CalendarCell( {
 		<td className="wporg-meeting-calendar__cell">
 			<strong>
 				<span className="screen-reader-text">
-					{ format( 'F j', date ) }
+					{ format( 'F j', date ) }{ ' ' }
+					{ // translators: %d: Count of all events, ie: 4.
+					sprintf(
+						_n(
+							'%d event',
+							'%d events',
+							dayEvents.length,
+							'wporg'
+						),
+						dayEvents.length
+					) }
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
