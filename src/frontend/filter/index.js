@@ -43,7 +43,8 @@ const Filter = () => {
 						sprintf(
 							__( 'Showing meetings for %s', 'wporg' ),
 							newSelected.label
-						)
+						),
+						'assertive'
 					);
 				} }
 			/>
@@ -61,7 +62,10 @@ const Filter = () => {
 						isDestructive
 						onClick={ () => {
 							setTeam( '' );
-							speak( __( 'Showing all meetings.', 'wporg' ) );
+							speak(
+								__( 'Showing all meetings.', 'wporg' ),
+								'assertive'
+							);
 							filterLabel.current.focus();
 						} }
 					>
