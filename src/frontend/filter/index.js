@@ -4,6 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, SelectControl } from '@wordpress/components';
 import { speak } from '@wordpress/a11y';
+import { useRef } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -11,6 +12,7 @@ import { speak } from '@wordpress/a11y';
 import { useEvents } from '../store/event-context';
 
 const Filter = () => {
+	const filterLabel = useRef( null );
 	const { teams, team, setTeam } = useEvents();
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
 	const selected = teams.find( ( option ) => team === option.value );
@@ -20,6 +22,7 @@ const Filter = () => {
 			<label
 				className="wporg-meeting-calendar__filter-label"
 				htmlFor={ dropdownId }
+				ref={ filterLabel }
 			>
 				{ __( 'Filter by team: ', 'wporg' ) }
 			</label>
@@ -56,7 +59,11 @@ const Filter = () => {
 						icon="no-alt"
 						isLink
 						isDestructive
-						onClick={ () => void setTeam( '' ) }
+						onClick={ () => {
+							setTeam( '' );
+							speak( __( 'Showing all meetings.', 'wporg' ) );
+							filterLabel.current.focus();
+						} }
 					>
 						{ __( 'Remove team filter', 'wporg' ) }
 					</Button>
