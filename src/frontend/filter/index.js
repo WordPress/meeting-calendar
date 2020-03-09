@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button, SelectControl } from '@wordpress/components';
 
 /**
@@ -12,6 +12,7 @@ import { useEvents } from '../store/event-context';
 const Filter = () => {
 	const { teams, team, setTeam } = useEvents();
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
+	const selected = teams.find( ( option ) => team === option.value );
 
 	return (
 		<div className="wporg-meeting-calendar__filter">
@@ -36,10 +37,10 @@ const Filter = () => {
 			{ '' !== team && (
 				<>
 					<p className="wporg-meeting-calendar__filter-applied">
-						Showing meetings for{ ' ' }
-						<span style={ { textTransform: 'capitalize' } }>
-							{ team } team.
-						</span>
+						{ sprintf(
+							__( 'Showing meetings for %s', 'wporg' ),
+							selected.label
+						) }
 					</p>
 					<Button
 						icon="no-alt"
