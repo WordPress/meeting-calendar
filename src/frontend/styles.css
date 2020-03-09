@@ -99,9 +99,12 @@
 }
 
 .wporg-meeting-calendar__list-title {
-	padding: 6px 12px;
+	padding: 6px 0;
 	display: block;
-	background: #ddd;
+  background: #ddd;
+  font-size: 16px;
+	margin-top: 16px;
+	background: none;
 }
 
 .wporg-meeting-calendar__list-event {
@@ -169,13 +172,6 @@
 	font-size: 14px;
 }
 
-.wporg-meeting-calendar__list-title {
-	font-size: 16px;
-	margin-top: 32px;
-	background: none;
-	padding: 6px 0;
-}
-
 .wporg-meeting-calendar__list-event {
 	margin: 12px 0;
 	border: 1px solid rgba(100, 100, 100, 0.3);
@@ -233,7 +229,11 @@
 }
 
 .wporg-block-meeting-calendar table th {
-	text-align: center;
+  text-align: center;
+  font-size: 14px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-top: none;
 }
 
 .wporg-meeting-calendar__cell {
@@ -322,19 +322,24 @@
 .wporg-meeting-calendar__filter {
 	display: flex;
 	align-items: center;
-	margin-bottom: 12px;
-	font-size: 16px;
+  border: 1px solid #ddd;
+  padding: 12px;
+  background: #eee;
 }
 
 .wporg-meeting-calendar__filter-label {
-	padding-right: 6px;
+  padding-right: 6px;
 	margin-bottom: 0;
 }
 
 .wporg-meeting-calendar__filter-applied {
 	flex: 1;
-	font-size: 16px;
 	margin: 0 1em;
+}
+
+.wporg-meeting-calendar__filter-label,
+.wporg-meeting-calendar__filter-applied {
+  font-size: 14px;
 }
 
 /** Overwriting a default rule on the dropdown container */
