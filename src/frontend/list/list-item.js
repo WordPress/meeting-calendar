@@ -30,7 +30,7 @@ function ListItem( { date, events } ) {
 						key={ event.instance_id }
 					>
 						<div>{ format( 'g:i a: ', event.datetime ) }</div>
-						<div>
+						<div className="wporg-meeting-calendar__list-event-details">
 							<a
 								className={
 									'wporg-meeting-calendar__list-event-team ' +
@@ -44,17 +44,19 @@ function ListItem( { date, events } ) {
 							>
 								{ event.team }
 							</a>
-							<h3 className="wporg-meeting-calendar__list-event-title">
-								<a href={ event.link }>{ event.title }</a>
-							</h3>
-							<p className="wporg-meeting-calendar__list-event-copy">
-								{ __( 'Meets: ', 'wporg' ) }
-								{ getFrequencyLabel( event ) }
-							</p>
-							<p className="wporg-meeting-calendar__list-event-copy">
-								{ __( 'Location: ', 'wporg' ) }
-								{ getSlackLink( event.location ) }
-							</p>
+							<div>
+								<h3 className="wporg-meeting-calendar__list-event-title">
+									<a href={ event.link }>{ event.title }</a>
+								</h3>
+								<p className="wporg-meeting-calendar__list-event-copy">
+									{ __( 'Meets: ', 'wporg' ) }
+									{ getFrequencyLabel( event ) }
+								</p>
+								<p className="wporg-meeting-calendar__list-event-copy">
+									{ __( 'Location: ', 'wporg' ) }
+									{ getSlackLink( event.location ) }
+								</p>
+							</div>
 						</div>
 					</article>
 				);

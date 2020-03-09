@@ -20,7 +20,7 @@ function CalendarCell( {
 } ) {
 	const MAX_EVENTS = 3;
 	if ( blank ) {
-		return <td aria-hidden />;
+		return <td className="wporg-meeting-calendar__cell" aria-hidden />;
 	}
 
 	const date = new Date( year, month, day );
