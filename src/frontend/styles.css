@@ -229,11 +229,11 @@
 }
 
 .wporg-block-meeting-calendar table th {
-  text-align: center;
-  font-size: 14px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-top: none;
+	text-align: center;
+	font-size: 14px;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-top: none;
 }
 
 .wporg-meeting-calendar__cell {
