@@ -16,7 +16,7 @@
 }
 
 .wporg-meeting-calendar__header div {
-	flex: 1 1 0;
+	flex: 1;
 }
 
 .wporg-meeting-calendar__header div:last-child {

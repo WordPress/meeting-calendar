@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { flatten } from 'lodash';
+
+/**
  * WordPress dependencies
  */
 import { format } from '@wordpress/date';
@@ -14,7 +19,7 @@ import ListItem from './list-item';
 function List( { month, year } ) {
 	const rows = getRows( year, month );
 	const { events } = useEvents();
-	const allDays = rows.flat().filter( ( i ) => ! i.blank );
+	const allDays = flatten( rows ).filter( ( i ) => ! i.blank );
 
 	const days = allDays
 		.map( ( row, i ) => {
