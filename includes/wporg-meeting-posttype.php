@@ -615,7 +615,7 @@ class Meeting_Post_Type {
 		}
 
 		// Basic validation
-		if ( empty( trim( $_POST['title'] ) ) )
+		if ( empty( trim( $_POST['post_title'] ) ) )
 			return false;
 		if ( empty( trim( $_POST['start_date'] ) ) )
 			return false;
