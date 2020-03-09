@@ -3,6 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, SelectControl } from '@wordpress/components';
+import { speak } from '@wordpress/a11y';
 
 /**
  * Internal dependencies
@@ -24,14 +25,23 @@ const Filter = () => {
 			</label>
 			<SelectControl
 				id={ dropdownId }
-				value={ team }
 				className="wporg-meeting-calendar__filter-dropdown"
+				value={ team }
 				options={ [
 					{ label: __( 'All teams', 'wporg' ), value: '' },
 					...teams,
 				] }
 				onChange={ ( value ) => {
 					setTeam( value );
+					const newSelected = teams.find(
+						( option ) => value === option.value
+					);
+					speak(
+						sprintf(
+							__( 'Showing meetings for %s', 'wporg' ),
+							newSelected.label
+						)
+					);
 				} }
 			/>
 			{ '' !== team && (
