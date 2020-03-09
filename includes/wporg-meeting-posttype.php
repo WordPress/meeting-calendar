@@ -533,12 +533,14 @@ class Meeting_Post_Type {
 			foreach ( $occurrences as $occurrence ) {
 				?>
 					<li>
-						<?php printf( __( '%s at %s', 'wporg' ), $occurrence, $meeting->time); ?>
-						<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr($meeting->ID) . ':' . esc_attr( $occurrence ); ?>" checked="<?php echo ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? '' : 'checked' ); ?>" />
 						<label>
-							<?php if ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ) {
-								echo __( 'Cancelled', 'wporg' );
-							} ?>
+							<?php printf( __( '%s at %s', 'wporg' ), $occurrence, $meeting->time); ?>
+							<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr($meeting->ID) . ':' . esc_attr( $occurrence ); ?>" <?php checked( ! $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ); ?> />
+							<span class="meeting-status">
+								<?php if ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ) {
+									echo __( 'Cancelled', 'wporg' );
+								} ?>
+							</span>
 						</label>
 					</li>
 				<?php
@@ -570,16 +572,16 @@ class Meeting_Post_Type {
 					var method = this.checked ? 'PUT' : 'DELETE';
 
 					$.ajax( {
-					    url: root + 'wp/v2/meetings/' + meeting_id,
-					    method: method,
-					    dataType: 'json',
-					    beforeSend: function ( xhr ) {
-					        xhr.setRequestHeader( 'X-WP-Nonce', nonce );
-					    },
+						url: root + 'wp/v2/meetings/' + meeting_id,
+						method: method,
+						dataType: 'json',
+						beforeSend: function ( xhr ) {
+							xhr.setRequestHeader( 'X-WP-Nonce', nonce );
+						},
 					} ).done( function ( response ) {
-					    if ( response ) {
-						    $(self).next('label').text( 'DELETE' == method ? cancelled : '' );
-					    }
+						if ( response ) {
+							$(self).next('.meeting-status').text( 'DELETE' == method ? cancelled : '' );
+						}
 					} ).fail( function ( response ) {
 						self.checked = !self.checked;
 					} );
