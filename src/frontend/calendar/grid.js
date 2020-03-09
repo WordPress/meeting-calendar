@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { format, gmdate } from '@wordpress/date';
 import { Fragment, useState } from '@wordpress/element';
 import { Modal } from '@wordpress/components';
@@ -45,12 +46,16 @@ function CalendarGrid( { month, year } ) {
 					onRequestClose={ () => void setActiveEvent( null ) }
 				>
 					<p>
-						<abbr title={ gmdate( 'c', activeEvent.datetime ) }>
-							{ format(
-								'l, F j, Y, g:i a',
-								activeEvent.datetime
-							) }
-						</abbr>
+						{ 'cancelled' !== activeEvent.status ? (
+							<abbr title={ gmdate( 'c', activeEvent.datetime ) }>
+								{ format(
+									'l, F j, Y, g:i a',
+									activeEvent.datetime
+								) }
+							</abbr>
+						) : (
+							__( 'This meeting has been cancelled', 'wporg' )
+						) }
 					</p>
 					{ !! activeEvent.location && (
 						<p>

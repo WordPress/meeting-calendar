@@ -44,6 +44,16 @@ function ListItem( { date, events } ) {
 							>
 								{ event.team }
 							</a>
+							{ 'cancelled' === event.status && (
+								<p>
+									<em>
+										{ __(
+											'This meeting has been cancelled',
+											'wporg'
+										) }
+									</em>
+								</p>
+							) }
 							<h3 className="wporg-meeting-calendar__list-event-title">
 								<a href={ event.link }>{ event.title }</a>
 							</h3>
