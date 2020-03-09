@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, ButtonGroup } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { date } from '@wordpress/date';
 import { useState, Fragment } from '@wordpress/element';
 
@@ -33,7 +33,10 @@ function Calendar() {
 	return (
 		<Fragment>
 			<div className="wporg-meeting-calendar__header">
-				<div className="wporg-meeting-calendar__btn-group">
+				<nav
+					className="wporg-meeting-calendar__btn-group"
+					aria-label={ __( 'Month navigation', 'wporg' ) }
+				>
 					<Button
 						isSecondary
 						onClick={ () =>
@@ -52,13 +55,16 @@ function Calendar() {
 					>
 						{ __( 'Next', 'wporg' ) }
 					</Button>
-				</div>
+				</nav>
 				<div>
 					<h2 aria-live="polite" aria-atomic>
 						{ date( 'F Y', new Date( year, month, 1 ) ) }
 					</h2>
 				</div>
-				<ButtonGroup>
+				<nav
+					className="components-button-group"
+					aria-label={ __( 'View options', 'wporg' ) }
+				>
 					<Button
 						isSecondary={ ! isCalendarView() }
 						isPrimary={ isCalendarView() }
@@ -73,7 +79,7 @@ function Calendar() {
 					>
 						{ __( 'List', 'wporg' ) }
 					</Button>
-				</ButtonGroup>
+				</nav>
 			</div>
 			<Filter />
 			{ isCalendarView() && (
