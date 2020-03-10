@@ -42,20 +42,22 @@ function ListItem( { date, events } ) {
 					>
 						<div>{ format( 'g:i a: ', event.datetime ) }</div>
 						<div className="wporg-meeting-calendar__list-event-details">
-							<a
-								className={
-									'wporg-meeting-calendar__list-event-team ' +
-									getTeamClass( event.team )
-								}
-								aria-label={ sprintf(
-									__( 'All %s meetings', 'wporg' ),
-									event.team
-								) }
-								href={ `#${ event.team.toLowerCase() }` }
-								onClick={ onTeamClick }
-							>
-								{ event.team }
-							</a>
+							{ event.team && (
+								<a
+									className={
+										'wporg-meeting-calendar__list-event-team ' +
+										getTeamClass( event.team )
+									}
+									aria-label={ sprintf(
+										__( 'All %s meetings', 'wporg' ),
+										event.team
+									) }
+									href={ `#${ event.team.toLowerCase() }` }
+									onClick={ onTeamClick }
+								>
+									{ event.team }
+								</a>
+							) }
 							<div>
 								<h3 className="wporg-meeting-calendar__list-event-title">
 									<a href={ event.link }>{ event.title }</a>
