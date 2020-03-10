@@ -37,6 +37,10 @@
 	height: 180px; /* height acts as min-height on table cells */
 }
 
+.wporg-meeting-calendar__cell.today {
+	background: #fcf8e3;
+}
+
 .wporg-meeting-calendar__cell strong {
 	display: block;
 	margin: -4px -4px 0;

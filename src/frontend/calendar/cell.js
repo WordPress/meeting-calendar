@@ -8,7 +8,7 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass } from './utils';
+import { getTeamClass, isToday } from './utils';
 
 function CalendarCell( {
 	blank = false,
@@ -29,7 +29,11 @@ function CalendarCell( {
 	const restOfEvents = dayEvents.slice( MAX_EVENTS );
 
 	return (
-		<td className="wporg-meeting-calendar__cell">
+		<td
+			className={ `wporg-meeting-calendar__cell ${
+				isToday( date ) ? 'today' : ''
+			}` }
+		>
 			<strong>
 				<span className="screen-reader-text">
 					{ format( 'F j', date ) }{ ' ' }
