@@ -250,3 +250,8 @@
 .wporg-meeting-calendar__modal-overlay {
 	z-index: 1000001; /* popover z-index + 1 */
 }
+
+.wporg-meeting-shortcode.meeting-cancelled {
+	text-decoration: line-through;
+}
+

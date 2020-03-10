@@ -746,18 +746,25 @@ class Meeting_Post_Type {
 				$slack_channel = sanitize_title( $match[1] );
 			}
 
-			$out .= '<p>';
+			$cancelled = $this->is_meeting_cancelled( $post->ID, $post->next_date );
+
+			$out .= '<p class="wporg-meeting-shortcode' . ( $cancelled ? ' meeting-cancelled' : '') . '">';
+
 			$out .= esc_html( $attr['before'] );
 			$out .= '<strong class="meeting-title">' . esc_html( $post->post_title ) . '</strong>';
 			$display_more = $query->found_posts - intval( $limit );
 			if ( $display_more > 0 ) {
 				$out .= ' <a title="Click to view all meetings for this team" href="/meetings/#' . esc_attr( strtolower( $attr['team'] ) ) . '">' . sprintf( __( '(+%s more)'), $display_more ) . '</a>';
 			}
-			$out .= '</br>';
+			$out .= '<br/>';
 			$out .= '<time class="date" date-time="' . esc_attr( $next_meeting_iso ) . '" title="' . esc_attr( $next_meeting_iso ) . '">' . $next_meeting_display . '</time> ';
 			$out .= sprintf( esc_html__( '(%s from now)' ), human_time_diff( $next_meeting_timestamp, current_time('timestamp') ) );
 			if ( $post->location && $slack_channel ) {
 				$out .= ' ' . sprintf( wp_kses( __('at <a href="%s">%s</a> on Slack'), array(  'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel,   $post->location );
+			}
+			if ( $cancelled ) {
+				$out .= '<br>';
+				$out .= '<i>' . __( 'This event is cancelled.') . '</i>';
 			}
 			$out .= '</p>';
 		}
