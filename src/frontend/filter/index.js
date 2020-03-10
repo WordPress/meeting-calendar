@@ -12,8 +12,12 @@ import { useRef } from '@wordpress/element';
 import { useEvents } from '../store/event-context';
 
 const Filter = () => {
-	const filterLabel = useRef( null );
 	const { teams, team, setTeam } = useEvents();
+	if ( teams.length < 2 ) {
+		return null;
+	}
+
+	const filterLabel = useRef( null );
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
 	const selected = teams.find( ( option ) => team === option.value );
 
