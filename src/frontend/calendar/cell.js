@@ -31,7 +31,7 @@ function CalendarCell( {
 	return (
 		<td
 			className={ `wporg-meeting-calendar__cell ${
-				isToday( date ) ? 'today' : ''
+				isToday( date ) ? 'is-today' : ''
 			}` }
 		>
 			<strong>
