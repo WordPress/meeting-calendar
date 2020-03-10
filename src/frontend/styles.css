@@ -98,6 +98,11 @@
 	list-style: none;
 }
 
+.wporg-meeting-calendar__list li {
+	list-style: none;
+	margin: 0;
+}
+
 .wporg-meeting-calendar__list-title {
 	padding: 6px 0;
 	display: block;
@@ -132,9 +137,10 @@
 	color: #fff !important;
 	display: inline-block;
 	font-family: sans-serif;
-	min-width: 80px;
+	width: 90px;
 	text-align: center;
 }
+
 .wporg-meeting-calendar__list-event-team:hover,
 .wporg-meeting-calendar__list-event-team:active,
 .wporg-meeting-calendar__list-event-team:focus {
@@ -226,6 +232,7 @@
 
 .wporg-block-meeting-calendar table {
 	border-collapse: collapse;
+	background: #fff;
 }
 
 .wporg-block-meeting-calendar table th {
