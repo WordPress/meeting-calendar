@@ -1,8 +1,9 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { format } from '@wordpress/date';
+import { speak } from '@wordpress/a11y';
 
 /**
  * Internal dependencies
@@ -24,6 +25,16 @@ function ListItem( { date, events } ) {
 			</strong>
 
 			{ events.map( ( event ) => {
+				const onTeamClick = ( clickEvent ) => {
+					clickEvent.preventDefault();
+					setTeam( event.team );
+					speak(
+						sprintf(
+							__( 'Showing meetings for %s', 'wporg' ),
+							event.team
+						)
+					);
+				};
 				return (
 					<article
 						className="wporg-meeting-calendar__list-event"
@@ -36,11 +47,12 @@ function ListItem( { date, events } ) {
 									'wporg-meeting-calendar__list-event-team ' +
 									getTeamClass( event.team )
 								}
+								aria-label={ sprintf(
+									__( 'All %s meetings', 'wporg' ),
+									event.team
+								) }
 								href={ `#${ event.team.toLowerCase() }` }
-								onClick={ ( clickEvent ) => {
-									clickEvent.preventDefault();
-									setTeam( event.team );
-								} }
+								onClick={ onTeamClick }
 							>
 								{ event.team }
 							</a>

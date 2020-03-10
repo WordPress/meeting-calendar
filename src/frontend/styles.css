@@ -45,7 +45,7 @@
 	background: #ddd;
 }
 
-.wporg-meeting-calendar__cell-event.is-link {
+.wporg-meeting-calendar__cell-event.components-button {
 	display: block;
 	position: relative;
 	padding: 4px;
@@ -53,22 +53,24 @@
 	font-size: 12px;
 	font-weight: bold;
 	font-weight: normal;
-	background: #0085ba;
 	border-radius: 2px;
-	color: #fff;
-	text-decoration: none;
 	width: 100%;
 }
-.wporg-meeting-calendar__cell-event.is-link.is-link:hover,
-.wporg-meeting-calendar__cell-event.is-link.is-link:active,
-.wporg-meeting-calendar__cell-event.is-link.is-link:focus {
-	color: #fff;
+/* These styles are separate for !important specificity with `wporg-meeting-calendar__team-*` styles below. */
+.wporg-meeting-calendar__cell-event {
+	background: #0085ba !important;
+	color: #fff !important;
+	text-decoration: none !important;
 }
-.wporg-meeting-calendar__cell-event.is-link.is-link:focus {
-	text-decoration: underline;
-	box-shadow: 0 0 0 1px black, 0 0 2px 1px rgba(0, 0, 0, 0.8);
+.wporg-meeting-calendar__cell-event:focus {
+	text-decoration: underline !important;
+	box-shadow: 0 0 0 1px black, 0 0 2px 1px rgba(0, 0, 0, 0.8) !important;
 }
-.wporg-meeting-calendar__cell-event.components-menu-item__button {
+
+.wporg-meeting-calendar__dropdown .components-menu-group {
+	padding: 7px;
+}
+.wporg-meeting-calendar__dropdown .components-menu-item__button {
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -273,6 +275,7 @@
 .wporg-meeting-calendar__team-support {
 	background: #33b4ce !important;
 }
+.wporg-meeting-calendar__team-docs,
 .wporg-meeting-calendar__team-documentation {
 	background: #3b7236 !important;
 }
