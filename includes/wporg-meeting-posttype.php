@@ -710,7 +710,10 @@ class Meeting_Post_Type {
 			add_action( 'wp_footer', array( $this, 'time_conversion_script' ), 999 );
 		}
 
-		switch_to_blog( get_main_site_id() );
+		// If we're on a network, assume the calendar exists on the main site
+		if ( function_exists( 'switch_to_blog' ) ) {
+			switch_to_blog( get_main_site_id() );
+		}
 
 		$query = new WP_Query(
 			array(
@@ -759,7 +762,9 @@ class Meeting_Post_Type {
 			$out .= '</p>';
 		}
 
-		restore_current_blog();
+		if ( function_exists( 'restore_current_blog' ) ) {
+			restore_current_blog();
+		}
 
 		return $out;
 	}
