@@ -126,7 +126,7 @@ export function getTeamClass( team ) {
 /**
  * Checks whether a date is today
  *
- * @param {date} date
+ * @param {Object} date
  */
 export function isToday( date ) {
 	const today = new Date();
