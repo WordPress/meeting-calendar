@@ -50,10 +50,12 @@ export function EventsProvider( { children, value } ) {
 
 	// Get a list of all teams available.
 	const teams = uniqBy(
-		value.map( ( e ) => ( {
-			label: e.team,
-			value: e.team.toLowerCase(),
-		} ) ),
+		value
+			.map( ( e ) => ( {
+				label: e.team,
+				value: e.team.toLowerCase(),
+			} ) )
+			.filter( ( { value } ) => !! value ),
 		'value'
 	);
 
