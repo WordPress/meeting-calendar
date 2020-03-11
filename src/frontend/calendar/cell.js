@@ -60,7 +60,7 @@ function CalendarCell( {
 							'wporg-meeting-calendar__cell-event ' +
 							getTeamClass( event.team ) +
 							( isCancelled( event.status )
-								? ' is-visually-disabled'
+								? ' is-cancelled'
 								: '' )
 						}
 					>
@@ -110,7 +110,7 @@ function CalendarCell( {
 											'wporg-meeting-calendar__cell-event ' +
 											getTeamClass( event.team ) +
 											( isCancelled( event.status )
-												? ' is-visually-disabled'
+												? ' is-cancelled'
 												: '' )
 										}
 									>

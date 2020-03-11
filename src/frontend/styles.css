@@ -73,13 +73,9 @@
 	width: 100%;
 }
 
-.wporg-meeting-calendar__cell-event.is-visually-disabled {
-	opacity: 0.3;
-	text-decoration: line-through !important;
-}
-
-.wporg-meeting-calendar__cell-event.is-visually-disabled .wporg-meeting-calendar__cell-event-title,
-.wporg-meeting-calendar__dropdown.is-visually-disabled {
+.wporg-meeting-calendar__cell-event.is-cancelled,
+.wporg-meeting-calendar__cell-event.is-cancelled .wporg-meeting-calendar__cell-event-title,
+.wporg-meeting-calendar__dropdown.is-cancelled {
 	text-decoration: line-through !important;
 }
 
@@ -113,17 +109,6 @@
 	display: block;
 	white-space: nowrap;
 	overflow: hidden;
-}
-
-.wporg-meeting-calendar__list-panel {
-	position: absolute;
-	width: 100%;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: rgba(254, 255,255, 0.6);
-	box-sizing: border-box;
 }
 
 .wporg-meeting-calendar__btn-group button {

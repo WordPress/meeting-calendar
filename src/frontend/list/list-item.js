@@ -85,9 +85,6 @@ function ListItem( { date, events } ) {
 									{ getSlackLink( event.location ) }
 								</p>
 							</div>
-							{ isCancelled( event.status ) && (
-								<div className="wporg-meeting-calendar__list-panel" />
-							) }
 						</div>
 					</article>
 				);
