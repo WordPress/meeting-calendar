@@ -24,11 +24,12 @@ export function ViewProvider( { children, isSmallViewport } ) {
 export function useViews() {
 	const context = useContext( StateContext );
 	const isView = ( toMatch ) => currentView === toMatch;
-	const [ currentView, setView ] = useState( context.defaultState );
 
 	if ( context === undefined ) {
 		throw new Error( 'useViews must be used within a Provider' );
 	}
+
+	const [ currentView, setView ] = useState( context.defaultState );
 
 	return {
 		isCalendarView: () => isView( CALENDAR_VIEW ),
