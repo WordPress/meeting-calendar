@@ -29,7 +29,12 @@ function Calendar() {
 		isListView,
 		setCalendarView,
 		setListView,
+		shouldForceListView,
 	} = useViews();
+
+	if ( shouldForceListView && ! isListView() ) {
+		setListView();
+	}
 
 	return (
 		<Fragment>
@@ -77,6 +82,7 @@ function Calendar() {
 							}
 							setCalendarView();
 						} }
+						disabled={ shouldForceListView }
 					>
 						{ __( 'Month', 'wporg' ) }
 					</Button>
@@ -89,6 +95,7 @@ function Calendar() {
 							}
 							setListView();
 						} }
+						disabled={ shouldForceListView }
 					>
 						{ __( 'List', 'wporg' ) }
 					</Button>
