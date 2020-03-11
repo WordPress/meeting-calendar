@@ -333,6 +333,36 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  ),
 		  9 => 
 		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-12',
+		    'date' => '2020-02-12',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-02-12T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'location' => '#meta',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  10 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-19',
+		    'date' => '2020-02-19',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-02-19T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'location' => '#meta',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  11 => 
+		  array (
 		    'meeting_id' => $this->meeting_ids[2],
 		    'instance_id' => $this->meeting_ids[2] . ':2020-02-19',
 		    'date' => '2020-02-19',
@@ -347,6 +377,21 @@ class MeetingAPITest extends WP_UnitTestCase {
 		    array (
 		      0 => 3,
 		    ),
+		    'status' => 'active',
+		  ),
+		  12 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-26',
+		    'date' => '2020-02-26',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-02-26T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'location' => '#meta',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
 		    'status' => 'active',
 		  ),
 		);
