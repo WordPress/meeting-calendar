@@ -39,8 +39,12 @@ function ListItem( { date, events } ) {
 					<article
 						className="wporg-meeting-calendar__list-event"
 						key={ event.instance_id }
+						itemScope
+						itemType="http://schema.org/Event"
 					>
-						<div>{ format( 'g:i a: ', event.datetime ) }</div>
+						<div itemProp="startDate" content={ event.datetime }>
+							{ format( 'g:i a ', event.datetime ) }
+						</div>
 						<div className="wporg-meeting-calendar__list-event-details">
 							{ event.team && (
 								<a
@@ -54,13 +58,20 @@ function ListItem( { date, events } ) {
 									) }
 									href={ `#${ event.team.toLowerCase() }` }
 									onClick={ onTeamClick }
+									itemType="http://schema.org/Organization"
+									itemScope
 								>
-									{ event.team }
+									<span itemProp="name">{ event.team }</span>
 								</a>
 							) }
 							<div>
-								<h3 className="wporg-meeting-calendar__list-event-title">
-									<a href={ event.link }>{ event.title }</a>
+								<h3
+									className="wporg-meeting-calendar__list-event-title"
+									itemProp="name"
+								>
+									<a itemProp="url" href={ event.link }>
+										{ event.title }
+									</a>
 								</h3>
 								<p className="wporg-meeting-calendar__list-event-copy">
 									{ __( 'Meets: ', 'wporg' ) }
