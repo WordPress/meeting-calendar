@@ -18,6 +18,8 @@ import { useEvents } from '../store/event-context';
 function ListItem( { date, events } ) {
 	const { setTeam } = useEvents();
 
+	const isCancelled = ( status ) => 'cancelled' === status;
+
 	return (
 		<li key={ `row-${ date }` }>
 			<strong className="wporg-meeting-calendar__list-title">
@@ -37,7 +39,9 @@ function ListItem( { date, events } ) {
 				};
 				return (
 					<article
-						className="wporg-meeting-calendar__list-event"
+						className={ `wporg-meeting-calendar__list-event ${
+							isCancelled( event.status ) ? 'is-cancelled' : ''
+						}` }
 						key={ event.instance_id }
 					>
 						<div>{ format( 'g:i a: ', event.datetime ) }</div>
@@ -58,19 +62,20 @@ function ListItem( { date, events } ) {
 									{ event.team }
 								</a>
 							) }
-							{ 'cancelled' === event.status && (
-								<p>
-									<em>
-										{ __(
-											'This meeting has been cancelled',
-											'wporg'
-										) }
-									</em>
-								</p>
-							) }
+
 							<div>
 								<h3 className="wporg-meeting-calendar__list-event-title">
-									<a href={ event.link }>{ event.title }</a>
+									<a href={ event.link }>
+										<span>{ event.title }</span>
+										{ isCancelled( event.status ) && (
+											<span>
+												{ __(
+													' Meeting is cancelled',
+													'wporg'
+												) }
+											</span>
+										) }
+									</a>
 								</h3>
 								<p className="wporg-meeting-calendar__list-event-copy">
 									{ __( 'Meets: ', 'wporg' ) }
@@ -81,6 +86,9 @@ function ListItem( { date, events } ) {
 									{ getSlackLink( event.location ) }
 								</p>
 							</div>
+							{ isCancelled( event.status ) && (
+								<div className="wporg-meeting-calendar__list-panel" />
+							) }
 						</div>
 					</article>
 				);
