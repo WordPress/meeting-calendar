@@ -336,18 +336,29 @@
 .wporg-meeting-calendar__filter {
 	display: flex;
 	align-items: center;
-  border: 1px solid #ddd;
-  padding: 12px;
-  background: #eee;
+	border: 1px solid #ddd;
+	padding: 12px;
+	background: #eee;
+}
+
+@media ( max-width: 782px ) {
+	.wporg-meeting-calendar__filter {
+		display: block;
+	}
+
+	.wporg-meeting-calendar__filter p {
+		margin: 1em 0 0.5em;
+	}
 }
 
 .wporg-meeting-calendar__filter-label {
-  padding-right: 6px;
+	padding-right: 6px;
 	margin-bottom: 0;
 }
 
 .wporg-meeting-calendar__filter-applied {
 	flex: 1;
+	font-size: 16px;
 	margin: 0 1em;
 }
 
