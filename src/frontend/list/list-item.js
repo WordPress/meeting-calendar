@@ -44,7 +44,7 @@ function ListItem( { date, events } ) {
 						}` }
 						key={ event.instance_id }
 					>
-						<div>{ format( 'g:i a: ', event.datetime ) }</div>
+						<div>{ format( 'g:i a ', event.datetime ) }</div>
 						<div className="wporg-meeting-calendar__list-event-details">
 							{ event.team && (
 								<a
