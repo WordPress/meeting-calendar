@@ -436,3 +436,7 @@
 .wporg-meeting-calendar__modal-notice {
 	margin: 0 0 16px 0;
 }
+.meeting-cancelled .wporg-meeting-detail {
+	text-decoration: line-through;
+}
+
