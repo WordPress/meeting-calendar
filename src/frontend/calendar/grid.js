@@ -4,14 +4,14 @@
 import { __ } from '@wordpress/i18n';
 import { format, gmdate } from '@wordpress/date';
 import { Fragment, useState } from '@wordpress/element';
-import { Modal } from '@wordpress/components';
+import { Modal, Notice } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import CalendarCell from './cell';
 import CalendarHeader from './header';
-import { getFrequencyLabel, getRows, getSlackLink } from './utils';
+import { getFrequencyLabel, getRows, getSlackLink, isCancelled } from './utils';
 import { useEvents } from '../store/event-context';
 
 function CalendarGrid( { month, year } ) {
@@ -45,18 +45,25 @@ function CalendarGrid( { month, year } ) {
 					overlayClassName="wporg-meeting-calendar__modal-overlay"
 					onRequestClose={ () => void setActiveEvent( null ) }
 				>
-					<p>
-						{ 'cancelled' !== activeEvent.status ? (
+					{ ! isCancelled( activeEvent.status ) ? (
+						<p>
 							<abbr title={ gmdate( 'c', activeEvent.datetime ) }>
 								{ format(
 									'l, F j, Y, g:i a',
 									activeEvent.datetime
 								) }
 							</abbr>
-						) : (
-							__( 'This meeting has been cancelled', 'wporg' )
-						) }
-					</p>
+						</p>
+					) : (
+						<Notice
+							className="wporg-meeting-calendar__modal-notice"
+							status="warning"
+							isDismissible={ false }
+						>
+							{ __( 'This meeting has been cancelled', 'wporg' ) }
+						</Notice>
+					) }
+
 					{ !! activeEvent.location && (
 						<p>
 							Location: { getSlackLink( activeEvent.location ) }

@@ -136,3 +136,12 @@ export function isToday( date ) {
 		date.getFullYear() == today.getFullYear()
 	);
 }
+
+/**
+ * Returns whether the event is cancelled
+ *
+ * @param {string} status Status of the event Ie: active, cancelled
+ */
+export function isCancelled( status ) {
+	return 'cancelled' === status;
+}

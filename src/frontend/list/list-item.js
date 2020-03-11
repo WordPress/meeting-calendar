@@ -12,13 +12,12 @@ import {
 	getTeamClass,
 	getSlackLink,
 	getFrequencyLabel,
+	isCancelled,
 } from '../calendar/utils';
 import { useEvents } from '../store/event-context';
 
 function ListItem( { date, events } ) {
 	const { setTeam } = useEvents();
-
-	const isCancelled = ( status ) => 'cancelled' === status;
 
 	return (
 		<li key={ `row-${ date }` }>

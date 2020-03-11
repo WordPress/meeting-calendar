@@ -8,7 +8,7 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass, isToday } from './utils';
+import { getTeamClass, isToday, isCancelled } from './utils';
 
 function CalendarCell( {
 	blank = false,
@@ -58,7 +58,10 @@ function CalendarCell( {
 						onClick={ () => void onEventClick( event ) }
 						className={
 							'wporg-meeting-calendar__cell-event ' +
-							getTeamClass( event.team )
+							getTeamClass( event.team ) +
+							( isCancelled( event.status )
+								? ' is-visually-disabled'
+								: '' )
 						}
 					>
 						<div className="wporg-meeting-calendar__cell-event-time">

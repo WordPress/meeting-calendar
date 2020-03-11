@@ -72,6 +72,16 @@
 	border-radius: 2px;
 	width: 100%;
 }
+
+.wporg-meeting-calendar__cell-event.is-visually-disabled {
+	opacity: 0.3;
+}
+
+.wporg-meeting-calendar__cell-event.is-visually-disabled .wporg-meeting-calendar__cell-event-title {
+	text-decoration: line-through;
+}
+
+
 /* These styles are separate for !important specificity with `wporg-meeting-calendar__team-*` styles below. */
 .wporg-meeting-calendar__cell-event {
 	background: #0085ba !important;
@@ -419,4 +429,8 @@
 
 .wporg-meeting-calendar__modal-overlay {
 	z-index: 1000001; /* popover z-index + 1 */
+}
+
+.wporg-meeting-calendar__modal-notice {
+	margin: 0 0 16px 0;
 }
