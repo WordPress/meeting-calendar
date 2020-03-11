@@ -8,11 +8,12 @@ const StateContext = createContext();
 const CALENDAR_VIEW = 'calendar_view';
 const LIST_VIEW = 'list_view';
 
-export function ViewProvider( { children, value: { isMobileOnLoad } } ) {
+export function ViewProvider( { children, isSmallViewport } ) {
 	return (
 		<StateContext.Provider
 			value={ {
-				defaultState: isMobileOnLoad ? LIST_VIEW : CALENDAR_VIEW,
+				defaultState: isSmallViewport ? LIST_VIEW : CALENDAR_VIEW,
+				isSmallViewport,
 			} }
 		>
 			{ children }
@@ -34,5 +35,6 @@ export function useViews() {
 		isListView: () => isView( LIST_VIEW ),
 		setCalendarView: () => setView( CALENDAR_VIEW ),
 		setListView: () => setView( LIST_VIEW ),
+		shouldForceListView: context.isSmallViewport,
 	};
 }

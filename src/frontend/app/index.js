@@ -11,7 +11,7 @@ function App( { events } ) {
 
 	return (
 		<EventsProvider value={ events }>
-			<ViewProvider value={ { isMobileOnLoad: isSmall } }>
+			<ViewProvider isSmallViewport={ isSmall }>
 				<Calendar />
 			</ViewProvider>
 		</EventsProvider>
