@@ -75,10 +75,12 @@
 
 .wporg-meeting-calendar__cell-event.is-visually-disabled {
 	opacity: 0.3;
+	text-decoration: line-through !important;
 }
 
-.wporg-meeting-calendar__cell-event.is-visually-disabled .wporg-meeting-calendar__cell-event-title {
-	text-decoration: line-through;
+.wporg-meeting-calendar__cell-event.is-visually-disabled .wporg-meeting-calendar__cell-event-title,
+.wporg-meeting-calendar__dropdown.is-visually-disabled {
+	text-decoration: line-through !important;
 }
 
 

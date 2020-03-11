@@ -108,7 +108,10 @@ function CalendarCell( {
 										}
 										className={
 											'wporg-meeting-calendar__cell-event ' +
-											getTeamClass( event.team )
+											getTeamClass( event.team ) +
+											( isCancelled( event.status )
+												? ' is-visually-disabled'
+												: '' )
 										}
 									>
 										{ format( 'g:i a: ', event.datetime ) }
