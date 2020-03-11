@@ -12,11 +12,23 @@
 .wporg-meeting-calendar__header {
 	display: flex;
 	align-items: center;
+	flex-direction: column;
 	margin-bottom: 18px;
 }
 
 .wporg-meeting-calendar__header div {
 	flex: 1;
+	padding: 16px 0;
+}
+
+@media ( min-width: 550px ) {
+	.wporg-meeting-calendar__header {
+		flex-direction: row;
+	}
+
+	.wporg-meeting-calendar__header div {
+		padding: 0;
+	}
 }
 
 .wporg-meeting-calendar__header div:last-child {
