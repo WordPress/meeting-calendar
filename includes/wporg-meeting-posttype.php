@@ -711,7 +711,10 @@ class Meeting_Post_Type {
 			add_action( 'wp_footer', array( $this, 'time_conversion_script' ), 999 );
 		}
 
-		switch_to_blog( get_main_site_id() );
+		// If we're on a network, assume the calendar exists on the main site
+		if ( function_exists( 'switch_to_blog' ) ) {
+			switch_to_blog( get_main_site_id() );
+		}
 
 		$query = new WP_Query(
 			array(
@@ -744,23 +747,46 @@ class Meeting_Post_Type {
 				$slack_channel = sanitize_title( $match[1] );
 			}
 
-			$out .= '<p>';
+			$cancelled = $this->is_meeting_cancelled( $post->ID, $post->next_date );
+
+			$out .= '<p class="wporg-meeting-shortcode' . ( $cancelled ? ' meeting-cancelled' : '') . '">';
+			$out .= '<span class="wporg-meeting-detail">';
+
 			$out .= esc_html( $attr['before'] );
 			$out .= '<strong class="meeting-title">' . esc_html( $post->post_title ) . '</strong>';
 			$display_more = $query->found_posts - intval( $limit );
 			if ( $display_more > 0 ) {
 				$out .= ' <a title="Click to view all meetings for this team" href="/meetings/#' . esc_attr( strtolower( $attr['team'] ) ) . '">' . sprintf( __( '(+%s more)'), $display_more ) . '</a>';
 			}
-			$out .= '</br>';
+			$out .= '<br/>';
 			$out .= '<time class="date" date-time="' . esc_attr( $next_meeting_iso ) . '" title="' . esc_attr( $next_meeting_iso ) . '">' . $next_meeting_display . '</time> ';
 			$out .= sprintf( esc_html__( '(%s from now)' ), human_time_diff( $next_meeting_timestamp, current_time('timestamp') ) );
 			if ( $post->location && $slack_channel ) {
 				$out .= ' ' . sprintf( wp_kses( __('at <a href="%s">%s</a> on Slack'), array(  'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel,   $post->location );
 			}
+			$out .= '</span>';
+
+			if ( $cancelled ) {
+				$out .= '<br>';
+				$future_occurrences = $this->get_future_occurrences( $post, null, array() );
+				$next_meeting = null;
+				foreach ( $future_occurrences as $occurrence ) {
+					if ( !$this->is_meeting_cancelled( $post->ID, $occurrence )
+							&& $occurrence > $post->next_date )
+						$next_meeting = $occurrence;
+				}
+				if ( $next_meeting ) {
+					$out .= '<i>' . sprintf( esc_html__( 'This event is cancelled. The next meeting is scheduled for %s.', 'wporg' ), $next_meeting ) . '</i>';
+				} else {
+					$out .= '<i>' . esc_html__( 'This event is cancelled.', 'wporg' ) . '</i>';
+				}
+			}
 			$out .= '</p>';
 		}
 
-		restore_current_blog();
+		if ( function_exists( 'restore_current_blog' ) ) {
+			restore_current_blog();
+		}
 
 		return $out;
 	}
