@@ -531,12 +531,13 @@ class Meeting_Post_Type {
 			<?php
 
 			foreach ( $occurrences as $occurrence ) {
+				$is_cancelled = $this->is_meeting_cancelled( $meeting->ID, $occurrence );
 				?>
 					<li>
 						<?php printf( __( '%s at %s', 'wporg' ), $occurrence, $meeting->time); ?>
-						<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr($meeting->ID) . ':' . esc_attr( $occurrence ); ?>" checked="<?php echo ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? '' : 'checked' ); ?>" />
+						<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr($meeting->ID) . ':' . esc_attr( $occurrence ); ?>" <?php echo ( $is_cancelled ? '' : 'checked="checked"' ); ?> />
 						<label>
-							<?php if ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ) {
+							<?php if ( $is_cancelled ) {
 								echo __( 'Cancelled', 'wporg' );
 							} ?>
 						</label>
