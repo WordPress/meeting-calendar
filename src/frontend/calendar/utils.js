@@ -122,3 +122,17 @@ export function getTeamClass( team ) {
 		team.replace( [ ' ', '.' ], '-' ).toLowerCase()
 	);
 }
+
+/**
+ * Checks whether a date is today
+ *
+ * @param {Object} date
+ */
+export function isToday( date ) {
+	const today = new Date();
+	return (
+		date.getDate() == today.getDate() &&
+		date.getMonth() == today.getMonth() &&
+		date.getFullYear() == today.getFullYear()
+	);
+}

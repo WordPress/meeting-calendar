@@ -8,7 +8,7 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass } from './utils';
+import { getTeamClass, isToday } from './utils';
 
 function CalendarCell( {
 	blank = false,
@@ -20,7 +20,7 @@ function CalendarCell( {
 } ) {
 	const MAX_EVENTS = 3;
 	if ( blank ) {
-		return <td aria-hidden />;
+		return <td className="wporg-meeting-calendar__cell" aria-hidden />;
 	}
 
 	const date = new Date( year, month, day );
@@ -29,10 +29,24 @@ function CalendarCell( {
 	const restOfEvents = dayEvents.slice( MAX_EVENTS );
 
 	return (
-		<td className="wporg-meeting-calendar__cell">
+		<td
+			className={ `wporg-meeting-calendar__cell ${
+				isToday( date ) ? 'is-today' : ''
+			}` }
+		>
 			<strong>
 				<span className="screen-reader-text">
-					{ format( 'F j', date ) }
+					{ format( 'F j', date ) }{ ' ' }
+					{ // translators: %d: Count of all events, ie: 4.
+					sprintf(
+						_n(
+							'%d event',
+							'%d events',
+							dayEvents.length,
+							'wporg'
+						),
+						dayEvents.length
+					) }
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>

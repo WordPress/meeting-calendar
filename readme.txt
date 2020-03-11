@@ -16,6 +16,10 @@ This provides a way of scheduling recurring meetings, and displaying a calendar 
 
 == Installation ==
 
+1.  Activate the `Meeting Calendar` plugin in your WordPress plugin directory
+2.  Create some meetings
+3.  While editing your page/post, add in the `Meeting Calendar` block and publish!
+
 == Frequently Asked Questions ==
 
 == Screenshots ==
