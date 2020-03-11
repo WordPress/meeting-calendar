@@ -251,7 +251,7 @@
 	z-index: 1000001; /* popover z-index + 1 */
 }
 
-.wporg-meeting-shortcode.meeting-cancelled {
+.meeting-cancelled .wporg-meeting-detail {
 	text-decoration: line-through;
 }
 

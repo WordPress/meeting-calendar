@@ -749,6 +749,7 @@ class Meeting_Post_Type {
 			$cancelled = $this->is_meeting_cancelled( $post->ID, $post->next_date );
 
 			$out .= '<p class="wporg-meeting-shortcode' . ( $cancelled ? ' meeting-cancelled' : '') . '">';
+			$out .= '<span class="wporg-meeting-detail">';
 
 			$out .= esc_html( $attr['before'] );
 			$out .= '<strong class="meeting-title">' . esc_html( $post->post_title ) . '</strong>';
@@ -762,9 +763,22 @@ class Meeting_Post_Type {
 			if ( $post->location && $slack_channel ) {
 				$out .= ' ' . sprintf( wp_kses( __('at <a href="%s">%s</a> on Slack'), array(  'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel,   $post->location );
 			}
+			$out .= '</span>';
+
 			if ( $cancelled ) {
 				$out .= '<br>';
-				$out .= '<i>' . __( 'This event is cancelled.') . '</i>';
+				$future_occurrences = $this->get_future_occurrences( $post, null, array() );
+				$next_meeting = null;
+				foreach ( $future_occurrences as $occurrence ) {
+					if ( !$this->is_meeting_cancelled( $post->ID, $occurrence )
+							&& $occurrence > $post->next_date )
+						$next_meeting = $occurrence;
+				}
+				if ( $next_meeting ) {
+					$out .= '<i>' . sprintf( esc_html__( 'This event is cancelled. The next meeting is scheduled for %s.', 'wporg' ), $next_meeting ) . '</i>';
+				} else {
+					$out .= '<i>' . esc_html__( 'This event is cancelled.', 'wporg' ) . '</i>';
+				}
 			}
 			$out .= '</p>';
 		}
