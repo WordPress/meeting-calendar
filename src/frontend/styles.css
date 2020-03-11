@@ -73,6 +73,7 @@
 
 .wporg-meeting-calendar__dropdown .components-menu-group {
 	padding: 7px;
+	box-sizing: border-box;
 }
 .wporg-meeting-calendar__dropdown .components-menu-item__button {
 	white-space: nowrap;
