@@ -59,9 +59,9 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
-		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting One</strong></br><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'tomorrow' ) )) );
+		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'tomorrow' ) )) );
 
-		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting Two</strong></br><time class="date" date-time="%Y-%m-%dT02:00:00+00:00" title="%Y-%m-%dT02:00:00+00:00">%a %b %e 02:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) )) );
+		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting Two</strong><br/><time class="date" date-time="%Y-%m-%dT02:00:00+00:00" title="%Y-%m-%dT02:00:00+00:00">%a %b %e 02:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) )) );
 	}
 
 	function test_shortcode_cancelled() {
@@ -89,6 +89,6 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 
 
 		// The shortcode should show the next meeting is in 13 days
-		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting One</strong></br><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +14 days' ) )) );
+		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +14 days' ) )) );
 	}
 }
