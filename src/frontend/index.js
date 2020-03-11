@@ -15,8 +15,10 @@ const getMeetings = ( calendarEl ) => {
 
 const initCalendar = () => {
 	const calendarEl = document.getElementById( 'wporg-meeting-calendar-js' );
+	if ( ! calendarEl ) {
+		return;
+	}
 	const events = getMeetings( calendarEl );
-
 	render( createElement( App, { events } ), calendarEl );
 };
 

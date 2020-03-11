@@ -73,20 +73,23 @@ function register_assets() {
 		$block_info['version']
 	);
 
-	wp_register_script(
-		'wporg-calendar-script',
-		plugin_dir_url( __FILE__ ) . 'build/calendar.js',
-		$frontend_info['dependencies'],
-		$frontend_info['version'],
-		false
-	);
+	// No frontend scripts in the editor
+	if( ! is_admin() ) {
+		wp_register_script(
+			'wporg-calendar-script',
+			plugin_dir_url( __FILE__ ) . 'build/calendar.js',
+			$frontend_info['dependencies'],
+			$frontend_info['version'],
+			false
+		);
 
-	wp_register_style(
-		'wporg-calendar-style',
-		plugin_dir_url( __FILE__ ) . 'build/calendar.css',
-		array( 'wp-components' ),
-		$frontend_info['version']
-	);
+		wp_register_style(
+			'wporg-calendar-style',
+			plugin_dir_url( __FILE__ ) . 'build/calendar.css',
+			array( 'wp-components' ),
+			$frontend_info['version']
+		);
+	}
 
 	// Enqueue the script in the editor.
 	register_block_type(
