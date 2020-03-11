@@ -206,7 +206,7 @@
 }
 
 @media (min-width: 600px) {
-	.wporg-meeting-calendar__list-event-details div:last-child {
+	.wporg-meeting-calendar__list-event-details div:first-child {
 		padding-left: 32px;
 	}
 
