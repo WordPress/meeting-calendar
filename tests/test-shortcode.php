@@ -83,12 +83,19 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		) );
 
 		// Cancel the meeting that's in 6 days
-		$this->mpt->cancel_meeting( array( 'meeting_id' => $meeting_1, 'date' => strftime( '%Y-%m-%d', strtotime( 'yesterday + 6 days' ) ) ) );
+		$response = $this->mpt->cancel_meeting( array( 'meeting_id' => $meeting_1, 'date' => strftime( '%Y-%m-%d', strtotime( 'yesterday +7 days' ) ) ) );
+		$this->assertGreaterThan( 0, $response );
 
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
 
-		// The shortcode should show the next meeting is in 13 days
-		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +14 days' ) )) );
+		// The shortcode should show the next meeting is in 7 days
+		$this->assertGreaterThan( 0, strpos( $actual, strftime('<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) )) );
+
+		// It should be listed as cancelled
+		$this->assertGreaterThanOrEqual( 0, strpos( $actual, '<p class="wporg-meeting-shortcode meeting-cancelled"' ) );
+
+		// It should give the next date
+		$this->assertGreaterThan( 0, strpos( $actual, strftime( 'This event is cancelled. The next meeting is scheduled for %Y-%m-%d.', strtotime( 'yesterday +14 days' ) ) ) );
 	}
 }
