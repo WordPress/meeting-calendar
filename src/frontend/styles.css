@@ -72,6 +72,14 @@
 	border-radius: 2px;
 	width: 100%;
 }
+
+.wporg-meeting-calendar__cell-event.is-cancelled,
+.wporg-meeting-calendar__cell-event.is-cancelled .wporg-meeting-calendar__cell-event-title,
+.wporg-meeting-calendar__dropdown.is-cancelled {
+	text-decoration: line-through !important;
+}
+
+
 /* These styles are separate for !important specificity with `wporg-meeting-calendar__team-*` styles below. */
 .wporg-meeting-calendar__cell-event {
 	background: #0085ba !important;
@@ -132,6 +140,7 @@
 }
 
 .wporg-meeting-calendar__list-event {
+	position: relative;
 	display: flex;
 	border-bottom: 1px solid #aaa;
 	background: #fff;
@@ -184,13 +193,25 @@
 }
 
 @media (min-width: 600px) {
-	.wporg-meeting-calendar__list-event-details div:last-child {
+	.wporg-meeting-calendar__list-event-details div:first-child {
 		padding-left: 32px;
 	}
 
 	.wporg-meeting-calendar__list-event-team {
 		margin: 0 16px;
 	}
+}
+
+.wporg-meeting-calendar__list-event.is-cancelled .wporg-meeting-calendar__list-event-title a > span:first-child,
+.wporg-meeting-calendar__list-event.is-cancelled .wporg-meeting-calendar__list-event-copy {
+	text-decoration: line-through;
+}
+
+.wporg-meeting-calendar__list-event.is-cancelled .wporg-meeting-calendar__list-event-title a > span:last-child {
+	padding-left: 8px;
+	font-size: 16px;
+	font-weight: normal;
+	vertical-align: bottom;
 }
 
 .wporg-meeting-calendar__modal-overlay {
@@ -217,7 +238,7 @@
 }
 
 .wporg-meeting-calendar__list-event-copy {
-	color: #777;
+	color: #555D66;
 	font-weight: 200;
 	font-size: 14px !important;
 }
@@ -397,6 +418,9 @@
 	z-index: 1000001; /* popover z-index + 1 */
 }
 
+.wporg-meeting-calendar__modal-notice {
+	margin: 0 0 16px 0;
+}
 .meeting-cancelled .wporg-meeting-detail {
 	text-decoration: line-through;
 }
