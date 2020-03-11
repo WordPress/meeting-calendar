@@ -75,7 +75,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
 		$this->assertGreaterThanOrEqual( 4, count( $meeting['future_occurrences'] ) );
-		$this->assertLessThanOrEqual( 6, count( $meeting['future_occurrences'] ) );
+		$this->assertLessThanOrEqual( 10, count( $meeting['future_occurrences'] ) );
 		// There should be no duplicates
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
@@ -88,6 +88,8 @@ class MeetingAPITest extends WP_UnitTestCase {
 			$dt = new DateTime( $future_date );
 			// It should be in the future
 			$this->assertGreaterThanOrEqual( new DateTime( 'yesterday' ), $dt );
+			// It should be within 2 months (the default range)
+			$this->assertLessThanOrEqual( new DateTime( '+2 months' ), $dt );
 			// Day of week should be Wednesday, same as the original
 			$this->assertEquals( 3, $dt->format( 'N' ) );
 
