@@ -75,7 +75,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
 		$this->assertGreaterThanOrEqual( 4, count( $meeting['future_occurrences'] ) );
-		$this->assertLessThanOrEqual( 6, count( $meeting['future_occurrences'] ) );
+		$this->assertLessThanOrEqual( 10, count( $meeting['future_occurrences'] ) );
 		// There should be no duplicates
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
@@ -88,6 +88,8 @@ class MeetingAPITest extends WP_UnitTestCase {
 			$dt = new DateTime( $future_date );
 			// It should be in the future
 			$this->assertGreaterThanOrEqual( new DateTime( 'yesterday' ), $dt );
+			// It should be within 2 months (the default range)
+			$this->assertLessThanOrEqual( new DateTime( '+2 months' ), $dt );
 			// Day of week should be Wednesday, same as the original
 			$this->assertEquals( 3, $dt->format( 'N' ) );
 
@@ -331,6 +333,36 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  ),
 		  9 => 
 		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-12',
+		    'date' => '2020-02-12',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-02-12T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'location' => '#meta',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  10 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-19',
+		    'date' => '2020-02-19',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-02-19T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'location' => '#meta',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
+		    'status' => 'active',
+		  ),
+		  11 => 
+		  array (
 		    'meeting_id' => $this->meeting_ids[2],
 		    'instance_id' => $this->meeting_ids[2] . ':2020-02-19',
 		    'date' => '2020-02-19',
@@ -345,6 +377,21 @@ class MeetingAPITest extends WP_UnitTestCase {
 		    array (
 		      0 => 3,
 		    ),
+		    'status' => 'active',
+		  ),
+		  12 => 
+		  array (
+		    'meeting_id' => $this->meeting_ids[0],
+		    'instance_id' => $this->meeting_ids[0] . ':2020-02-26',
+		    'date' => '2020-02-26',
+		    'time' => '14:00:00',
+		    'datetime' => '2020-02-26T14:00:00+00:00',
+		    'team' => 'Team-A',
+		    'link' => 'wordpress.org',
+		    'title' => 'A weekly meeting',
+		    'location' => '#meta',
+		    'recurring' => 'weekly',
+		    'occurrence' => '',
 		    'status' => 'active',
 		  ),
 		);
@@ -374,7 +421,10 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  5 => '2020-02-26T14:00:00+00:00',
 		  6 => '2020-03-01T15:00:00+00:00',
 		  7 => '2020-03-04T14:00:00+00:00',
-		  8 => '2020-03-18T16:00:00+00:00',
+		  8 => '2020-03-11T14:00:00+00:00',
+		  9 => '2020-03-18T14:00:00+00:00',
+		  10 => '2020-03-18T16:00:00+00:00',
+		  11 => '2020-03-25T14:00:00+00:00',
 		);
 		$this->assertEquals( $expected_datetimes, wp_list_pluck( $meetings, 'datetime' ) );
 
@@ -387,7 +437,10 @@ class MeetingAPITest extends WP_UnitTestCase {
 		  5 => 'Team-A',
 		  6 => 'Team-B',
 		  7 => 'Team-A',
-		  8 => 'Team-C',
+		  8 => 'Team-A',
+		  9 => 'Team-A',
+		  10 => 'Team-C',
+		  11 => 'Team-A',
 		);
 		$this->assertEquals( $expected_teams, wp_list_pluck( $meetings, 'team' ) );
 

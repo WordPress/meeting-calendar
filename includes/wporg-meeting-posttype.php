@@ -772,8 +772,10 @@ class Meeting_Post_Type {
 				$next_meeting = null;
 				foreach ( $future_occurrences as $occurrence ) {
 					if ( !$this->is_meeting_cancelled( $post->ID, $occurrence )
-							&& $occurrence > $post->next_date )
+							&& $occurrence > $post->next_date ) {
 						$next_meeting = $occurrence;
+						break;
+					}
 				}
 				if ( $next_meeting ) {
 					$out .= '<i>' . sprintf( esc_html__( 'This event is cancelled. The next meeting is scheduled for %s.', 'wporg' ), $next_meeting ) . '</i>';
