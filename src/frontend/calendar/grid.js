@@ -49,7 +49,7 @@ function CalendarGrid( { month, year } ) {
 						<p>
 							<abbr title={ gmdate( 'c', activeEvent.datetime ) }>
 								{ format(
-									'l, F j, Y, g:i a',
+									'l, F j, Y, g:i a (\\U\\T\\CP)',
 									activeEvent.datetime
 								) }
 							</abbr>
