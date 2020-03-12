@@ -236,15 +236,12 @@ class Meeting_Post_Type {
 	        'show_in_nav_menus'   => false,
 	        'show_in_rest'        => true,
 	        'can_export'          => false,
-	        'has_archive'         => true,
+	        'has_archive'         => false,
 	        'exclude_from_search' => true,
 	        'publicly_queryable'  => true,
 	        'capability_type'     => 'post',
 			'register_meta_box_cb'=> array( $this, 'add_meta_boxes' ),
-			'rewrite'             => array(
-				'with_front'      => false,
-				'slug'            => __( 'meetings', 'wporg' ),
-			),
+			'rewrite'             => false,
 	    );
 		register_post_type( 'meeting', $args );		
 	}
