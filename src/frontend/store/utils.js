@@ -11,7 +11,8 @@ import { format } from '@wordpress/date';
 export function getSortedEvents( events ) {
 	const sortedEvents = {};
 	events.forEach( ( event ) => {
-		const key = format( 'Y-m-d', event.date );
+		const d = new Date( event.datetime );
+		const key = format( 'Y-m-d', d );
 		if ( sortedEvents.hasOwnProperty( key ) ) {
 			sortedEvents[ key ].push( event );
 		} else {
