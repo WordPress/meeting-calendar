@@ -381,6 +381,15 @@
 	background: #eee;
 }
 
+.wporg-meeting-calendar__filter-dropdown {
+	max-width: none;
+}
+
+.wporg-meeting-calendar__filter-feed {
+	margin-left: auto;
+	margin-top: 0;
+}
+
 @media ( max-width: 782px ) {
 	.wporg-meeting-calendar__filter {
 		display: block;
@@ -388,6 +397,14 @@
 
 	.wporg-meeting-calendar__filter p {
 		margin: 1em 0 0.5em;
+	}
+
+	.wporg-meeting-calendar__filter-dropdown {
+		max-width: 200px;
+	}
+
+	.wporg-meeting-calendar__filter-feed {
+		margin-top: 8px;
 	}
 }
 
@@ -397,7 +414,6 @@
 }
 
 .wporg-meeting-calendar__filter-applied {
-	flex: 1;
 	font-size: 16px;
 	margin: 0 1em;
 }
@@ -410,6 +426,8 @@
 /** Overwriting a default rule on the dropdown container */
 .wporg-meeting-calendar__filter-dropdown > div {
 	margin-bottom: 0 !important;
+	margin: 0 auto;
+	max-width:
 }
 
 .wporg-meeting-calendar__modal h1 {

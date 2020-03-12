@@ -77,6 +77,21 @@ const Filter = () => {
 					</Button>
 				</>
 			) }
+			<div className="wporg-meeting-calendar__filter-feed">
+				<Button
+					icon="calendar-alt"
+					isSecondary
+					style={ {
+						marginLeft: 'auto',
+					} }
+					onClick={ ( e ) => {
+						window.open( '/meetings.ics' );
+					} }
+				>
+					{ __( 'iCal', 'wporg' ) }
+					{ '' !== team && ` - ${ selected.label }` }
+				</Button>
+			</div>
 		</div>
 	);
 };
