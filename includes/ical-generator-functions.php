@@ -39,7 +39,7 @@ function generate_event( $post ) {
 	$recurring = $post->recurring;
 	$sequence  = empty( $post->sequence ) ? 0 : intval( $post->sequence );
 
-	$start_date      = strftime( '%Y%m%d', strtotime( $post->next_date ) );
+	$start_date      = strftime( '%Y%m%d', strtotime( $post->start_date ) );
 	$start_time      = strftime( '%H%M%S', strtotime( $post->time ) );
 	$start_date_time = "{$start_date}T{$start_time}Z";
 

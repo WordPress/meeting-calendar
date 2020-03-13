@@ -63,8 +63,8 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$expected_posts = '';
 		Meeting_Post_Type::getInstance()->meeting_set_next_meeting( $posts, new WP_Query( array('post_type' => 'meeting', 'nopaging' => true ) ) );	
 		foreach ( $posts as $i => $post ) {
-			$post->datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->next_date} {$post->time} GMT" ) );
-			$post->end_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->next_date} {$post->time} GMT +1 hour" ) );
+			$post->start_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT" ) );
+			$post->end_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT +1 hour" ) );
 			if ( $post->ID === $this->meeting_ids[0] )
 				$post->rrule = 'FREQ=WEEKLY';
 			elseif ( $post->ID === $this->meeting_ids[1] )
@@ -77,8 +77,8 @@ class MeetingiCalTest extends WP_UnitTestCase {
 			$expected_posts .= <<<EOF
 BEGIN:VEVENT
 UID:{$post->ID}
-DTSTAMP:{$post->datetime}
-DTSTART;VALUE=DATE:{$post->datetime}
+DTSTAMP:{$post->start_datetime}
+DTSTART;VALUE=DATE:{$post->start_datetime}
 DTEND;VALUE=DATE:{$post->end_datetime}
 CATEGORIES:WordPress
 ORGANIZER;CN=WordPress {$post->team} Team:mailto:mail@example.com
@@ -119,8 +119,8 @@ EOF;
 
 		Meeting_Post_Type::getInstance()->meeting_set_next_meeting( $posts, new WP_Query( array('post_type' => 'meeting', 'nopaging' => true ) ) );	
 		foreach ( $posts as $i => $post ) {
-			$post->datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->next_date} {$post->time} GMT" ) );
-			$post->end_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->next_date} {$post->time} GMT +1 hour" ) );
+			$post->start_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT" ) );
+			$post->end_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT +1 hour" ) );
 			$post->exdate = str_replace( '-', '', $occurrences[1] );
 		}
 
@@ -132,8 +132,8 @@ METHOD:PUBLISH
 CALSCALE:GREGORIAN
 BEGIN:VEVENT
 UID:49
-DTSTAMP:{$posts[0]->datetime}
-DTSTART;VALUE=DATE:{$posts[0]->datetime}
+DTSTAMP:{$posts[0]->start_datetime}
+DTSTART;VALUE=DATE:{$posts[0]->start_datetime}
 DTEND;VALUE=DATE:{$posts[0]->end_datetime}
 CATEGORIES:WordPress
 ORGANIZER;CN=WordPress Team-A Team:mailto:mail@example.com
