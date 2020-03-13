@@ -69,8 +69,8 @@ function generate_event( $post ) {
 	$event .= "UID:{$id}" . NEWLINE;
 
 	$event .= "DTSTAMP:{$start_date_time}" . NEWLINE;
-	$event .= "DTSTART;VALUE=DATE:{$start_date_time}" . NEWLINE;
-	$event .= "DTEND;VALUE=DATE:{$end_date_time}" . NEWLINE;
+	$event .= "DTSTART:{$start_date_time}" . NEWLINE;
+	$event .= "DTEND:{$end_date_time}" . NEWLINE;
 	$event .= 'CATEGORIES:WordPress' . NEWLINE;
 	// Some calendars require the organizer's name and email address
 	$event .= "ORGANIZER;CN=WordPress {$team} Team:mailto:mail@example.com" . NEWLINE;
