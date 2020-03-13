@@ -21,6 +21,14 @@ const Filter = () => {
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
 	const selected = teams.find( ( option ) => team === option.value );
 
+	const getCalendarUrl = () => {
+		if ( ! selected ) {
+			return '/meetings.ics';
+		}
+
+		return `/meetings-${ selected.value }.ics`;
+	};
+
 	return (
 		<div className="wporg-meeting-calendar__filter">
 			<label
@@ -80,13 +88,12 @@ const Filter = () => {
 			<div className="wporg-meeting-calendar__filter-feed">
 				<Button
 					icon="calendar-alt"
+					href={ getCalendarUrl() }
 					isSecondary
 					style={ {
 						marginLeft: 'auto',
 					} }
-					onClick={ ( e ) => {
-						window.open( '/meetings.ics' );
-					} }
+					download
 				>
 					{ __( 'iCal', 'wporg' ) }
 					{ '' !== team && ` - ${ selected.label }` }
