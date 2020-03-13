@@ -72,12 +72,11 @@ class Meeting_Post_Type {
 	}
 
 	public function meeting_set_next_meeting( $posts, $query ) {
-		if ( !$query->is_post_type_archive( 'meeting' ) ) {
-			return $posts;
-		}
-
 		// for each entry, set a fake meta value to show the next date for recurring meetings
 		array_walk( $posts, function ( &$post ) {
+			if ( 'meeting' !== $post->post_type ) {
+				return false;
+			}
 			$next = $this->get_next_occurrence( $post );
 			if ( $next ) {
 				$post->next_date = $next;
