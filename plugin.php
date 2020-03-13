@@ -129,16 +129,18 @@ add_action('plugins_loaded', __NAMESPACE__ . '\ics_init');
  *
  * Creates some sample data, and sets up the Rewrite rules.
  */
-function install() {
-	// We need the CPT to be registered to install.
-	init();
-	$meeting_post_type = new \Meeting_Post_Type();
-	$meeting_post_type->getInstance()->register_meeting_post_type();
+function install( $is_network_wide ) {
+	if ( !$is_network_wide ) {
+		// We need the CPT to be registered to install.
+		init();
+		$meeting_post_type = new \Meeting_Post_Type();
+		$meeting_post_type->getInstance()->register_meeting_post_type();
 
-	require_once( __DIR__ . '/includes/wporg-meeting-install.php' );
-	wporg_meeting_install();
+		require_once( __DIR__ . '/includes/wporg-meeting-install.php' );
+		wporg_meeting_install();
 
-	ics_init();
-	ICS\on_activate();
+		ics_init();
+		ICS\on_activate();
+	}
 }
 register_activation_hook( __FILE__, __NAMESPACE__ . '\install' );
