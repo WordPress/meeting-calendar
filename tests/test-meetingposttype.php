@@ -83,6 +83,38 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->assertGreaterThan( 0, $found, 'Found no meeting to test' );
 	}
 
+	function test_encoding() {
+		$meeting_id = $this->factory->post->create( array(
+			'post_title' => __( 'A & B meeting', 'wporg-meeting-calendar' ),
+			'post_type'  => 'meeting',
+			'post_status' => 'publish',
+			'meta_input' => array(
+				'team'       => 'Team-A&B',
+				'start_date' => strftime( '%Y-%m-%d', strtotime( 'tomorrow' ) ),
+				'end_date'   => '',
+				'time'       => '01:00',
+				'recurring'  => '',
+				'link'       => '&wordpress.org',
+				'location'   => '&meta',
+				),
+		) );
+
+		$meetings = $this->mpt->get_occurrences_for_period(null);
+
+		$found = 0;
+		foreach ( $meetings as $meeting ) {
+			if ( $meeting['meeting_id'] === $meeting_id ) {
+				++$found;
+				$this->assertEquals( 'Team-A&B', $meeting['team'] );
+				$this->assertEquals( '&wordpress.org', $meeting['link'] );
+				$this->assertEquals( '&meta', $meeting['location'] );
+				$this->assertEquals( 'A & B meeting', $meeting['title'] );
+			}
+		}
+		$this->assertGreaterThan( 0, $found, 'Found no meeting to test' );
+
+
+	}
 
 
 }
