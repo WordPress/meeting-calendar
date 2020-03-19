@@ -314,7 +314,7 @@ class Meeting_Post_Type {
 					'datetime'    => "{$occurrence}T{$meeting->time}+00:00",
 					'team'        => $meeting->team,
 					'link'        => $meeting->link,
-					'title'       => $meeting->post_title,
+					'title'       => wp_specialchars_decode( $meeting->post_title, ENT_QUOTES ),
 					'location'    => $meeting->location,
 					'recurring'   => $meeting->recurring,
 					'occurrence'  => $meeting->occurrence,
