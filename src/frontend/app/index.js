@@ -11,7 +11,7 @@ function App( { events } ) {
 	const { isSmall } = useWindowSize();
 
 	return (
-	<EventDataProvider>
+	<EventDataProvider data={ events } >
 		<EventsProvider>
 			<ViewProvider isSmallViewport={ isSmall }>
 				<Calendar />

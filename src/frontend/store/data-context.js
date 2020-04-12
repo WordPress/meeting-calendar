@@ -31,11 +31,10 @@ export function EventDataProvider( { children, data } ) {
 		const fromDate = new Date( currentDate.getFullYear(), currentDate.getMonth(), 1 );
 
 		apiFetch( {
-			path: `/wp/v2/meetings/from/${ format( 'Y-m-d', fromDate ) }`,
-	} ).then( events => {
+			path: `/wp/v2/meetings/from/${ format( 'Y-m-d', fromDate ) }?per_page=12`,
+		} ).then( events => {
 				setEventData( events )
 		} );
-
 	}, [ setEventData ])
 	return (
 		<EventDataContext.Provider value={ eventData }>
