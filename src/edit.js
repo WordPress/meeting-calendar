@@ -2,12 +2,16 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Placeholder } from '@wordpress/components';
+import { Disabled } from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
+import Calendar from './frontend/app';
 
 const EditView = () => (
-	<Placeholder
-		icon="calendar"
-		label={ __( 'Go to "Meetings" to add or edit your meetings', 'wporg' ) }
-	/>
+	<Disabled>
+		<Calendar />
+	</Disabled>
 );
 export default EditView;
