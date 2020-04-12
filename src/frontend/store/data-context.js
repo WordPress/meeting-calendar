@@ -11,7 +11,7 @@ const EventDataContext = createContext( [] );
 export function useEventData() {
 	const context = useContext( EventDataContext );
 	if ( context === undefined ) {
-		throw new Error( 'useEvents must be used within a Provider' );
+		throw new Error( 'useEventData must be used within a EventDataProvider' );
 	}
 	return context;
 }
