@@ -173,7 +173,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 			// And it's a valid date
 			$this->assertTrue( checkdate( $matches[2], $matches[3], $matches[1] ) );
 
-			$dt = new DateTime( $future_date );
+			$dt = new DateTime( $future_date . ' ' . $meeting['meta']['time'] );
 			// It should be in the future
 			$this->assertGreaterThanOrEqual( new DateTime(), $dt );
 
@@ -182,9 +182,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 			if ( $last ) {
 				$interval = $last->diff( $dt );
-				// Should be between 28 and 31 days since the last meeting
+				// Should be between 28 and 36 days since the last meeting
 				$this->assertGreaterThanOrEqual( 28, $interval->format( '%R%a' ) );
-				$this->assertLessThanOrEqual( 31, $interval->format( '%R%a' ) );
+				$this->assertLessThanOrEqual( 36, $interval->format( '%R%a' ) );
 			}
 
 			$last = $dt;
