@@ -78,8 +78,8 @@ class MeetingiCalTest extends WP_UnitTestCase {
 BEGIN:VEVENT
 UID:{$post->ID}
 DTSTAMP:{$post->start_datetime}
-DTSTART;VALUE=DATE:{$post->start_datetime}
-DTEND;VALUE=DATE:{$post->end_datetime}
+DTSTART:{$post->start_datetime}
+DTEND:{$post->end_datetime}
 CATEGORIES:WordPress
 ORGANIZER;CN=WordPress {$post->team} Team:mailto:mail@example.com
 SUMMARY:{$post->team}: {$post->post_title}
@@ -133,8 +133,8 @@ CALSCALE:GREGORIAN
 BEGIN:VEVENT
 UID:49
 DTSTAMP:{$posts[0]->start_datetime}
-DTSTART;VALUE=DATE:{$posts[0]->start_datetime}
-DTEND;VALUE=DATE:{$posts[0]->end_datetime}
+DTSTART:{$posts[0]->start_datetime}
+DTEND:{$posts[0]->end_datetime}
 CATEGORIES:WordPress
 ORGANIZER;CN=WordPress Team-A Team:mailto:mail@example.com
 SUMMARY:Team-A: A weekly meeting
