@@ -163,7 +163,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( array(3),        $meeting['meta']['occurrence'] );
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
-		$this->assertEquals( 2, count( $meeting['future_occurrences'] ) );
+		$this->assertGreaterThanOrEqual( 1, count( $meeting['future_occurrences'] ) );
 		// There should be no duplicates
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
