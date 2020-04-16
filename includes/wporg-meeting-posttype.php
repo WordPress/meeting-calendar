@@ -72,11 +72,18 @@ class Meeting_Post_Type {
 	}
 
 	public function meeting_set_next_meeting( $posts, $query ) {
+		if ( !is_array( $posts ) || empty( $posts ) || 'meeting' !== $posts[0]->post_type ) {
+			return $posts;
+		}
+
 		// for each entry, set a fake meta value to show the next date for recurring meetings
-		array_walk( $posts, function ( &$post ) {
+		$meeting_count = 0;
+		array_walk( $posts, function ( &$post ) use ( &$meeting_count ) {
 			if ( 'meeting' !== $post->post_type ) {
+				// Make sure we don't accidentally affect posts 
 				return false;
 			}
+			++$meeting_count;
 			$next = $this->get_next_occurrence( $post );
 			if ( $next ) {
 				$post->next_date = $next;
@@ -85,6 +92,11 @@ class Meeting_Post_Type {
 				$post->next_date = $post->start_date;
 			}
 		});
+
+		// Only sort if every post is a meeting CPT
+		if ( $meeting_count !== count( $posts ) ) {
+			return $posts;
+		}
 
 		// reorder the posts by next_date + time
 		usort( $posts, function ($a, $b) {
