@@ -106,6 +106,17 @@ function register_assets() {
 add_action('init', __NAMESPACE__ . '\register_assets');
 
 /**
+ * Conditionally remove the Script/Style assets added through `register_block_type()`.
+ */
+function conditionally_load_assets() {
+	if ( ! is_singular() || ! has_block( 'wporg-meeting-calendar/main' ) ) {
+		wp_dequeue_script( 'wporg-calendar-script' );
+		wp_dequeue_style( 'wporg-calendar-style' );
+	}
+}
+add_action( 'enqueue_block_assets', __NAMESPACE__ . '\conditionally_load_assets' );
+
+/**
  * Set up the Meetings post type.
  */
 function init() {
