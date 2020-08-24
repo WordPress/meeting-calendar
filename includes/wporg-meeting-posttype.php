@@ -385,6 +385,9 @@ class Meeting_Post_Type {
 
 		$from = DateTime::createFromFormat( 'U', strtotime( '-30 minutes', $now ) );
 		$end  = DateTime::createFromFormat( 'U', strtotime( '+2 month', $now ) );
+		if ( $meeting->end_date ) {
+			$end = DateTime::createFromFormat( 'Y-m-d', $meeting->end_date );
+		}
 		$max  = 12;
 		$occurrences = array();
 		do {
