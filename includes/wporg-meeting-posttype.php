@@ -34,6 +34,10 @@ class Meeting_Post_Type {
 		add_action( 'admin_bar_menu',                     array( $mpt, 'add_edit_meetings_item_to_admin_bar' ), 80 );
 		add_action( 'wp_enqueue_scripts',                 array( $mpt, 'add_edit_meetings_icon_to_admin_bar' ) );
 		add_shortcode( 'meeting_time',                    array( $mpt, 'meeting_time_shortcode' ) );
+
+		// shortcodes aren't normally processed in widgets, add this to allow meeting_type in text widgets
+		// TODO make this more specific and only add this shortcode to widget processing
+		add_filter( 'widget_text', 'do_shortcode' );
 	}
 
 	public function meeting_column_width() { ?>
@@ -72,6 +76,10 @@ class Meeting_Post_Type {
 	}
 
 	public function meeting_set_next_meeting( $posts, $query ) {
+		if ( !$query->is_post_type_archive( 'meeting' ) ) {
+			return $posts;
+		}
+		
 		// for each entry, set a fake meta value to show the next date for recurring meetings
 		array_walk( $posts, function ( &$post ) {
 			if ( 'meeting' !== $post->post_type ) {
