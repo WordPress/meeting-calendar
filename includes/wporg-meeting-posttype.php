@@ -338,9 +338,13 @@ class Meeting_Post_Type {
 	}
 
 	public function register_rest_routes() {
-		register_rest_route( 'wp/v2/meetings', '/from/(?P<month>\d\d\d\d-\d\d-\d\d)', array(
-			'methods' => 'GET',
-			'callback' => array( $this, 'get_occurrences_for_period')
+		register_rest_route(
+			'wp/v2/meetings',
+			'/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
+			array(
+				'methods' => 'GET',
+				'callback' => array( $this, 'get_occurrences_for_period' ),
+				'permission_callback' => '__return_true',
 			)
 		);
 		register_rest_route( 'wp/v2/meetings', '/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', array(
