@@ -25,8 +25,8 @@ function List( { month, year } ) {
 	const { events } = useEvents();
 	const allDays = flatten( rows ).filter( ( i ) => ! i.blank );
 	const cutoffDate = new Date();
-	// Reset the time to 11pm the night before, so that we show all meetings today.
-	cutoffDate.setHours( -1, 0, 0, 0 );
+	// Reset the time to 11:59pm the night before, so that we show all meetings today.
+	cutoffDate.setHours( -1, 59, 0, 0 );
 	// If today is later than the 1st of the month, there will be past meetings.
 	const hasPast = new Date( year, month ) < cutoffDate;
 
