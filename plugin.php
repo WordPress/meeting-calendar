@@ -18,12 +18,12 @@ namespace WordPressdotorg\Meeting_Calendar;
  * @return string List of meetings in JSON format
  */
 function get_meeting_data( $per_page ) {
-	$date = date( 'Y-m-d', strtotime( 'first day of this month' ) );
+	$date    = date( 'Y-m-d', strtotime( 'first day of this month' ) );
 	$request = new \WP_REST_Request( 'GET', '/wp/v2/meetings/from/' . $date );
-	$request->set_query_params( [ 'per_page' => $per_page ] );
+	$request->set_query_params( array( 'per_page' => $per_page ) );
 	$response = rest_do_request( $request );
-	$server = rest_get_server();
-	$data = $server->response_to_data( $response, false );
+	$server   = rest_get_server();
+	$data     = $server->response_to_data( $response, false );
 	return wp_json_encode( $data );
 }
 
@@ -47,19 +47,19 @@ function render_callback( $attributes, $content ) {
  * Register scripts, styles, and block.
  */
 function register_assets() {
-	$block_deps_path = __DIR__ . '/build/index.asset.php';
+	$block_deps_path    = __DIR__ . '/build/index.asset.php';
 	$frontend_deps_path = __DIR__ . '/build/calendar.asset.php';
 	if ( ! file_exists( $block_deps_path ) || ! file_exists( $frontend_deps_path ) ) {
 		return;
 	}
 
-	$block_info = require $block_deps_path;
+	$block_info    = require $block_deps_path;
 	$frontend_info = require $frontend_deps_path;
 
 	// Register our block script with WordPress.
 	wp_register_script(
 		'wporg-calendar-block-script',
-		plugins_url('build/index.js', __FILE__),
+		plugins_url( 'build/index.js', __FILE__ ),
 		$block_info['dependencies'],
 		$block_info['version'],
 		false
@@ -69,12 +69,12 @@ function register_assets() {
 	wp_register_style(
 		'wporg-calendar-block-style',
 		plugins_url( 'style.css', __FILE__ ),
-		[],
+		array(),
 		$block_info['version']
 	);
 
 	// No frontend scripts in the editor
-	if( ! is_admin() ) {
+	if ( ! is_admin() ) {
 		wp_register_script(
 			'wporg-calendar-script',
 			plugin_dir_url( __FILE__ ) . 'build/calendar.js',
@@ -95,15 +95,15 @@ function register_assets() {
 	register_block_type(
 		'wporg-meeting-calendar/main',
 		array(
-			'editor_script' => 'wporg-calendar-block-script',
-			'editor_style' => 'wporg-calendar-block-style',
-			'script' => 'wporg-calendar-script',
-			'style' => 'wporg-calendar-style',
+			'editor_script'   => 'wporg-calendar-block-script',
+			'editor_style'    => 'wporg-calendar-block-style',
+			'script'          => 'wporg-calendar-script',
+			'style'           => 'wporg-calendar-style',
 			'render_callback' => __NAMESPACE__ . '\render_callback',
 		)
 	);
 }
-add_action('init', __NAMESPACE__ . '\register_assets');
+add_action( 'init', __NAMESPACE__ . '\register_assets' );
 
 /**
  * Conditionally remove the Script/Style assets added through `register_block_type()`.
@@ -120,10 +120,10 @@ add_action( 'enqueue_block_assets', __NAMESPACE__ . '\conditionally_load_assets'
  * Set up the Meetings post type.
  */
 function init() {
-	require_once( __DIR__ . '/includes/wporg-meeting-posttype.php' );
+	require_once __DIR__ . '/includes/wporg-meeting-posttype.php';
 	new \Meeting_Post_Type();
 }
-add_action('plugins_loaded', __NAMESPACE__ . '\init');
+add_action( 'plugins_loaded', __NAMESPACE__ . '\init' );
 
 /**
  * Set up the ICS support.
@@ -131,9 +131,8 @@ add_action('plugins_loaded', __NAMESPACE__ . '\init');
 function ics_init() {
 	require __DIR__ . '/includes/ical-functions.php';
 	require __DIR__ . '/includes/ical-generator-functions.php';
-
 }
-add_action('plugins_loaded', __NAMESPACE__ . '\ics_init');
+add_action( 'plugins_loaded', __NAMESPACE__ . '\ics_init' );
 
 /**
  * First-Install activation hook.
@@ -141,13 +140,13 @@ add_action('plugins_loaded', __NAMESPACE__ . '\ics_init');
  * Creates some sample data, and sets up the Rewrite rules.
  */
 function install( $is_network_wide ) {
-	if ( !$is_network_wide ) {
+	if ( ! $is_network_wide ) {
 		// We need the CPT to be registered to install.
 		init();
 		$meeting_post_type = new \Meeting_Post_Type();
 		$meeting_post_type->getInstance()->register_meeting_post_type();
 
-		require_once( __DIR__ . '/includes/wporg-meeting-install.php' );
+		require_once __DIR__ . '/includes/wporg-meeting-install.php';
 		wporg_meeting_install();
 
 		ics_init();

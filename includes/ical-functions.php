@@ -1,7 +1,7 @@
 <?php
 namespace WordPressdotorg\Meeting_Calendar\ICS;
 
-define( 'QUERY_KEY',      'meeting_ical' );
+define( 'QUERY_KEY', 'meeting_ical' );
 define( 'QUERY_TEAM_KEY', 'meeting_team' );
 
 /**
@@ -49,7 +49,7 @@ function parse_request( $request ) {
 
 	$team = strtolower( $request->query_vars[ QUERY_TEAM_KEY ] );
 
-	// Grab the meetings, optionally 
+	// Grab the meetings, optionally
 	$posts = get_meeting_posts( $team );
 
 	// Output a 404 if there's no meetings, but still generate a ICS feed.
@@ -78,26 +78,27 @@ add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
  * @return array
  */
 function get_meeting_posts( $team = '' ) {
-
 	$meta_query = \Meeting_Post_Type::getInstance()->meeting_meta_query();
 	if ( $team ) {
-		$meta_query = [
+		$meta_query = array(
 			'relation' => 'AND',
-			[
+			array(
 				'key'     => 'team',
 				'value'   => $team,
 				'compare' => 'EQUALS',
-			],
-			$meta_query
-		];
+			),
+			$meta_query,
+		);
 	}
 
-	$query = new \WP_Query( [
-		'post_type'   => 'meeting',
-		'post_status' => 'publish',
-		'nopaging'    => true,
-		'meta_query'  => $meta_query,
-	] );
+	$query = new \WP_Query(
+		array(
+			'post_type'   => 'meeting',
+			'post_status' => 'publish',
+			'nopaging'    => true,
+			'meta_query'  => $meta_query,
+		)
+	);
 
 	return $query->get_posts();
 }

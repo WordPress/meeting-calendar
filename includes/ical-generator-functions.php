@@ -101,7 +101,7 @@ function generate_event( $post ) {
 					$cancelled[ $i ] = strftime( '%Y%m%d', $exdate );
 				}
 			}
-			$event .= "EXDATE:" . implode( ',', $cancelled ) . NEWLINE;
+			$event .= 'EXDATE:' . implode( ',', $cancelled ) . NEWLINE;
 		}
 	}
 
@@ -139,7 +139,7 @@ function get_frequency( $recurrence, $date, $occurrences ) {
  *   $date = '2019-09-15' // the day is Sunday
  * it will return: 'MONTHLY;BYDAY=1SU,3SU'
  *
- * @param array $occurrences
+ * @param array  $occurrences
  * @param string $date
  * @return string
  */

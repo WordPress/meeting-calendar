@@ -19,7 +19,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 
 		// Initialize a REST server
 		global $wp_rest_server;
-		$this->server = $wp_rest_server = new \WP_REST_Server;
+		$this->server = $wp_rest_server = new \WP_REST_Server();
 		do_action( 'rest_api_init' );
 
 		// Install test data
@@ -27,7 +27,6 @@ class MeetingiCalTest extends WP_UnitTestCase {
 
 		// Make sure the meta keys are registered - setUp/tearDown nukes these
 		Meeting_Post_Type::getInstance()->register_meta();
-
 	}
 
 
@@ -41,7 +40,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 
 
 	public function test_get_meetings() {
-		$request = new WP_REST_Request( 'GET', '/wp/v2/meeting' );
+		$request  = new WP_REST_Request( 'GET', '/wp/v2/meeting' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 3, count( $response->get_data() ) );
@@ -53,26 +52,35 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		// Should be a numerical array
 		$this->assertArrayHasKey( 0, $posts );
 		// With one post per meeting
-		$this->assertGreaterThan( 2, count($posts) );
+		$this->assertGreaterThan( 2, count( $posts ) );
 	}
 
 	public function test_get_ical() {
-		$posts = WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts();
+		$posts     = WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts();
 		$ical_feed = WordPressdotorg\Meeting_Calendar\ICS\Generator\generate( $posts );
 
 		$expected_posts = '';
-		Meeting_Post_Type::getInstance()->meeting_set_next_meeting( $posts, new WP_Query( array('post_type' => 'meeting', 'nopaging' => true ) ) );	
+		Meeting_Post_Type::getInstance()->meeting_set_next_meeting(
+			$posts,
+			new WP_Query(
+				array(
+					'post_type' => 'meeting',
+					'nopaging'  => true,
+				)
+			)
+		);
 		foreach ( $posts as $i => $post ) {
 			$post->start_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT" ) );
-			$post->end_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT +1 hour" ) );
-			if ( $post->ID === $this->meeting_ids[0] )
+			$post->end_datetime   = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT +1 hour" ) );
+			if ( $post->ID === $this->meeting_ids[0] ) {
 				$post->rrule = 'FREQ=WEEKLY';
-			elseif ( $post->ID === $this->meeting_ids[1] )
+			} elseif ( $post->ID === $this->meeting_ids[1] ) {
 				$post->rrule = 'FREQ=MONTHLY';
-			elseif ( $post->ID === $this->meeting_ids[2] )
+			} elseif ( $post->ID === $this->meeting_ids[2] ) {
 				$post->rrule = 'FREQ=MONTHLY;BYDAY=3WE';
-			else
+			} else {
 				$post->rrule = 'FIX THE TESTS ALEX';
+			}
 
 			$expected_posts .= <<<EOF
 BEGIN:VEVENT
@@ -103,25 +111,38 @@ CALSCALE:GREGORIAN
 {$expected_posts}END:VCALENDAR
 EOF;
 
-		$this->assertEquals( preg_split('/\r\n|\r|\n/',$expected), preg_split('/\r\n|\r|\n/',$ical_feed) );
+		$this->assertEquals( preg_split( '/\r\n|\r|\n/', $expected ), preg_split( '/\r\n|\r|\n/', $ical_feed ) );
 	}
 
 	public function test_get_ical_with_cancellation() {
 		$posts = WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts( 'Team-A' );
 		// Cancel the second occurrence of the weekly meeting
 		$occurrences = Meeting_Post_Type::getInstance()->get_future_occurrences( get_post( $posts[0]->ID ), null, null );
-		$this->assertGreaterThan( 0, Meeting_Post_Type::getInstance()->cancel_meeting( array( 
-			'meeting_id' => $posts[0]->ID, 
-			'date'       => $occurrences[1] 
-		) ) );
+		$this->assertGreaterThan(
+			0,
+			Meeting_Post_Type::getInstance()->cancel_meeting(
+				array(
+					'meeting_id' => $posts[0]->ID,
+					'date'       => $occurrences[1],
+				)
+			)
+		);
 
 		$ical_feed = WordPressdotorg\Meeting_Calendar\ICS\Generator\generate( $posts );
 
-		Meeting_Post_Type::getInstance()->meeting_set_next_meeting( $posts, new WP_Query( array('post_type' => 'meeting', 'nopaging' => true ) ) );	
+		Meeting_Post_Type::getInstance()->meeting_set_next_meeting(
+			$posts,
+			new WP_Query(
+				array(
+					'post_type' => 'meeting',
+					'nopaging'  => true,
+				)
+			)
+		);
 		foreach ( $posts as $i => $post ) {
 			$post->start_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT" ) );
-			$post->end_datetime = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT +1 hour" ) );
-			$post->exdate = str_replace( '-', '', $occurrences[1] );
+			$post->end_datetime   = strftime( '%Y%m%dT%H%M%SZ', strtotime( "{$post->start_date} {$post->time} GMT +1 hour" ) );
+			$post->exdate         = str_replace( '-', '', $occurrences[1] );
 		}
 
 		$expected = <<<EOF
@@ -149,7 +170,6 @@ END:VEVENT
 END:VCALENDAR
 EOF;
 
-		$this->assertEquals( preg_split('/\r\n|\r|\n/',$expected), preg_split('/\r\n|\r|\n/',$ical_feed) );
-
+		$this->assertEquals( preg_split( '/\r\n|\r|\n/', $expected ), preg_split( '/\r\n|\r|\n/', $ical_feed ) );
 	}
 }
