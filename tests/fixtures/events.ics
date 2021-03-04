@@ -1,0 +1,53 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Make WordPress//Meeting Events Calendar//EN
+METHOD:PUBLISH
+CALSCALE:GREGORIAN
+X-WR-CALNAME: Making WordPress Meetings
+X-WR-TIMEZONE: UTC
+BEGIN:VEVENT
+UID:%ID1%
+DTSTAMP:20200101T140000Z
+DTSTART:20200101T140000Z
+DTEND:20200101T150000Z
+CATEGORIES:WordPress
+ORGANIZER;CN=WordPress Team-A Team:mailto:mail@example.com
+SUMMARY:Team-A: A weekly meeting
+SEQUENCE:0
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+LOCATION:#meta channel on Slack
+DESCRIPTION:Slack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
+RRULE:FREQ=WEEKLY
+END:VEVENT
+BEGIN:VEVENT
+UID:%ID2%
+DTSTAMP:20200101T150000Z
+DTSTART:20200101T150000Z
+DTEND:20200101T160000Z
+CATEGORIES:WordPress
+ORGANIZER;CN=WordPress Team-B Team:mailto:mail@example.com
+SUMMARY:Team-B: A monthly meeting
+SEQUENCE:0
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+LOCATION:#meta channel on Slack
+DESCRIPTION:Slack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
+RRULE:FREQ=MONTHLY
+END:VEVENT
+BEGIN:VEVENT
+UID:%ID3%
+DTSTAMP:20200101T160000Z
+DTSTART:20200101T160000Z
+DTEND:20200101T170000Z
+CATEGORIES:WordPress
+ORGANIZER;CN=WordPress Team-C Team:mailto:mail@example.com
+SUMMARY:Team-C: Third Wednesday of each month
+SEQUENCE:0
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+LOCATION:#meta channel on Slack
+DESCRIPTION:Slack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
+RRULE:FREQ=MONTHLY;BYDAY=3WE
+END:VEVENT
+END:VCALENDAR

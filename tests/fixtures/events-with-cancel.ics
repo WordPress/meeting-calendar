@@ -1,0 +1,24 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Make WordPress//Meeting Events Calendar//EN
+METHOD:PUBLISH
+CALSCALE:GREGORIAN
+X-WR-CALNAME: Making WordPress Meetings
+X-WR-TIMEZONE: UTC
+BEGIN:VEVENT
+UID:%ID%
+DTSTAMP:20200101T140000Z
+DTSTART:20200101T140000Z
+DTEND:20200101T150000Z
+CATEGORIES:WordPress
+ORGANIZER;CN=WordPress Team-A Team:mailto:mail@example.com
+SUMMARY:Team-A: A weekly meeting
+SEQUENCE:0
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+LOCATION:#meta channel on Slack
+DESCRIPTION:Slack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
+RRULE:FREQ=WEEKLY
+EXDATE:%EXDATE%
+END:VEVENT
+END:VCALENDAR
