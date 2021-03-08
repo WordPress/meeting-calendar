@@ -26,7 +26,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 	function test_shortcode_simple() {
 
 		// A one-off meeting tomorrow
-		$meeting_1 = $this->factory->post->create(
+		$this->factory->post->create(
 			array(
 				'post_title'  => __( 'Meeting One', 'wporg-meeting-calendar' ),
 				'post_type'   => 'meeting',
@@ -44,7 +44,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		);
 
 		// A recurring weekly meeting, starting yesterday
-		$meeting_1 = $this->factory->post->create(
+		$this->factory->post->create(
 			array(
 				'post_title'  => __( 'Meeting Two', 'wporg-meeting-calendar' ),
 				'post_type'   => 'meeting',
@@ -63,9 +63,13 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
-		$this->assertGreaterThan( 0, strpos( $actual, strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'tomorrow' ) ) ) );
+		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'tomorrow' ) );
+		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
+		$this->assertEquals( $substr, $expected );
 
-		$this->assertGreaterThan( 0, strpos( $actual, strftime( '<strong class="meeting-title">Meeting Two</strong><br/><time class="date" date-time="%Y-%m-%dT02:00:00+00:00" title="%Y-%m-%dT02:00:00+00:00">%a %b %e 02:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) ) ) );
+		$expected = strftime( '<strong class="meeting-title">Meeting Two</strong><br/><time class="date" date-time="%Y-%m-%dT02:00:00+00:00" title="%Y-%m-%dT02:00:00+00:00">%a %b %e 02:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
+		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting Two</strong>' ), strlen( $expected ) );
+		$this->assertEquals( $substr, $expected );
 	}
 
 	function test_shortcode_cancelled() {
@@ -103,7 +107,9 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
 		// The shortcode should show the next meeting is in 7 days
-		$this->assertGreaterThan( 0, strpos( $actual, strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) ) ) );
+		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
+		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
+		$this->assertEquals( $substr, $expected );
 
 		// It should be listed as cancelled
 		$this->assertGreaterThanOrEqual( 0, strpos( $actual, '<p class="wporg-meeting-shortcode meeting-cancelled"' ) );
