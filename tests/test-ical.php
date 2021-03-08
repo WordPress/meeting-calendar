@@ -29,6 +29,20 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		Meeting_Post_Type::getInstance()->register_meta();
 	}
 
+	public function test_get_recurring_strings() {
+		// 2020-01-01 is a Sunday.
+		$freq = get_frequencies_by_day( array( 1, 3 ), '2019-09-15' );
+		$this->assertEquals( 'MONTHLY;BYDAY=1SU,3SU', $freq );
+
+		// 2020-01-01 is a Wednesday.
+		$freq = get_frequencies_by_day( array( 3 ), '2020-01-01' );
+		$this->assertEquals( 'MONTHLY;BYDAY=3WE', $freq );
+
+		// 2025-03-14 is a Friday.
+		$freq = get_frequencies_by_day( array( 4 ), '2025-03-14' );
+		$this->assertEquals( 'MONTHLY;BYDAY=4FR', $freq );
+	}
+
 	public function test_get_ical() {
 		$posts = WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts();
 		Meeting_Post_Type::getInstance()->meeting_set_next_meeting(
