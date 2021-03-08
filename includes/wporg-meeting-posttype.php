@@ -30,7 +30,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_filter( 'the_posts', array( $mpt, 'meeting_set_next_meeting' ) );
 			add_filter( 'the_posts', array( $mpt, 'meeting_sort_upcoming_meetings' ), 10, 2 );
 			add_filter( 'manage_meeting_posts_columns', array( $mpt, 'meeting_add_custom_columns' ) );
-			add_action( 'manage_meeting_posts_custom_column', array( $mpt, 'meeting_custom_columns' ), 10, 2 );
+			add_action( 'manage_meeting_posts_custom_column', array( $mpt, 'meeting_custom_columns' ), 11, 2 );
 			add_action( 'admin_head', array( $mpt, 'meeting_column_width' ) );
 			add_action( 'admin_bar_menu', array( $mpt, 'add_edit_meetings_item_to_admin_bar' ), 80 );
 			add_action( 'wp_enqueue_scripts', array( $mpt, 'add_edit_meetings_icon_to_admin_bar' ) );
