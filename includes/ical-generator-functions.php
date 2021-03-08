@@ -15,6 +15,8 @@ function generate( $posts ) {
 	$ical .= 'PRODID:-//Make WordPress//Meeting Events Calendar//EN' . NEWLINE;
 	$ical .= 'METHOD:PUBLISH' . NEWLINE;
 	$ical .= 'CALSCALE:GREGORIAN' . NEWLINE;
+	$ical .= 'X-WR-CALNAME: Making WordPress Meetings' . NEWLINE;
+	$ical .= 'X-WR-TIMEZONE: UTC' . NEWLINE;
 
 	foreach ( $posts as $post ) {
 		$ical .= generate_event( $post );
