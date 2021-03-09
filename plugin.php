@@ -66,6 +66,9 @@ function register_assets() {
 		false
 	);
 
+	// Add translation support.
+	wp_set_script_translations( 'wporg-calendar-block-script', 'wporg-meeting-calendar' );
+
 	// Register our block's base CSS.
 	wp_register_style(
 		'wporg-calendar-block-style',
@@ -83,6 +86,9 @@ function register_assets() {
 			$frontend_info['version'],
 			false
 		);
+
+		// Add translation support.
+		wp_set_script_translations( 'wporg-calendar-script', 'wporg-meeting-calendar' );
 
 		wp_register_style(
 			'wporg-calendar-style',
