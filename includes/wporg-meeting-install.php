@@ -1,10 +1,9 @@
 <?php
 namespace WordPressdotorg\Meeting_Calendar;
 
-/*
-* Install hook with sample post data.
-*/
-
+/**
+ * Install hook with sample post data.
+ */
 function wporg_meeting_install() {
 	if ( wp_count_posts( 'meeting' )->publish + wp_count_posts( 'meeting' )->draft <= 0 ) {
 		// No posts of any status exist, so insert a few sample meetings.

@@ -55,30 +55,30 @@ export function getRows( year, month ) {
  */
 export function getFrequencyLabel( event ) {
 	const occurrences = {
-		1: __( '1st', 'wporg' ),
-		2: __( '2nd', 'wporg' ),
-		3: __( '3rd', 'wporg' ),
-		4: __( '4th', 'wporg' ),
+		1: __( '1st', 'wporg-meeting-calendar' ),
+		2: __( '2nd', 'wporg-meeting-calendar' ),
+		3: __( '3rd', 'wporg-meeting-calendar' ),
+		4: __( '4th', 'wporg-meeting-calendar' ),
 	};
 	const dayOfWeek = format( 'l', event.datetime );
 
 	switch ( event.recurring ) {
 		case 'weekly':
-			return sprintf( __( 'Every week on %s', 'wporg' ), dayOfWeek );
+			return sprintf( __( 'Every week on %s', 'wporg-meeting-calendar' ), dayOfWeek );
 
 		case 'biweekly':
 			return sprintf(
-				__( 'Every other week on %s', 'wporg' ),
+				__( 'Every other week on %s', 'wporg-meeting-calendar' ),
 				dayOfWeek
 			);
 
 		case 'monthly':
-			return __( 'Every month', 'wporg' );
+			return __( 'Every month', 'wporg-meeting-calendar' );
 
 		case 'occurrence':
 			if ( event.occurrence.length ) {
 				return sprintf(
-					__( 'Every month on the %s %s', 'wporg' ),
+					__( 'Every month on the %s %s', 'wporg-meeting-calendar' ),
 					event.occurrence
 						.map( ( o ) => occurrences[ o ] )
 						.join( ', ' ),
@@ -88,7 +88,7 @@ export function getFrequencyLabel( event ) {
 			return '';
 
 		default:
-			return __( 'Does not repeat', 'wporg' );
+			return __( 'Does not repeat', 'wporg-meeting-calendar' );
 	}
 }
 

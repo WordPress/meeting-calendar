@@ -80,7 +80,7 @@ function List( { month, year } ) {
 
 			{ ! days.length ? (
 				<p className="wporg-meeting-calendar__list-empty">
-					{ __( 'No Events Scheduled', 'wporg' ) }
+					{ __( 'No Events Scheduled', 'wporg-meeting-calendar' ) }
 				</p>
 			) : (
 				<ul className="wporg-meeting-calendar__list">{ days }</ul>

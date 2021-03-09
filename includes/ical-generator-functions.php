@@ -93,7 +93,8 @@ function generate_event( $post ) {
 	if ( ! is_null( $frequency ) ) {
 		$event .= "RRULE:FREQ={$frequency}" . NEWLINE;
 
-		if ( $cancelled = get_post_meta( $post->ID, 'meeting_cancelled', false ) ) {
+		$cancelled = get_post_meta( $post->ID, 'meeting_cancelled', false );
+		if ( $cancelled ) {
 			foreach ( $cancelled as $i => $cancelled_date ) {
 				$exdate = strtotime( $cancelled_date );
 				// Only list cancelled dates that are valid and in the future or recent past
@@ -110,6 +111,16 @@ function generate_event( $post ) {
 	return $event;
 }
 
+/**
+ * Generate a frequency string in iCal format.
+ *
+ * See https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html
+ *
+ * @param string $recurrence  One of 'weekly', 'biweekly', 'monthly', or 'occurance' (custom).
+ * @param string $date        The date of the first event (used for custom occurance).
+ * @param int[]  $occurrences Array of week numbers for repetition.
+ * @return string
+ */
 function get_frequency( $recurrence, $date, $occurrences ) {
 	switch ( $recurrence ) {
 		case 'weekly':
@@ -139,8 +150,8 @@ function get_frequency( $recurrence, $date, $occurrences ) {
  *   $date = '2019-09-15' // the day is Sunday
  * it will return: 'MONTHLY;BYDAY=1SU,3SU'
  *
- * @param array  $occurrences
- * @param string $date
+ * @param int[]  $occurrences Array of week numbers for repetition.
+ * @param string $date        The date of the first event.
  * @return string
  */
 function get_frequencies_by_day( $occurrences, $date ) {

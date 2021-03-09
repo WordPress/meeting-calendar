@@ -5,6 +5,7 @@
  * Plugin URI: https://github.com/Automattic/meeting-calendar
  * Author: Automattic
  * Version: 1.1.0
+ * Text Domain: wporg-meeting-calendar
  * License: GPL2+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
  */
@@ -18,7 +19,7 @@ namespace WordPressdotorg\Meeting_Calendar;
  * @return string List of meetings in JSON format
  */
 function get_meeting_data( $per_page ) {
-	$date    = date( 'Y-m-d', strtotime( 'first day of this month' ) );
+	$date    = gmdate( 'Y-m-d', strtotime( 'first day of this month' ) );
 	$request = new \WP_REST_Request( 'GET', '/wp/v2/meetings/from/' . $date );
 	$request->set_query_params( array( 'per_page' => $per_page ) );
 	$response = rest_do_request( $request );
@@ -65,6 +66,9 @@ function register_assets() {
 		false
 	);
 
+	// Add translation support.
+	wp_set_script_translations( 'wporg-calendar-block-script', 'wporg-meeting-calendar' );
+
 	// Register our block's base CSS.
 	wp_register_style(
 		'wporg-calendar-block-style',
@@ -82,6 +86,9 @@ function register_assets() {
 			$frontend_info['version'],
 			false
 		);
+
+		// Add translation support.
+		wp_set_script_translations( 'wporg-calendar-script', 'wporg-meeting-calendar' );
 
 		wp_register_style(
 			'wporg-calendar-style',
