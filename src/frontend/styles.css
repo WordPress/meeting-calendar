@@ -119,6 +119,15 @@
 	margin-right: 0;
 }
 
+.wporg-meeting-calendar__list-expand {
+	margin-top: 16px;
+	text-align: center;
+}
+
+.wporg-meeting-calendar__list-empty {
+	font-size: 16px;
+}
+
 .wporg-meeting-calendar__list {
 	padding: 0;
 	margin: 0;
