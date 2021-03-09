@@ -16,7 +16,9 @@
     "packages-update": "wp-scripts packages-update",
     "start": "wp-scripts start index=./src/index.js calendar=./src/frontend/index.js",
     "test:e2e": "wp-scripts test-e2e",
-    "test:unit": "wp-scripts test-unit-js"
+    "test:unit": "wp-scripts test-unit-js",
+    "test:unit-php": "wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/meeting-calendar/phpunit.xml.dist --verbose'",
+    "wp-env": "wp-env"
   },
   "repository": {
     "type": "git",
@@ -29,6 +31,7 @@
   },
   "homepage": "https://github.com/Automattic/meeting-calendar#readme",
   "devDependencies": {
+    "@wordpress/env": "^3.0.2",
     "@wordpress/scripts": "13.0.3"
   }
 }

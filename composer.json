@@ -1,0 +1,31 @@
+{
+	"name": "wporg/meeting-calendar",
+	"description": "",
+	"homepage": "https://make.wordpress.org/meetings",
+	"license": "GPL-2.0-or-later",
+	"support": {
+		"issues": "https://github.com/Automattic/meeting-calendar/issues"
+	},
+	"config": {
+		"platform": {
+			"php": "7.2"
+		}
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org/"
+		}
+	],
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+		"wp-coding-standards/wpcs": "2.*",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"wp-phpunit/wp-phpunit": "^5.4",
+		"phpunit/phpunit": "^7.5.20"
+	},
+	"scripts": {
+		"format": "phpcbf -p",
+		"lint": "phpcs"
+	}
+}
