@@ -118,5 +118,47 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->assertGreaterThan( 0, $found, 'Found no meeting to test' );
 	}
 
+	/*
+	 * There was a bug with the meeting_set_next_meeting() filter, where it was interfering with the sorting of other post types.
+	 * See https://github.com/Automattic/meeting-calendar/issues/98
+	 */
+	function test_sort_filter_bug() {
+		$category = $this->factory->category->create( array(
+			'slug' => 'test_sort_filter_bug'
+		) );
+
+		$this->factory->post->create( array(
+			'post_title' => 'older post',
+			'post_date'  => '2020-04-01 17:00:00',
+			'post_category' => array( $category ),
+			'meta_input' => array(
+				'time' => '17:00'
+			)
+		) );
+
+		$this->factory->post->create( array(
+			'post_title' => 'newer post',
+			'post_date'  => '2020-04-02 18:00:00',
+			'post_category' => array( $category ),
+			'meta_input' => array(
+				'time' => '18:00'
+			)
+		) );
+
+		$posts = get_posts( array( 
+			'suppress_filters' => false,
+			'category' => $category,
+		) );
+
+		$this->assertTrue( is_array( $posts ) );
+		$this->assertEquals( 2, count( $posts ) );
+
+		// The newer post should come first.
+		// The bug meanth that the filter sorted all post types that happened to have a `time` postmeta key, not just `meeting` CPTs.
+		$this->assertEquals( '2020-04-02 18:00:00', $posts[0]->post_date );
+		$this->assertEquals( 'newer post', $posts[0]->post_title );
+		$this->assertEquals( '2020-04-01 17:00:00', $posts[1]->post_date );
+		$this->assertEquals( 'older post', $posts[1]->post_title );
+	}
 
 }
