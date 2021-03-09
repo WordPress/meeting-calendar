@@ -27,9 +27,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_action( 'rest_api_init', array( $mpt, 'register_rest_routes' ) );
 			add_action( 'save_post_meeting', array( $mpt, 'save_meta_boxes' ), 10, 2 );
 			add_filter( 'pre_get_posts', array( $mpt, 'meeting_archive_page_query' ) );
-			add_filter( 'the_posts', array( $mpt, 'meeting_set_next_meeting' ), 10, 2 );
+			add_filter( 'the_posts', array( $mpt, 'meeting_set_next_meeting' ) );
+			add_filter( 'the_posts', array( $mpt, 'meeting_sort_upcoming_meetings' ), 10, 2 );
 			add_filter( 'manage_meeting_posts_columns', array( $mpt, 'meeting_add_custom_columns' ) );
-			add_action( 'manage_meeting_posts_custom_column', array( $mpt, 'meeting_custom_columns' ), 10, 2 );
+			add_action( 'manage_meeting_posts_custom_column', array( $mpt, 'meeting_custom_columns' ), 11, 2 );
 			add_action( 'admin_head', array( $mpt, 'meeting_column_width' ) );
 			add_action( 'admin_bar_menu', array( $mpt, 'add_edit_meetings_item_to_admin_bar' ), 80 );
 			add_action( 'wp_enqueue_scripts', array( $mpt, 'add_edit_meetings_icon_to_admin_bar' ) );
@@ -75,8 +76,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$query->set( 'meta_query', $this->meeting_meta_query() );
 		}
 
-		public function meeting_set_next_meeting( $posts, $query ) {
-			if ( ! $query->is_post_type_archive( 'meeting' ) ) {
+		public function meeting_set_next_meeting( $posts ) {
+			$is_meeting_list = array_reduce( $posts, function( $is_meeting, $post ) {
+				return $is_meeting && 'meeting' === $post->post_type;
+			}, true );
+			if ( ! $is_meeting_list ) {
 				return $posts;
 			}
 
@@ -96,6 +100,22 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					}
 				}
 			);
+
+			return $posts;
+		}
+
+		public function meeting_sort_upcoming_meetings( $posts, $query ) {
+			// Avoid reordering posts in the admin.
+			if ( is_admin() || ! is_array( $posts ) ) {
+				return $posts;
+			}
+
+			$is_meeting_list = array_reduce( $posts, function( $is_meeting, $post ) {
+				return $is_meeting && 'meeting' === $post->post_type;
+			}, true );
+			if ( ! $is_meeting_list ) {
+				return $posts;
+			}
 
 			// reorder the posts by next_date + time
 			usort(

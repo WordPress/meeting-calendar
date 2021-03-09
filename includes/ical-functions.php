@@ -93,12 +93,18 @@ function get_meeting_posts( $team = '' ) {
 
 	$query = new \WP_Query(
 		array(
-			'post_type'   => 'meeting',
-			'post_status' => 'publish',
-			'nopaging'    => true,
-			'meta_query'  => $meta_query,
+			'post_type'        => 'meeting',
+			'post_status'      => 'publish',
+			'nopaging'         => true,
+			'meta_query'       => $meta_query,
+			// Avoid re-ordering the events.
+			'suppress_filters' => true,
 		)
 	);
 
-	return $query->get_posts();
+	$posts = $query->get_posts();
+	// Update each post with next dates – needs to be called here because we `suppress_filters` above.
+	\Meeting_Post_Type::getInstance()->meeting_set_next_meeting( $posts );
+
+	return $posts;
 }

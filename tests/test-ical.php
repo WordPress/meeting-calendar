@@ -1,5 +1,7 @@
 <?php
 use WordPressdotorg\Meeting_Calendar;
+use function WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts;
+use function WordPressdotorg\Meeting_Calendar\ICS\Generator\{generate, get_frequencies_by_day};
 
 /**
  * Class MeetingiCalTest
@@ -44,18 +46,8 @@ class MeetingiCalTest extends WP_UnitTestCase {
 	}
 
 	public function test_get_ical() {
-		$posts = WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts();
-		Meeting_Post_Type::getInstance()->meeting_set_next_meeting(
-			$posts,
-			new WP_Query(
-				array(
-					'post_type' => 'meeting',
-					'nopaging'  => true,
-				)
-			)
-		);
-
-		$ical_feed  = WordPressdotorg\Meeting_Calendar\ICS\Generator\generate( $posts );
+		$posts      = get_meeting_posts();
+		$ical_feed  = generate( $posts );
 		$events_ics = file_get_contents( __DIR__ . '/fixtures/events.ics' );
 		$events_ics = str_replace( '%ID1%', str_replace( '-', '', $posts[0]->ID ), $events_ics );
 		$events_ics = str_replace( '%ID2%', str_replace( '-', '', $posts[1]->ID ), $events_ics );
@@ -68,7 +60,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 	}
 
 	public function test_get_ical_with_cancellation() {
-		$posts = WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts( 'Team-A' );
+		$posts = get_meeting_posts( 'Team-A' );
 		// Cancel the second occurrence of the weekly meeting
 		$occurrences = Meeting_Post_Type::getInstance()->get_future_occurrences( get_post( $posts[0]->ID ), null, null );
 		$this->assertGreaterThan(
@@ -81,17 +73,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 			)
 		);
 
-		Meeting_Post_Type::getInstance()->meeting_set_next_meeting(
-			$posts,
-			new WP_Query(
-				array(
-					'post_type' => 'meeting',
-					'nopaging'  => true,
-				)
-			)
-		);
-
-		$ical_feed  = WordPressdotorg\Meeting_Calendar\ICS\Generator\generate( $posts );
+		$ical_feed  = generate( $posts );
 		$events_ics = file_get_contents( __DIR__ . '/fixtures/events-with-cancel.ics' );
 		$events_ics = str_replace( '%ID%', str_replace( '-', '', $posts[0]->ID ), $events_ics );
 		$events_ics = str_replace( '%EXDATE%', str_replace( '-', '', $occurrences[1] ), $events_ics );
