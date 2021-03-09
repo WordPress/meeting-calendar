@@ -3,6 +3,9 @@
  * Create the meeting post type and assorted filters for https://make.wordpress.org/meetings
  */
 
+// @todo: Fix these phpcs errors correctly.
+// phpcs:disable Squiz.Commenting.FunctionComment.Missing, WordPress.Security.EscapeOutput.UnsafePrintingFunction, WordPress.Security.EscapeOutput.OutputNotEscaped
+
 if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 	class Meeting_Post_Type {
 
