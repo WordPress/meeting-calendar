@@ -47,6 +47,6 @@ jobs:
         chmod -R 767 ./ # TODO: Possibly integrate in wp-env
         npm run wp-env start
 
-    - name: Running multisite unit tests
+    - name: Run unit tests
       run: npm run test:unit-php
       if: ${{ success() || failure() }}
