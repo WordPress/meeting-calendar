@@ -8,6 +8,7 @@ import { uniqBy } from 'lodash';
  * Internal dependencies
  */
 import { getSortedEvents } from './utils';
+import { useEventData } from './data-context';
 
 /**
  * Gets the team name if present in url.
@@ -37,20 +38,22 @@ function setTeamEffect( team = '' ) {
 
 const StateContext = createContext();
 
-export function EventsProvider( { children, value } ) {
+export function EventsProvider( { children } ) {
+	const events = useEventData();
+
 	const [ team, setTeam ] = useState( getTeamOnLoad() );
 
-	let eventsToDisplay = value;
+	let eventsToDisplay = events;
 
 	if ( team && team.trim().length ) {
-		eventsToDisplay = value.filter(
+		eventsToDisplay = events.filter(
 			( e ) => e.team.toLowerCase() === team.toLowerCase()
 		);
 	}
 
 	// Get a list of all teams available.
 	const teams = uniqBy(
-		value
+		events
 			.map( ( e ) => ( {
 				label: e.team,
 				value: e.team.toLowerCase(),
