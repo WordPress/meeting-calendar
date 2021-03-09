@@ -353,7 +353,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			foreach ( $meetings as $meeting ) {
 				$occurrences = $this->get_future_occurrences( $meeting, null, $request );
 
-				if ( $meeting->recurring ) {
+				$frequency = '';
+				if ( ! empty( $meeting->recurring ) ) {
 					$frequency = get_frequency( $meeting->recurring, $occurrences[0], $meeting->occurrence );
 				}
 
