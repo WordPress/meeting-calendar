@@ -36,14 +36,14 @@ const Filter = () => {
 				htmlFor={ dropdownId }
 				ref={ filterLabel }
 			>
-				{ __( 'Filter by team: ', 'wporg' ) }
+				{ __( 'Filter by team: ', 'wporg-meeting-calendar' ) }
 			</label>
 			<SelectControl
 				id={ dropdownId }
 				className="wporg-meeting-calendar__filter-dropdown"
 				value={ team }
 				options={ [
-					{ label: __( 'All teams', 'wporg' ), value: '' },
+					{ label: __( 'All teams', 'wporg-meeting-calendar' ), value: '' },
 					...teams,
 				] }
 				onChange={ ( value ) => {
@@ -53,7 +53,7 @@ const Filter = () => {
 					);
 					speak(
 						sprintf(
-							__( 'Showing meetings for %s', 'wporg' ),
+							__( 'Showing meetings for %s', 'wporg-meeting-calendar' ),
 							newSelected.label
 						),
 						'assertive'
@@ -64,7 +64,7 @@ const Filter = () => {
 				<>
 					<p className="wporg-meeting-calendar__filter-applied">
 						{ sprintf(
-							__( 'Showing meetings for %s', 'wporg' ),
+							__( 'Showing meetings for %s', 'wporg-meeting-calendar' ),
 							selected.label
 						) }
 					</p>
@@ -75,13 +75,13 @@ const Filter = () => {
 						onClick={ () => {
 							setTeam( '' );
 							speak(
-								__( 'Showing all meetings.', 'wporg' ),
+								__( 'Showing all meetings.', 'wporg-meeting-calendar' ),
 								'assertive'
 							);
 							filterLabel.current.focus();
 						} }
 					>
-						{ __( 'Remove team filter', 'wporg' ) }
+						{ __( 'Remove team filter', 'wporg-meeting-calendar' ) }
 					</Button>
 				</>
 			) }
@@ -95,7 +95,7 @@ const Filter = () => {
 					} }
 					download
 				>
-					{ __( 'iCal', 'wporg' ) }
+					{ __( 'iCal', 'wporg-meeting-calendar' ) }
 					{ '' !== team && ` - ${ selected.label }` }
 				</Button>
 			</div>

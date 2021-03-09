@@ -41,7 +41,7 @@ function Calendar() {
 			<div className="wporg-meeting-calendar__header">
 				<nav
 					className="wporg-meeting-calendar__btn-group"
-					aria-label={ __( 'Month navigation', 'wporg' ) }
+					aria-label={ __( 'Month navigation', 'wporg-meeting-calendar' ) }
 				>
 					<Button
 						isSecondary
@@ -50,7 +50,7 @@ function Calendar() {
 						}
 						disabled={ month === currentMonth }
 					>
-						{ __( 'Previous', 'wporg' ) }
+						{ __( 'Previous', 'wporg-meeting-calendar' ) }
 					</Button>
 					<Button
 						isSecondary
@@ -59,7 +59,7 @@ function Calendar() {
 						}
 						disabled={ month > currentMonth }
 					>
-						{ __( 'Next', 'wporg' ) }
+						{ __( 'Next', 'wporg-meeting-calendar' ) }
 					</Button>
 				</nav>
 				<div>
@@ -69,7 +69,7 @@ function Calendar() {
 				</div>
 				<nav
 					className="components-button-group"
-					aria-label={ __( 'View options', 'wporg' ) }
+					aria-label={ __( 'View options', 'wporg-meeting-calendar' ) }
 				>
 					<Button
 						isSecondary={ ! isCalendarView() }
@@ -77,27 +77,27 @@ function Calendar() {
 						onClick={ () => {
 							if ( ! isCalendarView() ) {
 								speak(
-									__( 'Switched to calendar view', 'wporg' )
+									__( 'Switched to calendar view', 'wporg-meeting-calendar' )
 								);
 							}
 							setCalendarView();
 						} }
 						disabled={ shouldForceListView }
 					>
-						{ __( 'Month', 'wporg' ) }
+						{ __( 'Month', 'wporg-meeting-calendar' ) }
 					</Button>
 					<Button
 						isSecondary={ ! isListView() }
 						isPrimary={ isListView() }
 						onClick={ () => {
 							if ( ! isListView() ) {
-								speak( __( 'Switched to list view', 'wporg' ) );
+								speak( __( 'Switched to list view', 'wporg-meeting-calendar' ) );
 							}
 							setListView();
 						} }
 						disabled={ shouldForceListView }
 					>
-						{ __( 'List', 'wporg' ) }
+						{ __( 'List', 'wporg-meeting-calendar' ) }
 					</Button>
 				</nav>
 			</div>

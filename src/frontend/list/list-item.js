@@ -31,7 +31,7 @@ function ListItem( { date, events } ) {
 					setTeam( event.team );
 					speak(
 						sprintf(
-							__( 'Showing meetings for %s', 'wporg' ),
+							__( 'Showing meetings for %s', 'wporg-meeting-calendar' ),
 							event.team
 						)
 					);
@@ -57,7 +57,7 @@ function ListItem( { date, events } ) {
 										getTeamClass( event.team )
 									}
 									aria-label={ sprintf(
-										__( 'All %s meetings', 'wporg' ),
+										__( 'All %s meetings', 'wporg-meeting-calendar' ),
 										event.team
 									) }
 									href={ `#${ event.team.toLowerCase() }` }
@@ -82,11 +82,11 @@ function ListItem( { date, events } ) {
 									</a>
 								</h3>
 								<p className="wporg-meeting-calendar__list-event-copy">
-									{ __( 'Meets: ', 'wporg' ) }
+									{ __( 'Meets: ', 'wporg-meeting-calendar' ) }
 									{ getFrequencyLabel( event ) }
 								</p>
 								<p className="wporg-meeting-calendar__list-event-copy">
-									{ __( 'Location: ', 'wporg' ) }
+									{ __( 'Location: ', 'wporg-meeting-calendar' ) }
 									{ getSlackLink( event.location ) }
 								</p>
 							</div>

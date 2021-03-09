@@ -60,7 +60,7 @@ function CalendarGrid( { month, year } ) {
 							status="warning"
 							isDismissible={ false }
 						>
-							{ __( 'This meeting has been cancelled', 'wporg' ) }
+							{ __( 'This meeting has been cancelled', 'wporg-meeting-calendar' ) }
 						</Notice>
 					) }
 
