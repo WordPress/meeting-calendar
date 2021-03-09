@@ -2,7 +2,8 @@
  * WordPress dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Button, SelectControl } from '@wordpress/components';
+import { addQueryArgs } from '@wordpress/url';
+import { Button, ButtonGroup, SelectControl } from '@wordpress/components';
 import { speak } from '@wordpress/a11y';
 import { useRef } from '@wordpress/element';
 
@@ -22,11 +23,19 @@ const Filter = () => {
 	const selected = teams.find( ( option ) => team === option.value );
 
 	const getCalendarUrl = () => {
+		const baseUrl = window.location.origin;
 		if ( ! selected ) {
-			return '/meetings.ics';
+			return `${ baseUrl }/meetings.ics`;
 		}
 
-		return `/meetings-${ selected.value }.ics`;
+		return `${ baseUrl }/meetings-${ selected.value }.ics`;
+	};
+
+	const getGoogleCalendarUrl = () => {
+		const calendarUrl = getCalendarUrl().replace( 'https://', 'webcal://' );
+		return addQueryArgs( 'https://www.google.com/calendar/render', {
+			cid: calendarUrl,
+		} );
 	};
 
 	return (
@@ -43,7 +52,10 @@ const Filter = () => {
 				className="wporg-meeting-calendar__filter-dropdown"
 				value={ team }
 				options={ [
-					{ label: __( 'All teams', 'wporg-meeting-calendar' ), value: '' },
+					{
+						label: __( 'All teams', 'wporg-meeting-calendar' ),
+						value: '',
+					},
 					...teams,
 				] }
 				onChange={ ( value ) => {
@@ -53,7 +65,10 @@ const Filter = () => {
 					);
 					speak(
 						sprintf(
-							__( 'Showing meetings for %s', 'wporg-meeting-calendar' ),
+							__(
+								'Showing meetings for %s',
+								'wporg-meeting-calendar'
+							),
 							newSelected.label
 						),
 						'assertive'
@@ -64,7 +79,10 @@ const Filter = () => {
 				<>
 					<p className="wporg-meeting-calendar__filter-applied">
 						{ sprintf(
-							__( 'Showing meetings for %s', 'wporg-meeting-calendar' ),
+							__(
+								'Showing meetings for %s',
+								'wporg-meeting-calendar'
+							),
 							selected.label
 						) }
 					</p>
@@ -75,7 +93,10 @@ const Filter = () => {
 						onClick={ () => {
 							setTeam( '' );
 							speak(
-								__( 'Showing all meetings.', 'wporg-meeting-calendar' ),
+								__(
+									'Showing all meetings.',
+									'wporg-meeting-calendar'
+								),
 								'assertive'
 							);
 							filterLabel.current.focus();
@@ -86,18 +107,31 @@ const Filter = () => {
 				</>
 			) }
 			<div className="wporg-meeting-calendar__filter-feed">
-				<Button
-					icon="calendar-alt"
-					href={ getCalendarUrl() }
-					isSecondary
-					style={ {
-						marginLeft: 'auto',
-					} }
-					download
-				>
-					{ __( 'iCal', 'wporg-meeting-calendar' ) }
-					{ '' !== team && ` - ${ selected.label }` }
-				</Button>
+				<ButtonGroup label={ __( 'Export', 'wporg-meeting-calendar' ) }>
+					<Button
+						icon="calendar-alt"
+						href={ getCalendarUrl() }
+						isSecondary
+						style={ {
+							marginLeft: 'auto',
+						} }
+						download
+					>
+						{ __( 'iCal', 'wporg-meeting-calendar' ) }
+						{ '' !== team && ` - ${ selected.label }` }
+					</Button>
+					<Button
+						icon="plus"
+						href={ getGoogleCalendarUrl() }
+						isSecondary
+						style={ {
+							marginLeft: 'auto',
+						} }
+						download
+					>
+						{ __( 'Google Calendar', 'wporg-meeting-calendar' ) }
+					</Button>
+				</ButtonGroup>
 			</div>
 		</div>
 	);
