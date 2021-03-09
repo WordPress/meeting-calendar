@@ -6,17 +6,23 @@ define( 'NEWLINE', "\r\n" );
 /**
  * Generate an iCalendar for the given set of meetings.
  *
- * @param WP_Post[] $posts
+ * @param WP_Post[]   $posts
+ * @param string|null $team
  * @return string
  */
-function generate( $posts ) {
+function generate( $posts, $team ) {
 	$ical  = 'BEGIN:VCALENDAR' . NEWLINE;
 	$ical .= 'VERSION:2.0' . NEWLINE;
 	$ical .= 'PRODID:-//Make WordPress//Meeting Events Calendar//EN' . NEWLINE;
 	$ical .= 'METHOD:PUBLISH' . NEWLINE;
 	$ical .= 'CALSCALE:GREGORIAN' . NEWLINE;
-	$ical .= 'X-WR-CALNAME: Making WordPress Meetings' . NEWLINE;
 	$ical .= 'X-WR-TIMEZONE: UTC' . NEWLINE;
+
+	if ( $team ) {
+		$ical .= 'X-WR-CALNAME: WordPress ' . ucwords( $team ) . ' Meetings' . NEWLINE;
+	} else {
+		$ical .= 'X-WR-CALNAME: Making WordPress Meetings' . NEWLINE;
+	}
 
 	foreach ( $posts as $post ) {
 		$ical .= generate_event( $post );

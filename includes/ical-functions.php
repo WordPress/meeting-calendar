@@ -66,7 +66,7 @@ function parse_request( $request ) {
 	header( 'Content-Disposition: inline; filename=' . ( $team ? "calendar-$team.ics" : 'calendar.ics' ) );
 
 	// phpcs:ignore -- Direct output okay.
-	echo Generator\generate( $posts );
+	echo Generator\generate( $posts, $team );
 
 	exit;
 }
