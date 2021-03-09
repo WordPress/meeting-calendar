@@ -5,16 +5,32 @@ on:
     paths:
       - '**.php'
       - '*.json'
-      - 'phpunit.xml.dist'
+      - '*.xml.dist'
   push:
     paths:
       - '**.php'
       - '*.json'
-      - 'phpunit.xml.dist'
+      - '*.xml.dist'
     branches:
       - master
 
 jobs:
+  phpcs:
+    name: PHP CodeSniffer
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: composer install --dev --prefer-dist --no-progress --no-suggest
+
+      - name: Run phpcs
+        uses: chekalsky/phpcs-action@v1
+        with:
+          phpcs_bin_path: './vendor/bin/phpcs'
+
   unit-php:
     name: PHP Unit Tests
 
