@@ -3,14 +3,14 @@ name: Unit Tests
 on:
   pull_request:
     paths:
-      - **.php
-      - *.json
-      - phpunit.xml.dist
+      - '**.php'
+      - '*.json'
+      - 'phpunit.xml.dist'
   push:
     paths:
-      - **.php
-      - *.json
-      - phpunit.xml.dist
+      - '**.php'
+      - '*.json'
+      - 'phpunit.xml.dist'
     branches:
       - master
 
