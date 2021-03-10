@@ -11,17 +11,19 @@ define( 'NEWLINE', "\r\n" );
  * @return string
  */
 function generate( $posts, $team ) {
+	$team_name = $team ? ucwords( $team ) . ' ' : '';
+
 	$ical  = 'BEGIN:VCALENDAR' . NEWLINE;
 	$ical .= 'VERSION:2.0' . NEWLINE;
-	$ical .= 'PRODID:-//Make WordPress//Meeting Events Calendar//EN' . NEWLINE;
+	$ical .= "PRODID:-//Make WordPress//{$team_name}Meeting Events Calendar//EN" . NEWLINE;
 	$ical .= 'METHOD:PUBLISH' . NEWLINE;
 	$ical .= 'CALSCALE:GREGORIAN' . NEWLINE;
-	$ical .= 'X-WR-TIMEZONE: UTC' . NEWLINE;
+	$ical .= 'X-WR-TIMEZONE:UTC' . NEWLINE;
 
 	if ( $team ) {
-		$ical .= 'X-WR-CALNAME: WordPress ' . ucwords( $team ) . ' Meetings' . NEWLINE;
+		$ical .= "X-WR-CALNAME:WordPress {$team_name}Meetings" . NEWLINE;
 	} else {
-		$ical .= 'X-WR-CALNAME: Making WordPress Meetings' . NEWLINE;
+		$ical .= 'X-WR-CALNAME:Making WordPress Meetings' . NEWLINE;
 	}
 
 	foreach ( $posts as $post ) {
