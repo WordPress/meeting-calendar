@@ -68,7 +68,7 @@ function EventModal( { event, onRequestClose } ) {
 					<a href={ event.link }>{ event.title }</a>
 				</p>
 			) }
-			<p>
+			<p className="wporg-meeting-calendar__modal-export-links">
 				<a href={ googleCalLink }>
 					{ __( 'Add to Google Calendar', 'wporg-meeting-calendar' ) }
 				</a>
