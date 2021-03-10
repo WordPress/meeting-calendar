@@ -399,6 +399,18 @@
 	margin-top: 0;
 }
 
+.wporg-meeting-calendar__filter-feed .components-button {
+	padding-right: 12px;
+}
+
+.wporg-meeting-calendar__filter-feed .components-button.has-icon .dashicon {
+	margin-right: 6px;
+}
+
+.wporg-meeting-calendar__filter-feed .components-button:first-of-type {
+	margin-right: -1px;
+}
+
 @media ( max-width: 782px ) {
 	.wporg-meeting-calendar__filter {
 		display: block;
@@ -454,6 +466,11 @@
 .wporg-meeting-calendar__modal-notice {
 	margin: 0 0 16px 0;
 }
+
+.wporg-meeting-calendar__modal-export-links {
+	margin-top: 1em;
+}
+
 .meeting-cancelled .wporg-meeting-detail {
 	text-decoration: line-through;
 }

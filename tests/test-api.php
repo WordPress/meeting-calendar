@@ -206,6 +206,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			1  =>
 			array(
@@ -221,6 +222,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'monthly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=MONTHLY',
 			),
 			2  =>
 			array(
@@ -236,6 +238,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			3  =>
 			array(
@@ -251,6 +254,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			4  =>
 			array(
@@ -269,6 +273,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 					0 => 3,
 				),
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=MONTHLY;BYDAY=3WE',
 			),
 			5  =>
 			array(
@@ -284,6 +289,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			6  =>
 			array(
@@ -299,6 +305,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			7  =>
 			array(
@@ -314,6 +321,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'monthly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=MONTHLY',
 			),
 			8  =>
 			array(
@@ -329,6 +337,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			9  =>
 			array(
@@ -344,6 +353,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			10 =>
 			array(
@@ -359,6 +369,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 			11 =>
 			array(
@@ -377,6 +388,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 					0 => 3,
 				),
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=MONTHLY;BYDAY=3WE',
 			),
 			12 =>
 			array(
@@ -392,6 +404,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'recurring'   => 'weekly',
 				'occurrence'  => '',
 				'status'      => 'active',
+				'rrule'       => 'RRULE:FREQ=WEEKLY',
 			),
 		);
 	}

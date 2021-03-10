@@ -1,17 +1,15 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { format, gmdate } from '@wordpress/date';
 import { Fragment, useState } from '@wordpress/element';
-import { Modal, Notice } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import CalendarCell from './cell';
 import CalendarHeader from './header';
-import { getFrequencyLabel, getRows, getSlackLink, isCancelled } from './utils';
+import EventModal from './modal';
+import { getRows } from './utils';
 import { useEvents } from '../store/event-context';
 
 function CalendarGrid( { month, year } ) {
@@ -39,45 +37,10 @@ function CalendarGrid( { month, year } ) {
 				</tbody>
 			</table>
 			{ activeEvent && (
-				<Modal
-					title={ activeEvent.title }
-					className="wporg-meeting-calendar__modal"
-					overlayClassName="wporg-meeting-calendar__modal-overlay"
+				<EventModal
+					event={ activeEvent }
 					onRequestClose={ () => void setActiveEvent( null ) }
-				>
-					{ ! isCancelled( activeEvent.status ) ? (
-						<p>
-							<abbr title={ gmdate( 'c', activeEvent.datetime ) }>
-								{ format(
-									'l, F j, Y, g:i a (\\U\\T\\CP)',
-									activeEvent.datetime
-								) }
-							</abbr>
-						</p>
-					) : (
-						<Notice
-							className="wporg-meeting-calendar__modal-notice"
-							status="warning"
-							isDismissible={ false }
-						>
-							{ __( 'This meeting has been cancelled', 'wporg-meeting-calendar' ) }
-						</Notice>
-					) }
-
-					{ !! activeEvent.location && (
-						<p>
-							Location: { getSlackLink( activeEvent.location ) }
-						</p>
-					) }
-					<p>Meets: { getFrequencyLabel( activeEvent ) }</p>
-					{ !! activeEvent.link && (
-						<p>
-							<a href={ activeEvent.link }>
-								{ activeEvent.title }
-							</a>
-						</p>
-					) }
-				</Modal>
+				/>
 			) }
 		</Fragment>
 	);

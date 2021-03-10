@@ -6,6 +6,8 @@
 // @todo: Fix these phpcs errors correctly.
 // phpcs:disable Squiz.Commenting.FunctionComment.Missing, WordPress.Security.EscapeOutput.UnsafePrintingFunction, WordPress.Security.EscapeOutput.OutputNotEscaped
 
+use function WordPressdotorg\Meeting_Calendar\ICS\Generator\get_frequency;
+
 if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 	class Meeting_Post_Type {
 
@@ -350,6 +352,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$out      = array();
 			foreach ( $meetings as $meeting ) {
 				$occurrences = $this->get_future_occurrences( $meeting, null, $request );
+
+				$frequency = '';
+				if ( ! empty( $meeting->recurring ) ) {
+					$frequency = get_frequency( $meeting->recurring, $occurrences[0], $meeting->occurrence );
+				}
+
 				foreach ( $occurrences as $occurrence ) {
 					$meeting->time = strftime( '%H:%M:%S', strtotime( $meeting->time ) );
 					$out[]         = array(
@@ -365,6 +373,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						'recurring'   => $meeting->recurring,
 						'occurrence'  => $meeting->occurrence,
 						'status'      => ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? 'cancelled' : 'active' ),
+						'rrule'       => $frequency ? "RRULE:FREQ={$frequency}" : '',
 					);
 				}
 			}
