@@ -354,7 +354,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$occurrences = $this->get_future_occurrences( $meeting, null, $request );
 
 				$frequency = '';
-				if ( ! empty( $meeting->recurring ) ) {
+				if ( ! empty( $meeting->recurring ) && ! empty( $occurrences ) ) {
 					$frequency = get_frequency( $meeting->recurring, $occurrences[0], $meeting->occurrence );
 				}
 
