@@ -27,6 +27,19 @@ You can (optionally) use [`wp-env`](https://developer.wordpress.org/block-editor
 3. Start the wp-env environment with `npm run wp-env start`
 4. Run the tests with `npm run test:unit-php`
 
+### Enable ICS links
+Calendars and individual events can be accessed through `.ics` links, for example http://localhost:8888/meetings.ics. For these links to work, the `permalink_structure` option must be set in the `wp_options` database table, and the appropriate rule must be present in `.htaccess`.
+
+You can set both with the following command:
+
+```shell
+# The --hard flag updates .htaccess rules as well as rules in the database.
+# For more info see:
+# https://developer.wordpress.org/cli/commands/rewrite/structure/
+
+wp-env run cli "wp rewrite structure --hard '/%postname%'"
+```
+
 ## License
 
 Meeting Calendar is licensed under [GNU General Public License v2 (or later)](./LICENSE.md).
