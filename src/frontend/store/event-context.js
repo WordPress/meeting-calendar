@@ -7,7 +7,7 @@ import { uniqBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import { getSortedEvents } from './utils';
+import { getSortedEvents, getSortedTeams } from './utils';
 
 /**
  * Gets the team name if present in url.
@@ -55,6 +55,7 @@ export function EventsProvider( { children, value } ) {
 				label: e.team,
 				value: e.team.toLowerCase(),
 			} ) )
+			.sort((a,b) => (a.label > b.label)? 1: -1)
 			.filter( ( { value } ) => !! value ),
 		'value'
 	);
