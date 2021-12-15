@@ -56,7 +56,7 @@ const Filter = () => {
 						label: __( 'All teams', 'wporg-meeting-calendar' ),
 						value: '',
 					},
-					...teams,
+					...teams.sort(),
 				] }
 				onChange={ ( value ) => {
 					setTeam( value );
