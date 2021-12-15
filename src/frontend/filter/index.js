@@ -45,7 +45,7 @@ const Filter = () => {
 				htmlFor={ dropdownId }
 				ref={ filterLabel }
 			>
-				{ __( 'Filter by team: ', 'wporg-meeting-calendar' ) }
+				{ __( 'Filter by teams: ', 'wporg-meeting-calendar' ) }
 			</label>
 			<SelectControl
 				id={ dropdownId }
@@ -56,7 +56,7 @@ const Filter = () => {
 						label: __( 'All teams', 'wporg-meeting-calendar' ),
 						value: '',
 					},
-					...teams.sort(),
+					...teams,
 				] }
 				onChange={ ( value ) => {
 					setTeam( value );
