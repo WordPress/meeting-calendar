@@ -7,7 +7,7 @@ import { uniqBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import { getSortedEvents, getSortedTeams } from './utils';
+import { getSortedEvents } from './utils';
 
 /**
  * Gets the team name if present in url.
