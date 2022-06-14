@@ -64,7 +64,7 @@ function Calendar() {
 				</nav>
 				<div>
 					<h2 aria-live="polite" aria-atomic>
-						{ date( 'F Y', new Date( year, month, 1 ) ) }
+						{ date( 'F Y', new Date( year, month, 2 ) ) }
 					</h2>
 				</div>
 				<nav
