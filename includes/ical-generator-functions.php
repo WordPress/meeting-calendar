@@ -45,6 +45,7 @@ function generate_event( $post ) {
 	$title     = $post->post_title;
 	$location  = $post->location;
 	$link      = $post->link;
+	$wptv_url  = $post->wptv_url;
 	$team      = $post->team;
 	$recurring = $post->recurring;
 	$sequence  = empty( $post->sequence ) ? 0 : intval( $post->sequence );
@@ -63,6 +64,10 @@ function generate_event( $post ) {
 	if ( $location && preg_match( '/^#([-\w]+)$/', trim( $location ), $match ) ) {
 		$slack_channel = '#' . sanitize_title( $match[1] );
 		$location      = "{$slack_channel} channel on Slack";
+	}
+
+	if ( $wptv_url ) {
+		$description .= "WPTV URL link: {$wptv_url}\\n";
 	}
 
 	if ( $link ) {
