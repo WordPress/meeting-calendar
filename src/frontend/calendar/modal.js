@@ -73,6 +73,13 @@ function EventModal( { event, onRequestClose } ) {
 					{ __( 'Add to Google Calendar', 'wporg-meeting-calendar' ) }
 				</a>
 			</p>
+			{ !! event.wptv_url && (
+				<p>
+					<a href={ event.wptv_url }>
+						{ __( 'View Recording', 'wporg-meeting-calendar' ) }
+					</a>
+				</p>
+			) }
 		</Modal>
 	);
 }
