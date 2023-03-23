@@ -368,7 +368,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				}
 
 				foreach ( $occurrences as $occurrence ) {
-					$meeting->time = strftime( '%H:%M:%S', strtotime( $meeting->time ) );
+					$meeting->time = gmdate( 'H:i:s', strtotime( $meeting->time ) );
 					$out[]         = array(
 						'meeting_id'  => $meeting->ID,
 						'instance_id' => "{$meeting->ID}:{$occurrence}",
@@ -840,10 +840,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$out = '';
 			foreach ( array_slice( $query->posts, 0, $limit ) as $post ) {
 				$next_meeting_datestring = $post->next_date;
-				$utc_time                = strftime( '%H:%M:%S', strtotime( $post->time ) );
+				$utc_time                = gmdate( 'H:i:s', strtotime( $post->time ) );
 				$next_meeting_iso        = $next_meeting_datestring . 'T' . $utc_time . '+00:00';
 				$next_meeting_timestamp  = strtotime( $next_meeting_datestring . ' ' . $utc_time );
-				$next_meeting_display    = strftime( '%c %Z', $next_meeting_timestamp );
+				$next_meeting_display    = gmdate( 'c T', $next_meeting_timestamp );
 
 				$slack_channel = null;
 				if ( $post->location && preg_match( '/^#([-\w]+)$/', trim( $post->location ), $match ) ) {

@@ -50,12 +50,12 @@ function generate_event( $post ) {
 	$recurring = $post->recurring;
 	$sequence  = empty( $post->sequence ) ? 0 : intval( $post->sequence );
 
-	$start_date      = strftime( '%Y%m%d', strtotime( $post->start_date ) );
-	$start_time      = strftime( '%H%M%S', strtotime( $post->time ) );
+	$start_date      = gmdate( 'Ymd', strtotime( $post->start_date ) );
+	$start_time      = gmdate( 'His', strtotime( $post->time ) );
 	$start_date_time = "{$start_date}T{$start_time}Z";
 
 	$end_date      = $start_date;
-	$end_time      = strftime( '%H%M%S', strtotime( "{$post->time} +1 hour" ) );
+	$end_time      = gmdate( 'His', strtotime( "{$post->time} +1 hour" ) );
 	$end_date_time = "{$end_date}T{$end_time}Z";
 
 	$description   = '';
@@ -112,7 +112,7 @@ function generate_event( $post ) {
 				$exdate = strtotime( $cancelled_date );
 				// Only list cancelled dates that are valid and in the future or recent past
 				if ( $exdate >= strtotime( 'yesterday' ) ) {
-					$cancelled[ $i ] = strftime( '%Y%m%d', $exdate );
+					$cancelled[ $i ] = gmdate( 'Ymd', $exdate );
 				}
 			}
 			$event .= 'EXDATE:' . implode( ',', $cancelled ) . NEWLINE;
@@ -170,7 +170,7 @@ function get_frequency( $recurrence, $date, $occurrences ) {
 function get_frequencies_by_day( $occurrences, $date ) {
 	// Get the first two letters of the day of the start date in uppercase letters
 	$day = strtoupper(
-		substr( strftime( '%a', strtotime( $date ) ), 0, 2 )
+		substr( gmdate( 'D', strtotime( $date ) ), 0, 2 )
 	);
 
 	$by_days = array_reduce(

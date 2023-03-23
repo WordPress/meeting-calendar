@@ -33,7 +33,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 				'post_status' => 'publish',
 				'meta_input'  => array(
 					'team'       => 'Team-F',
-					'start_date' => strftime( '%Y-%m-%d', strtotime( 'tomorrow' ) ),
+					'start_date' => gmdate( 'Y-m-d', strtotime( 'tomorrow' ) ),
 					'end_date'   => '',
 					'time'       => '01:00',
 					'recurring'  => '',
@@ -52,7 +52,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 				'post_status' => 'publish',
 				'meta_input'  => array(
 					'team'       => 'Team-F',
-					'start_date' => strftime( '%Y-%m-%d', strtotime( 'yesterday' ) ),
+					'start_date' => gmdate( 'Y-m-d', strtotime( 'yesterday' ) ),
 					'end_date'   => '',
 					'time'       => '02:00',
 					'recurring'  => 'weekly',
@@ -65,11 +65,11 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
-		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'tomorrow' ) );
+		$expected = gmdate( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="Y-m-dT01:00:00+00:00" title="Y-m-dT01:00:00+00:00">D M j 01:00:00 Y UTC</time>', strtotime( 'tomorrow' ) );
 		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 
-		$expected = strftime( '<strong class="meeting-title">Meeting Two</strong><br/><time class="date" date-time="%Y-%m-%dT02:00:00+00:00" title="%Y-%m-%dT02:00:00+00:00">%a %b %e 02:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
+		$expected = gmdate( '<strong class="meeting-title">Meeting Two</strong><br/><time class="date" date-time="Y-m-dT02:00:00+00:00" title="Y-m-dT02:00:00+00:00">D M j 02:00:00 Y UTC</time>', strtotime( 'yesterday +7 days' ) );
 		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting Two</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 	}
@@ -84,7 +84,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 				'post_status' => 'publish',
 				'meta_input'  => array(
 					'team'       => 'Team-F',
-					'start_date' => strftime( '%Y-%m-%d', strtotime( 'yesterday' ) ),
+					'start_date' => gmdate( 'Y-m-d', strtotime( 'yesterday' ) ),
 					'end_date'   => '',
 					'time'       => '01:00',
 					'recurring'  => 'weekly',
@@ -99,8 +99,8 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$response = $this->mpt->cancel_meeting(
 			array(
 				'meeting_id' => $meeting_1,
-				'date'       => strftime(
-					'%Y-%m-%d',
+				'date'       => gmdate(
+					'Y-m-d',
 					strtotime( 'yesterday +7 days' )
 				),
 			)
@@ -110,7 +110,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
 		// The shortcode should show the next meeting is in 7 days
-		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
+		$expected = gmdate( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="Y-m-dT01:00:00+00:00" title="Y-m-dT01:00:00+00:00">D M j 01:00:00 Y UTC</time>', strtotime( 'yesterday +7 days' ) );
 		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 
@@ -118,6 +118,6 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 0, strpos( $actual, '<p class="wporg-meeting-shortcode meeting-cancelled"' ) );
 
 		// It should give the next date
-		$this->assertGreaterThan( 0, strpos( $actual, strftime( 'This event is cancelled. The next meeting is scheduled for %Y-%m-%d.', strtotime( 'yesterday +14 days' ) ) ) );
+		$this->assertGreaterThan( 0, strpos( $actual, gmdate( 'This event is cancelled. The next meeting is scheduled for Y-m-d.', strtotime( 'yesterday +14 days' ) ) ) );
 	}
 }
