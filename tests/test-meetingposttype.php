@@ -38,7 +38,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 					'time'       => '01:00',
 					'recurring'  => '',
 					'link'       => 'wordpress.org',
-					'wptv_url'    => 'https://wordpress.org',
+					'wptv_url'    => 'https://wordpress.tv',
 					'location'   => '#meta',
 				),
 			)
@@ -68,7 +68,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 					'time'       => '0100 UTC', // Some production data is formatted like this
 					'recurring'  => '',
 					'link'       => 'wordpress.org',
-					'wptv_url'    => 'https://wordpress.org',
+					'wptv_url'    => 'https://wordpress.tv',
 					'location'   => '#meta',
 				),
 			)
@@ -100,7 +100,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 					'time'       => '01:00',
 					'recurring'  => '',
 					'link'       => '&wordpress.org',
-					'wptv_url'   => '&https://wordpress.org',
+					'wptv_url'   => '&https://wordpress.tv',
 					'location'   => '&meta',
 				),
 			)
@@ -114,7 +114,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 				++$found;
 				$this->assertEquals( 'Team-A&B', $meeting['team'] );
 				$this->assertEquals( '&wordpress.org', $meeting['link'] );
-				$this->assertEquals( '&https://wordpress.org', $meeting['wptv_url'] );
+				$this->assertEquals( '&https://wordpress.tv', $meeting['wptv_url'] );
 				$this->assertEquals( '&meta', $meeting['location'] );
 				$this->assertEquals( 'A & B meeting', $meeting['title'] );
 			}

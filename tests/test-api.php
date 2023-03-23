@@ -70,7 +70,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( '14:00:00', $meeting['meta']['time'] );
 		$this->assertEquals( 'weekly', $meeting['meta']['recurring'] );
 		$this->assertEquals( 'wordpress.org', $meeting['meta']['link'] );
-		$this->assertEquals( 'https://wordpress.org', $meeting['meta']['wptv_url'] );
+		$this->assertEquals( 'https://wordpress.tv', $meeting['meta']['wptv_url'] );
 		$this->assertEquals( array(), $meeting['meta']['occurrence'] );
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
@@ -117,7 +117,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( '15:00:00', $meeting['meta']['time'] );
 		$this->assertEquals( 'monthly', $meeting['meta']['recurring'] );
 		$this->assertEquals( 'wordpress.org', $meeting['meta']['link'] );
-		$this->assertEquals( 'https://wordpress.org', $meeting['meta']['wptv_url'] );
+		$this->assertEquals( 'https://wordpress.tv', $meeting['meta']['wptv_url'] );
 		$this->assertEquals( array(), $meeting['meta']['occurrence'] );
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
@@ -161,7 +161,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( '16:00:00', $meeting['meta']['time'] );
 		$this->assertEquals( 'occurrence', $meeting['meta']['recurring'] );
 		$this->assertEquals( 'wordpress.org', $meeting['meta']['link'] );
-		$this->assertEquals( 'https://wordpress.org', $meeting['meta']['wptv_url'] );
+		$this->assertEquals( 'https://wordpress.tv', $meeting['meta']['wptv_url'] );
 		$this->assertEquals( array( 3 ), $meeting['meta']['occurrence'] );
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
@@ -204,7 +204,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-01-01T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -221,7 +221,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-01-01T15:00:00+00:00',
 				'team'        => 'Team-B',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A monthly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'monthly',
@@ -238,7 +238,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-01-08T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -255,7 +255,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-01-15T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -272,7 +272,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-01-15T16:00:00+00:00',
 				'team'        => 'Team-C',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'Third Wednesday of each month',
 				'location'    => '#meta',
 				'recurring'   => 'occurrence',
@@ -292,7 +292,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-01-22T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -309,7 +309,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-01-29T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -326,7 +326,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-02-01T15:00:00+00:00',
 				'team'        => 'Team-B',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A monthly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'monthly',
@@ -343,7 +343,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-02-05T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -360,7 +360,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-02-12T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -377,7 +377,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-02-19T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
@@ -394,7 +394,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-02-19T16:00:00+00:00',
 				'team'        => 'Team-C',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'Third Wednesday of each month',
 				'location'    => '#meta',
 				'recurring'   => 'occurrence',
@@ -414,7 +414,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'datetime'    => '2020-02-26T14:00:00+00:00',
 				'team'        => 'Team-A',
 				'link'        => 'wordpress.org',
-				'wptv_url'    => 'https://wordpress.org',
+				'wptv_url'    => 'https://wordpress.tv',
 				'title'       => 'A weekly meeting',
 				'location'    => '#meta',
 				'recurring'   => 'weekly',
