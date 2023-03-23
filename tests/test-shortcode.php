@@ -38,7 +38,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 					'time'       => '01:00',
 					'recurring'  => '',
 					'link'       => 'wordpress.org',
-					'wptv_url'   => 'https://wordpress.org',
+					'wptv_url'   => 'https://wordpress.tv',
 					'location'   => '#meta',
 				),
 			)
@@ -57,7 +57,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 					'time'       => '02:00',
 					'recurring'  => 'weekly',
 					'link'       => 'wordpress.org',
-					'wptv_url'   => 'https://wordpress.org',
+					'wptv_url'   => 'https://wordpress.tv',
 					'location'   => '#meta',
 				),
 			)
@@ -89,7 +89,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 					'time'       => '01:00',
 					'recurring'  => 'weekly',
 					'link'       => 'wordpress.org',
-					'wptv_url'   => 'https://wordpress.org',
+					'wptv_url'   => 'https://wordpress.tv',
 					'location'   => '#meta',
 				),
 			)

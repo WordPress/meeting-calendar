@@ -23,7 +23,7 @@ function wporg_meeting_install() {
 					'recurring'  => 'weekly',
 					'link'       => 'wordpress.org',
 					'location'   => '#meta',
-					'wptv_url'   => 'https://wordpress.org',
+					'wptv_url'   => 'https://wordpress.tv',
 				),
 			)
 		);
@@ -41,7 +41,7 @@ function wporg_meeting_install() {
 					'recurring'  => 'monthly',
 					'link'       => 'wordpress.org',
 					'location'   => '#meta',
-					'wptv_url'   => 'https://wordpress.org',
+					'wptv_url'   => 'https://wordpress.tv',
 				),
 			)
 		);
@@ -60,7 +60,7 @@ function wporg_meeting_install() {
 					'occurrence' => array( 3 ),
 					'link'       => 'wordpress.org',
 					'location'   => '#meta',
-					'wptv_url'   => 'https://wordpress.org',
+					'wptv_url'   => 'https://wordpress.tv',
 				),
 			)
 		);

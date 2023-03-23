@@ -67,7 +67,7 @@ function generate_event( $post ) {
 	}
 
 	if ( $wptv_url ) {
-		$description .= "WPTV URL link: {$wptv_url}\\n";
+		$description .= "WordPress.tv link: {$wptv_url}\\n";
 	}
 
 	if ( $link ) {
