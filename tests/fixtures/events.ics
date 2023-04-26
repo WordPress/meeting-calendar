@@ -17,7 +17,7 @@ SEQUENCE:0
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 LOCATION:#meta channel on Slack
-DESCRIPTION:Slack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
+DESCRIPTION:WordPress.tv link: https://wordpress.tv\nSlack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
 RRULE:FREQ=WEEKLY
 END:VEVENT
 BEGIN:VEVENT
@@ -32,7 +32,7 @@ SEQUENCE:0
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 LOCATION:#meta channel on Slack
-DESCRIPTION:Slack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
+DESCRIPTION:WordPress.tv link: https://wordpress.tv\nSlack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
 RRULE:FREQ=MONTHLY
 END:VEVENT
 BEGIN:VEVENT
@@ -47,7 +47,7 @@ SEQUENCE:0
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 LOCATION:#meta channel on Slack
-DESCRIPTION:Slack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
+DESCRIPTION:WordPress.tv link: https://wordpress.tv\nSlack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit wordpress.org
 RRULE:FREQ=MONTHLY;BYDAY=3WE
 END:VEVENT
 END:VCALENDAR

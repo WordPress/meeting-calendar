@@ -89,6 +89,9 @@ function ListItem( { date, events } ) {
 									{ __( 'Location: ', 'wporg-meeting-calendar' ) }
 									{ getSlackLink( event.location ) }
 								</p>
+								<p className="wporg-meeting-calendar__list-event-copy">
+									<a aria-label={ __( 'WordPress.tv URL for the meeting recording', 'wporg-meeting-calendar' ) } href={ event.wptv_url }>{ __( 'View Recording', 'wporg-meeting-calendar' ) }</a>
+								</p>
 							</div>
 						</div>
 					</article>

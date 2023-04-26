@@ -21,15 +21,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: composer install --dev --prefer-dist --no-progress --no-suggest
-
-      - name: Run phpcs
-        uses: chekalsky/phpcs-action@v1
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          phpcs_bin_path: './vendor/bin/phpcs'
+          php-version: '7.4'
+          coverage: none
+          tools: composer, cs2pr
+
+      - name: Install Composer dependencies
+        run: |
+          composer install --prefer-dist --no-suggest --no-progress --no-ansi --no-interaction
+
+      - name: Run PHPCS
+        run: |
+          vendor/bin/phpcs -q --report=checkstyle src | cs2pr
 
   unit-php:
     name: PHP Unit Tests

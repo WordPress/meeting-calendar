@@ -54,7 +54,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		public function meeting_add_custom_columns( $columns ) {
 			$columns = array_slice( $columns, 0, 1, true )
 				+ array( 'team' => __( 'Team', 'wporg-meeting-calendar' ) )
-				+ array_slice( $columns, 1, null, true );
+				+ array_slice( $columns, 1, -1, true )
+				+ array( 'wptv_url' => __( 'WPTV URL', 'wporg-meeting-calendar' ) )
+				+ array_slice( $columns, -1, null, true );
 			return $columns;
 		}
 
@@ -63,6 +65,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				case 'team':
 					$team = get_post_meta( $post_id, 'team', true );
 					echo esc_html( $team );
+					break;
+			}
+			switch ( $column ) {
+				case 'wptv_url':
+					$wptv_url = get_post_meta( $post_id, 'wptv_url', true );
+					echo esc_html( $wptv_url ?: '—' );
 					break;
 			}
 		}
@@ -292,6 +300,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				'recurring',
 				'link',
 				'location',
+				'wptv_url',
 			);
 			foreach ( $meta_keys as $key ) {
 				register_meta(
@@ -370,6 +379,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						'link'        => $meeting->link,
 						'title'       => wp_specialchars_decode( $meeting->post_title, ENT_QUOTES ),
 						'location'    => $meeting->location,
+						'wptv_url'    => $meeting->wptv_url,
 						'recurring'   => $meeting->recurring,
 						'occurrence'  => $meeting->occurrence,
 						'status'      => ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? 'cancelled' : 'active' ),
@@ -496,6 +506,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$occurrence = isset( $meta['occurrence'][0] ) ? unserialize( $meta['occurrence'][0] ) : array();
 			$link       = isset( $meta['link'][0] ) ? $meta['link'][0] : '';
 			$location   = isset( $meta['location'][0] ) ? $meta['location'][0] : '';
+			$wptv_url   = isset( $meta['wptv_url'][0] ) ? $meta['wptv_url'][0] : '';
 			wp_nonce_field( 'save_meeting_meta_' . $post->ID, 'meeting_nonce' );
 			?>
 
@@ -569,6 +580,17 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<input type="text" name="location" id="location" class="regular-text wide" value="<?php echo esc_attr( $location ); ?>">
 		</label>
 		</p>
+		<p>
+		<label for="wptv_url"><?php esc_html_e( 'WordPress.tv URL: ', 'wporg-meeting-calendar' ); ?></label>
+			<input
+				type="url"
+				name="wptv_url"
+				id="wptv_url"
+				class="regular-text wide"
+				value="<?php echo esc_url( $wptv_url ); ?>"
+			/>
+		</p>
+
 		<script>
 		jQuery(document).ready( function($) {
 			$('.date').datepicker({
@@ -715,6 +737,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 								 ? array_map( 'intval', $_POST['occurrence'] ) : array() );
 			$meta['link']       = ( isset( $_POST['link'] ) ? esc_url( $_POST['link'] ) : '' );
 			$meta['location']   = ( isset( $_POST['location'] ) ? esc_textarea( $_POST['location'] ) : '' );
+			$meta['wptv_url']   = ( isset( $_POST['wptv_url'] ) ? esc_url( $_POST['wptv_url'] ) : '' );
 
 			foreach ( $meta as $key => $value ) {
 				update_post_meta( $post->ID, $key, $value );
