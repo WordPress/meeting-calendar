@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/Automattic/meeting-calendar#readme",
   "devDependencies": {
-    "@wordpress/env": "4.0.3",
+    "@wordpress/env": "4.9.0",
     "@wordpress/scripts": "15.0.1"
   }
 }
