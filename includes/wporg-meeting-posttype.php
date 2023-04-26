@@ -581,7 +581,6 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		</label>
 		</p>
 		<p>
-		<p>
 		<label for="wptv_url"><?php esc_html_e( 'WordPress.tv URL: ', 'wporg-meeting-calendar' ); ?></label>
 			<input
 				type="url"
