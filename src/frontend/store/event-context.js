@@ -55,6 +55,7 @@ export function EventsProvider( { children, value } ) {
 				label: e.team,
 				value: e.team.toLowerCase(),
 			} ) )
+			.sort((a,b) => (a.label > b.label)? 1: -1)
 			.filter( ( { value } ) => !! value ),
 		'value'
 	);
