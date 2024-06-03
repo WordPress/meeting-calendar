@@ -33,5 +33,9 @@
   "devDependencies": {
     "@wordpress/env": "4.0.3",
     "@wordpress/scripts": "15.0.1"
+  },
+  "dependencies": {
+    "prettier": "^1.13.0",
+    "typescript": "^2.8.4"
   }
 }
