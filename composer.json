@@ -9,6 +9,9 @@
 	"config": {
 		"platform": {
 			"php": "7.2"
+		},
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	},
 	"repositories": [
@@ -22,10 +25,14 @@
 		"wp-coding-standards/wpcs": "2.*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"wp-phpunit/wp-phpunit": "^5.4",
-		"phpunit/phpunit": "^7.5.20"
+		"phpunit/phpunit": "7.*"
 	},
 	"scripts": {
 		"format": "phpcbf -p",
 		"lint": "phpcs"
-	}
+	},
+	"dependencies": {
+		"prettier": "^1.13.0",
+		"typescript": "^2.8.4"
+    }
 }
