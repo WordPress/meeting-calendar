@@ -18,7 +18,7 @@ function CalendarCell( {
 	events,
 	onEventClick,
 } ) {
-	const MAX_EVENTS = 7;
+	const MAX_EVENTS = 25;
 	if ( blank ) {
 		return <td className="wporg-meeting-calendar__cell" aria-hidden />;
 	}
