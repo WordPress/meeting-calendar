@@ -53,6 +53,10 @@
 	background: #fcf8e3;
 }
 
+.wporg-meeting-calendar__cell-event.is-past {
+	filter: opacity(0.6);
+}
+
 .wporg-meeting-calendar__cell strong {
 	display: block;
 	margin: -4px -4px 0;
