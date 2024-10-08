@@ -138,6 +138,15 @@ export function isToday( date ) {
 }
 
 /**
+ * Checks whether a date is past
+ *
+ * @param {string} eventDatetime The date and time of the event in UTC
+ */
+export function isPast(eventDatetime) {    
+    return eventDatetime < new Date().toISOString();
+}
+
+/**
  * Returns whether the event is cancelled
  *
  * @param {string} status Status of the event Ie: active, cancelled

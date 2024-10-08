@@ -8,7 +8,7 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass, isToday, isCancelled } from './utils';
+import { getTeamClass, isToday, isPast, isCancelled } from './utils';
 
 function CalendarCell( {
 	blank = false,
@@ -61,7 +61,10 @@ function CalendarCell( {
 							getTeamClass( event.team ) +
 							( isCancelled( event.status )
 								? ' is-cancelled'
-								: '' )
+								: '' ) +
+								( isPast( event.datetime )
+									? ' is-past'
+									: '' )
 						}
 					>
 						<div className="wporg-meeting-calendar__cell-event-time">
