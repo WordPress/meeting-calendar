@@ -1,5 +1,6 @@
 {
 	"name": "wporg/meeting-calendar",
+	"type": "wordpress-plugin",
 	"description": "",
 	"homepage": "https://make.wordpress.org/meetings",
 	"license": "GPL-2.0-or-later",
