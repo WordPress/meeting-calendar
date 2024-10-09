@@ -70,23 +70,7 @@
 		&.is-primary {
 			background-color: var(--wp--preset--color--charcoal-1, #1e1e1e);
 		}
-
-.wporg-meeting-calendar__cell {
-	padding: 4px;
-	vertical-align: top;
-	height: 180px; /* height acts as min-height on table cells */
-}
-
-.wporg-meeting-calendar__cell.is-today {
-	background: #fcf8e3;
 	}
-
-.wporg-meeting-calendar__cell strong {
-	display: block;
-	margin: -4px -4px 0;
-	padding: 2px 4px;
-	font-size: 0.8em;
-	background: #ddd;
 }
 
 .wporg-meeting-calendar__cell-event.components-button {
@@ -331,24 +315,34 @@
 
 .wporg-block-meeting-calendar table th {
 	text-align: center;
-	font-size: 14px;
+	font-weight: 400;
+	font-size: var(--wp--preset--font-size--normal, 16px);
 	padding: 8px;
-	border: 1px solid #ddd;
-	border-top: none;
+	border: 1px solid var(--wp--preset--color--light-grey-1, #d9d9d9);
 }
 
 .wporg-meeting-calendar__cell {
 	border: 1px solid #ddd;
+	padding: var(--wp--preset--spacing--10);
+	padding: 4px;
+	vertical-align: top;
+	height: 180px; /* height acts as min-height on table cells */
+
+	strong {
+		display: block;
+		text-align: center;
+		font-weight: 400;
+		font-size: var(--wp--preset--font-size--normal);
 	}
 
-.wporg-meeting-calendar__cell:first-child,
-.wporg-meeting-calendar__cell:last-child {
-	background: #f1f1f1;
+	&:first-child,
+	&:last-child {
+		background-color: var(--wp--preset--color--light-grey-2, #f6f6f6);
 	}
 
-.wporg-meeting-calendar__cell strong {
-	background: none;
-	text-align: center;
+	&.is-today {
+		background-color: var(--wp--preset--color--acid-green-3, #e2ffed);
+	}
 }
 
 /** Colors for each team */
