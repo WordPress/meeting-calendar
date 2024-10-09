@@ -15,6 +15,7 @@ import List from '../list';
 import Filter from '../filter';
 import Feed from '../feed';
 import { useViews } from '../store/view-context';
+import { list as ListIcon, calendar as CalendarIcon } from '../icons';
 
 function Calendar() {
 	const today = new Date();
@@ -73,8 +74,7 @@ function Calendar() {
 					aria-label={ __( 'View options', 'wporg-meeting-calendar' ) }
 				>
 					<Button
-						isSecondary={ ! isListView() }
-						isPrimary={ isListView() }
+						variant={ isListView() ? 'primary' : 'secondary' }
 						onClick={ () => {
 							if ( ! isListView() ) {
 								speak( __( 'Switched to list view', 'wporg-meeting-calendar' ) );
@@ -82,12 +82,16 @@ function Calendar() {
 							setListView();
 						} }
 						disabled={ shouldForceListView }
+						aria-label={ __( 'List view', 'wporg-meeting-calendar' ) }
 					>
-						{ __( 'List', 'wporg-meeting-calendar' ) }
+						<ListIcon 
+							fill={ isListView() ? 'white' : '#1E1E1E' } 
+							aria-hidden="true"
+							focusable="false"
+						/>
 					</Button>
 					<Button
-						isSecondary={ ! isCalendarView() }
-						isPrimary={ isCalendarView() }
+						variant={ isCalendarView() ? 'primary' : 'secondary' }
 						onClick={ () => {
 							if ( ! isCalendarView() ) {
 								speak(
@@ -97,8 +101,13 @@ function Calendar() {
 							setCalendarView();
 						} }
 						disabled={ shouldForceListView }
+						aria-label={ __( 'Calendar view', 'wporg-meeting-calendar' ) }
 					>
-						{ __( 'Month', 'wporg-meeting-calendar' ) }
+						<CalendarIcon 
+							fill={ isCalendarView() ? 'white' : '#1E1E1E' } 
+							aria-hidden="true"
+							focusable="false"
+						/>
 					</Button>
 				</nav>
 			</div>
