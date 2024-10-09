@@ -15,7 +15,7 @@ import List from '../list';
 import Filter from '../filter';
 import Feed from '../feed';
 import { useViews } from '../store/view-context';
-import { list as ListIcon, calendar as CalendarIcon } from '../icons';
+import { list as ListIcon, calendar as CalendarIcon, arrow as ArrowIcon } from '../icons';
 
 function Calendar() {
 	const today = new Date();
@@ -46,22 +46,24 @@ function Calendar() {
 					aria-label={ __( 'Month navigation', 'wporg-meeting-calendar' ) }
 				>
 					<Button
-						isSecondary
+						variant='secondary'
 						onClick={ () =>
 							void setDate( { month: month - 1, year } )
 						}
 						disabled={ month === currentMonth }
+						aria-label={ __( 'Previous', 'wporg-meeting-calendar' ) }
 					>
-						{ __( 'Previous', 'wporg-meeting-calendar' ) }
+						<ArrowIcon fill={ month === currentMonth ? '#1E1E1E' : '#3858E9' } aria-hidden="true" focusable="false" />
 					</Button>
 					<Button
-						isSecondary
+						variant='secondary'
 						onClick={ () =>
 							void setDate( { month: month + 1, year } )
 						}
 						disabled={ month > currentMonth }
+						aria-label={ __( 'Next', 'wporg-meeting-calendar' ) }
 					>
-						{ __( 'Next', 'wporg-meeting-calendar' ) }
+						<ArrowIcon fill={ month > currentMonth ? '#1E1E1E' : '#3858E9' } aria-hidden="true" focusable="false" />
 					</Button>
 				</nav>
 				<div>
