@@ -2,8 +2,7 @@
  * WordPress dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { addQueryArgs } from '@wordpress/url';
-import { Button, ButtonGroup, SelectControl } from '@wordpress/components';
+import { Button, SelectControl } from '@wordpress/components';
 import { speak } from '@wordpress/a11y';
 import { useRef } from '@wordpress/element';
 
@@ -21,22 +20,6 @@ const Filter = () => {
 	const filterLabel = useRef( null );
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
 	const selected = teams.find( ( option ) => team === option.value );
-
-	const getCalendarUrl = () => {
-		const baseUrl = window.location.origin;
-		if ( ! selected ) {
-			return `${ baseUrl }/meetings.ics`;
-		}
-
-		return `${ baseUrl }/meetings-${ selected.value }.ics`;
-	};
-
-	const getGoogleCalendarUrl = () => {
-		const calendarUrl = getCalendarUrl().replace( 'https://', 'webcal://' );
-		return addQueryArgs( 'https://www.google.com/calendar/render', {
-			cid: calendarUrl,
-		} );
-	};
 
 	return (
 		<div className="wporg-meeting-calendar__filter">
@@ -88,7 +71,7 @@ const Filter = () => {
 					</p>
 					<Button
 						icon="no-alt"
-						isLink
+						variant="link"
 						isDestructive
 						onClick={ () => {
 							setTeam( '' );
@@ -101,38 +84,12 @@ const Filter = () => {
 							);
 							filterLabel.current.focus();
 						} }
+						className="wporg-meeting-calendar__filter-remove"
 					>
-						{ __( 'Remove team filter', 'wporg-meeting-calendar' ) }
+						<span>{ __( 'Remove team filter', 'wporg-meeting-calendar' ) }</span>
 					</Button>
 				</>
 			) }
-			<div className="wporg-meeting-calendar__filter-feed">
-				<ButtonGroup label={ __( 'Export', 'wporg-meeting-calendar' ) }>
-					<Button
-						icon="calendar-alt"
-						href={ getCalendarUrl() }
-						isSecondary
-						style={ {
-							marginLeft: 'auto',
-						} }
-						download
-					>
-						{ __( 'iCal', 'wporg-meeting-calendar' ) }
-						{ '' !== team && ` - ${ selected.label }` }
-					</Button>
-					<Button
-						icon="plus"
-						href={ getGoogleCalendarUrl() }
-						isSecondary
-						style={ {
-							marginLeft: 'auto',
-						} }
-						download
-					>
-						{ __( 'Google Calendar', 'wporg-meeting-calendar' ) }
-					</Button>
-				</ButtonGroup>
-			</div>
 		</div>
 	);
 };

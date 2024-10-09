@@ -13,6 +13,7 @@ import { speak } from '@wordpress/a11y';
 import CalendarGrid from './grid';
 import List from '../list';
 import Filter from '../filter';
+import Feed from '../feed';
 import { useViews } from '../store/view-context';
 
 function Calendar() {
@@ -106,6 +107,7 @@ function Calendar() {
 				<CalendarGrid month={ month } year={ year } />
 			) }
 			{ isListView() && <List month={ month } year={ year } /> }
+			<Feed />
 		</Fragment>
 	);
 }
