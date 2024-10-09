@@ -12,7 +12,6 @@
 .wporg-meeting-calendar__header {
 	display: flex;
 	align-items: center;
-	flex-direction: column;
 	margin-bottom: 18px;
 }
 
@@ -35,12 +34,75 @@
 	text-align: right;
 }
 
-.wporg-meeting-calendar__header h2 {
-	text-align: center;
+.wporg-meeting-calendar__header h2,
+.wp-site-blocks .wporg-meeting-calendar__header h2:not([class*=-font-size], [style*=font-size]) {
+	margin: 0 0 0 var(--wp--preset--spacing--20, 20px);
+	font-size: var(--wp--preset--font-size--heading-4, 20px);
 }
 
 .wporg-meeting-calendar__header h2:before {
 	display: none;
+}
+
+.wporg-meeting-calendar__header .components-button-group {
+	display: flex;
+
+	.components-button {
+		background-color: unset;
+		color: var(--wp--preset--color--white, #fff);
+		width: 40px;
+		height: 40px;
+		padding: unset;
+		position: relative;
+		border-radius: 2px;
+		margin-left: unset;
+
+		&:not(:focus) {
+			box-shadow: unset;
+		}
+
+		&::before {
+			content: "";
+			position: absolute;
+			display: block;
+			width: 100%;
+			height: 100%;
+			border-radius: 2px;
+			background-color: var(--wp--preset--color--white, #fff);
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+
+		&:disabled {
+			display: none;
+		}
+
+		&.is-primary::before {
+			background-color: var(--wp--preset--color--charcoal-1, #1e1e1e);
+		}
+
+		// Month
+		&:last-child {
+			&::before {
+				background-image: url(./icons/block-calendar-dark.svg);
+			}
+
+			&.is-primary::before {
+				background-image: url(./icons/block-calendar-light.svg);
+			}
+		}
+
+		// List
+		&:first-child {
+			&::before {
+				background-image: url(./icons/list-type-bullet-dark.svg);
+			}
+
+			&.is-primary::before {
+				background-image: url(./icons/list-type-bullet-light.svg);
+			}
+		}
+	}
 }
 
 .wporg-meeting-calendar__cell {
@@ -112,7 +174,7 @@
 }
 
 .wporg-meeting-calendar__btn-group button {
-	margin-right: 6px;
+	margin-right: var(--wp--preset--spacing--10, 10px);
 }
 
 .wporg-meeting-calendar__btn-group button:last-child {
@@ -280,10 +342,6 @@
 	.wporg-meeting-calendar__list {
 		padding: 0;
 	}
-}
-
-.wporg-meeting-calendar__header h2 {
-	font-size: 28px;
 }
 
 .wporg-block-meeting-calendar table {
@@ -473,4 +531,3 @@
 .meeting-cancelled .wporg-meeting-detail {
 	text-decoration: line-through;
 }
-
