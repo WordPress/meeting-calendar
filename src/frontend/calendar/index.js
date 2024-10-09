@@ -72,6 +72,19 @@ function Calendar() {
 					aria-label={ __( 'View options', 'wporg-meeting-calendar' ) }
 				>
 					<Button
+						isSecondary={ ! isListView() }
+						isPrimary={ isListView() }
+						onClick={ () => {
+							if ( ! isListView() ) {
+								speak( __( 'Switched to list view', 'wporg-meeting-calendar' ) );
+							}
+							setListView();
+						} }
+						disabled={ shouldForceListView }
+					>
+						{ __( 'List', 'wporg-meeting-calendar' ) }
+					</Button>
+					<Button
 						isSecondary={ ! isCalendarView() }
 						isPrimary={ isCalendarView() }
 						onClick={ () => {
@@ -85,19 +98,6 @@ function Calendar() {
 						disabled={ shouldForceListView }
 					>
 						{ __( 'Month', 'wporg-meeting-calendar' ) }
-					</Button>
-					<Button
-						isSecondary={ ! isListView() }
-						isPrimary={ isListView() }
-						onClick={ () => {
-							if ( ! isListView() ) {
-								speak( __( 'Switched to list view', 'wporg-meeting-calendar' ) );
-							}
-							setListView();
-						} }
-						disabled={ shouldForceListView }
-					>
-						{ __( 'List', 'wporg-meeting-calendar' ) }
 					</Button>
 				</nav>
 			</div>
