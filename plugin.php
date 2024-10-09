@@ -92,7 +92,7 @@ function register_assets() {
 
 		wp_register_style(
 			'wporg-calendar-style',
-			plugin_dir_url( __FILE__ ) . 'build/calendar.css',
+			plugin_dir_url( __FILE__ ) . 'build/style-calendar.css',
 			array( 'wp-components' ),
 			$frontend_info['version']
 		);
