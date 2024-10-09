@@ -48,8 +48,10 @@
 	display: flex;
 
 	.components-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		background-color: unset;
-		color: var(--wp--preset--color--white, #fff);
 		width: 40px;
 		height: 40px;
 		padding: unset;
@@ -61,49 +63,13 @@
 			box-shadow: unset;
 		}
 
-		&::before {
-			content: "";
-			position: absolute;
-			display: block;
-			width: 100%;
-			height: 100%;
-			border-radius: 2px;
-			background-color: var(--wp--preset--color--white, #fff);
-			background-repeat: no-repeat;
-			background-position: center;
-		}
-
 		&:disabled {
 			display: none;
 		}
 
-		&.is-primary::before {
+		&.is-primary {
 			background-color: var(--wp--preset--color--charcoal-1, #1e1e1e);
 		}
-
-		// Month
-		&:last-child {
-			&::before {
-				background-image: url(./icons/block-calendar-dark.svg);
-			}
-
-			&.is-primary::before {
-				background-image: url(./icons/block-calendar-light.svg);
-			}
-		}
-
-		// List
-		&:first-child {
-			&::before {
-				background-image: url(./icons/list-type-bullet-dark.svg);
-			}
-
-			&.is-primary::before {
-				background-image: url(./icons/list-type-bullet-light.svg);
-			}
-		}
-	}
-}
 
 .wporg-meeting-calendar__cell {
 	padding: 4px;
