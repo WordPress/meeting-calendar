@@ -31,7 +31,11 @@ function ListItem( { date, events } ) {
 					setTeam( event.team );
 					speak(
 						sprintf(
-							__( 'Showing meetings for %s', 'wporg-meeting-calendar' ),
+							// translators: %s is the team name
+							__(
+								'Showing meetings for %s',
+								'wporg-meeting-calendar'
+							),
 							event.team
 						)
 					);
@@ -43,21 +47,19 @@ function ListItem( { date, events } ) {
 						}` }
 						key={ event.instance_id }
 					>
-						<div>
-							{ format( 'g:i a ', event.datetime ) }
-							<div className="wporg-meeting-calendar__list-event-tz">
-								{ format( '(\\U\\T\\CP)', date ) }
-							</div>
-						</div>
-						<div className="wporg-meeting-calendar__list-event-details">
-							{ event.team && (
+						{ event.team && (
+							<div className="wporg-meeting-calendar__list-event-team-wrapper">
 								<a
 									className={
 										'wporg-meeting-calendar__list-event-team ' +
 										getTeamClass( event.team )
 									}
 									aria-label={ sprintf(
-										__( 'All %s meetings', 'wporg-meeting-calendar' ),
+										// translators: %s is the team name
+										__(
+											'All %s meetings',
+											'wporg-meeting-calendar'
+										),
 										event.team
 									) }
 									href={ `#${ event.team.toLowerCase() }` }
@@ -65,35 +67,55 @@ function ListItem( { date, events } ) {
 								>
 									{ event.team }
 								</a>
-							) }
-
-							<div>
-								<h3 className="wporg-meeting-calendar__list-event-title">
-									<a href={ event.link }>
-										<span>{ event.title }</span>
-										{ isCancelled( event.status ) && (
-											<span>
-												{ __(
-													' Meeting is cancelled',
-													'wporg'
-												) }
-											</span>
-										) }
-									</a>
-								</h3>
-								<p className="wporg-meeting-calendar__list-event-copy">
-									{ __( 'Meets: ', 'wporg-meeting-calendar' ) }
-									{ getFrequencyLabel( event ) }
-								</p>
-								<p className="wporg-meeting-calendar__list-event-copy">
-									{ __( 'Location: ', 'wporg-meeting-calendar' ) }
-									{ getSlackLink( event.location ) }
-								</p>
-								<p className="wporg-meeting-calendar__list-event-copy">
-									<a aria-label={ __( 'WordPress.tv URL for the meeting recording', 'wporg-meeting-calendar' ) } href={ event.wptv_url }>{ __( 'View Recording', 'wporg-meeting-calendar' ) }</a>
-								</p>
+							</div>
+						) }
+						<div className="wporg-meeting-calendar__list-event-header">
+							<h3 className="wporg-meeting-calendar__list-event-title">
+								<a href={ event.link }>
+									<span>{ event.title }</span>
+									{ isCancelled( event.status ) && (
+										<span>
+											{ __(
+												' Meeting is cancelled',
+												'wporg'
+											) }
+										</span>
+									) }
+								</a>
+							</h3>
+							<div className="wporg-meeting-calendar__list-event-time">
+								{ format( 'g:i a ', event.datetime ) }
+								{ format( '(\\U\\T\\CP)', date ) }
 							</div>
 						</div>
+						<div className="wporg-meeting-calendar__list-event-details">
+							<p className="wporg-meeting-calendar__list-event-copy">
+								{ __( 'Meets: ', 'wporg-meeting-calendar' ) }
+								{ getFrequencyLabel( event ) }
+							</p>
+							<p className="wporg-meeting-calendar__list-event-copy">
+								{ __( 'Location: ', 'wporg-meeting-calendar' ) }
+								{ getSlackLink( event.location ) }
+							</p>
+						</div>
+						{ !! event.wptv_url && (
+							<div>
+								<p className="wporg-meeting-calendar__list-event-copy">
+									<a
+										aria-label={ __(
+											'WordPress.tv URL for the meeting recording',
+											'wporg-meeting-calendar'
+										) }
+										href={ event.wptv_url }
+									>
+										{ __(
+											'View Recording',
+											'wporg-meeting-calendar'
+										) }
+									</a>
+								</p>
+							</div>
+						) }
 					</article>
 				);
 			} ) }
