@@ -37,18 +37,16 @@ function CalendarCell( {
 			<strong>
 				<span className="screen-reader-text">
 					{ format( 'F j', date ) }{ ' ' }
-					{
+					{ sprintf(
 						// translators: %d: Count of all events, ie: 4.
-						sprintf(
-							_n(
-								'%d event',
-								'%d events',
-								dayEvents.length,
-								'wporg'
-							),
-							dayEvents.length
-						)
-					}
+						_n(
+							'%d event',
+							'%d events',
+							dayEvents.length,
+							'wporg'
+						),
+						dayEvents.length
+					) }
 				</span>
 				<span aria-hidden>{ day }</span>
 			</strong>
@@ -86,18 +84,16 @@ function CalendarCell( {
 							onClick={ onToggle }
 							aria-expanded={ isOpen }
 						>
-							{
+							{ sprintf(
 								// translators: %d: Count of hidden events, ie: 4.
-								sprintf(
-									_n(
-										'%d more',
-										'%d more',
-										restOfEvents.length,
-										'wporg'
-									),
-									restOfEvents.length
-								)
-							}
+								_n(
+									'%d more',
+									'%d more',
+									restOfEvents.length,
+									'wporg'
+								),
+								restOfEvents.length
+							) }
 						</Button>
 					) }
 					renderContent={ () => (
