@@ -15,7 +15,11 @@ import List from '../list';
 import Filter from '../filter';
 import Feed from '../feed';
 import { useViews } from '../store/view-context';
-import { list as ListIcon, calendar as CalendarIcon, arrow as ArrowIcon } from '../icons';
+import {
+	list as ListIcon,
+	calendar as CalendarIcon,
+	arrow as ArrowIcon,
+} from '../icons';
 
 function Calendar() {
 	const today = new Date();
@@ -43,27 +47,45 @@ function Calendar() {
 			<div className="wporg-meeting-calendar__header">
 				<nav
 					className="wporg-meeting-calendar__btn-group"
-					aria-label={ __( 'Month navigation', 'wporg-meeting-calendar' ) }
+					aria-label={ __(
+						'Month navigation',
+						'wporg-meeting-calendar'
+					) }
 				>
 					<Button
-						variant='secondary'
+						variant="secondary"
 						onClick={ () =>
 							void setDate( { month: month - 1, year } )
 						}
 						disabled={ month === currentMonth }
-						aria-label={ __( 'Previous', 'wporg-meeting-calendar' ) }
+						aria-label={ __(
+							'Previous',
+							'wporg-meeting-calendar'
+						) }
 					>
-						<ArrowIcon fill={ month === currentMonth ? '#1E1E1E' : '#3858E9' } aria-hidden="true" focusable="false" />
+						<ArrowIcon
+							fill={
+								month === currentMonth ? '#1E1E1E' : '#3858E9'
+							}
+							aria-hidden="true"
+							focusable="false"
+						/>
 					</Button>
 					<Button
-						variant='secondary'
+						variant="secondary"
 						onClick={ () =>
 							void setDate( { month: month + 1, year } )
 						}
 						disabled={ month > currentMonth }
 						aria-label={ __( 'Next', 'wporg-meeting-calendar' ) }
 					>
-						<ArrowIcon fill={ month > currentMonth ? '#1E1E1E' : '#3858E9' } aria-hidden="true" focusable="false" />
+						<ArrowIcon
+							fill={
+								month > currentMonth ? '#1E1E1E' : '#3858E9'
+							}
+							aria-hidden="true"
+							focusable="false"
+						/>
 					</Button>
 				</nav>
 				<div>
@@ -73,21 +95,32 @@ function Calendar() {
 				</div>
 				<nav
 					className="components-button-group"
-					aria-label={ __( 'View options', 'wporg-meeting-calendar' ) }
+					aria-label={ __(
+						'View options',
+						'wporg-meeting-calendar'
+					) }
 				>
 					<Button
 						variant={ isListView() ? 'primary' : 'secondary' }
 						onClick={ () => {
 							if ( ! isListView() ) {
-								speak( __( 'Switched to list view', 'wporg-meeting-calendar' ) );
+								speak(
+									__(
+										'Switched to list view',
+										'wporg-meeting-calendar'
+									)
+								);
 							}
 							setListView();
 						} }
 						disabled={ shouldForceListView }
-						aria-label={ __( 'List view', 'wporg-meeting-calendar' ) }
+						aria-label={ __(
+							'List view',
+							'wporg-meeting-calendar'
+						) }
 					>
-						<ListIcon 
-							fill={ isListView() ? 'white' : '#1E1E1E' } 
+						<ListIcon
+							fill={ isListView() ? 'white' : '#1E1E1E' }
 							aria-hidden="true"
 							focusable="false"
 						/>
@@ -97,16 +130,22 @@ function Calendar() {
 						onClick={ () => {
 							if ( ! isCalendarView() ) {
 								speak(
-									__( 'Switched to calendar view', 'wporg-meeting-calendar' )
+									__(
+										'Switched to calendar view',
+										'wporg-meeting-calendar'
+									)
 								);
 							}
 							setCalendarView();
 						} }
 						disabled={ shouldForceListView }
-						aria-label={ __( 'Calendar view', 'wporg-meeting-calendar' ) }
+						aria-label={ __(
+							'Calendar view',
+							'wporg-meeting-calendar'
+						) }
 					>
-						<CalendarIcon 
-							fill={ isCalendarView() ? 'white' : '#1E1E1E' } 
+						<CalendarIcon
+							fill={ isCalendarView() ? 'white' : '#1E1E1E' }
 							aria-hidden="true"
 							focusable="false"
 						/>

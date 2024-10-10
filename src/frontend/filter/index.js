@@ -86,7 +86,12 @@ const Filter = () => {
 						} }
 						className="wporg-meeting-calendar__filter-remove"
 					>
-						<span>{ __( 'Remove team filter', 'wporg-meeting-calendar' ) }</span>
+						<span>
+							{ __(
+								'Remove team filter',
+								'wporg-meeting-calendar'
+							) }
+						</span>
 					</Button>
 				</>
 			) }
