@@ -28,11 +28,17 @@ const Feed = () => {
 		} );
 	};
 
+	const getRSSUrl = () => {
+		const baseUrl = window.location.origin;
+
+		return `${ baseUrl }/feed/?post_type=meeting`;
+	};
+
 	return (
 		<div className="wporg-meeting-calendar__feed">
 			<p>
 				{ __(
-					'Events are shown in your local time zone',
+					'Events are shown in your local time zone.',
 					'wporg-meeting-calendar'
 				) }
 			</p>
@@ -41,8 +47,17 @@ const Feed = () => {
 					'Subscribe to this calendar:',
 					'wporg-meeting-calendar'
 				) }{ ' ' }
-				<a href={ getGoogleCalendarUrl() }>Google Calendar ↗</a> ·{ ' ' }
-				<a href={ getCalendarUrl() }>ICS</a>
+				<a href={ getGoogleCalendarUrl() }>
+					{ __( 'Google Calendar ↗', 'wporg-meeting-calendar' ) }
+				</a>{ ' ' }
+				&middot;{ ' ' }
+				<a href={ getCalendarUrl() }>
+					{ __( 'ICS', 'wporg-meeting-calendar' ) }
+				</a>{ ' ' }
+				&middot;{ ' ' }
+				<a href={ getRSSUrl() }>
+					{ __( 'RSS', 'wporg-meeting-calendar' ) }
+				</a>
 			</p>
 		</div>
 	);
