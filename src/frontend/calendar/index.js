@@ -63,13 +63,7 @@ function Calendar() {
 							'wporg-meeting-calendar'
 						) }
 					>
-						<ArrowIcon
-							fill={
-								month === currentMonth ? '#1E1E1E' : '#3858E9'
-							}
-							aria-hidden="true"
-							focusable="false"
-						/>
+						<ArrowIcon aria-hidden="true" focusable="false" />
 					</Button>
 					<Button
 						variant="secondary"
@@ -79,13 +73,7 @@ function Calendar() {
 						disabled={ month > currentMonth }
 						aria-label={ __( 'Next', 'wporg-meeting-calendar' ) }
 					>
-						<ArrowIcon
-							fill={
-								month > currentMonth ? '#1E1E1E' : '#3858E9'
-							}
-							aria-hidden="true"
-							focusable="false"
-						/>
+						<ArrowIcon aria-hidden="true" focusable="false" />
 					</Button>
 				</nav>
 				<div>
@@ -119,11 +107,7 @@ function Calendar() {
 							'wporg-meeting-calendar'
 						) }
 					>
-						<ListIcon
-							fill={ isListView() ? 'white' : '#1E1E1E' }
-							aria-hidden="true"
-							focusable="false"
-						/>
+						<ListIcon aria-hidden="true" focusable="false" />
 					</Button>
 					<Button
 						variant={ isCalendarView() ? 'primary' : 'secondary' }
@@ -144,11 +128,7 @@ function Calendar() {
 							'wporg-meeting-calendar'
 						) }
 					>
-						<CalendarIcon
-							fill={ isCalendarView() ? 'white' : '#1E1E1E' }
-							aria-hidden="true"
-							focusable="false"
-						/>
+						<CalendarIcon aria-hidden="true" focusable="false" />
 					</Button>
 				</nav>
 			</div>
