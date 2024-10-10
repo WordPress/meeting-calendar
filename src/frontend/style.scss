@@ -70,6 +70,10 @@
 		&.is-primary {
 			background-color: var(--wp--preset--color--charcoal-1, #1e1e1e);
 		}
+
+		&.is-secondary {
+			color: var(--wp--preset--color--charcoal-1, #1e1e1e);
+		}
 	}
 }
 
@@ -132,8 +136,9 @@
 		height: 40px;
 
 		&:disabled {
-			background-color: var(--wp--preset--color--light-grey-2, #F6F6F6);
+			background-color: var(--wp--preset--color--light-grey-2, #f6f6f6);
 			box-shadow: none !important;
+			color: var(--wp--preset--color--charcoal-1, #1e1e1e);
 
 			svg {
 				opacity: 0.5;
