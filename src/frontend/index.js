@@ -7,7 +7,7 @@ import { createElement, render } from '@wordpress/element';
  * Internal dependencies
  */
 import App from './app';
-import './styles.css';
+import './style.scss';
 
 const getMeetings = ( calendarEl ) => {
 	return JSON.parse( calendarEl.getAttribute( 'data-meetings' ) );
