@@ -26,7 +26,8 @@
 		"wp-coding-standards/wpcs": "2.*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"wp-phpunit/wp-phpunit": "^5.4",
-		"phpunit/phpunit": "^7.5.20"
+		"phpunit/phpunit": "7.*",
+		"yoast/phpunit-polyfills": "^3.0"
 	},
 	"scripts": {
 		"format": "phpcbf -p",
