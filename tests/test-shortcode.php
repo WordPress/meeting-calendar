@@ -14,7 +14,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 	protected $meeting_ids;
 	protected $mpt;
 
-	function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		// Install test data
