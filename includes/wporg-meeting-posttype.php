@@ -842,7 +842,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$utc_time                = strftime( '%H:%M:%S', strtotime( $post->time ) );
 				$next_meeting_iso        = $next_meeting_datestring . 'T' . $utc_time . '+00:00';
 				$next_meeting_timestamp  = strtotime( $next_meeting_datestring . ' ' . $utc_time );
-				$next_meeting_display    = strftime( '%c %Z', $next_meeting_timestamp );
+				$date_time               = new DateTime( '@' . $next_meeting_timestamp );
+				$date_time->setTimezone( new DateTimeZone( 'UTC' ) );
+				$next_meeting_display    = $date_time->format( 'D M d H:i:s Y T' );
 
 				$slack_channel = null;
 				if ( $post->location && preg_match( '/^#([-\w]+)$/', trim( $post->location ), $match ) ) {
