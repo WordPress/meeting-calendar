@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .wporg-block-meeting-calendar {
 	margin: 0 auto 32px;
 	font-size: var(--wp--preset--font-size--normal, 16px);
@@ -332,98 +334,98 @@ h3.wporg-meeting-calendar__list-event-title {
 /** Colors for each team */
 .wporg-meeting-calendar__team-core {
 	border-color: #cd0000 !important;
-	background-color: lighten(#cd0000, 55%) !important;
+	background-color: color.adjust(#cd0000, $lightness: 55%) !important;
 	color: #cd0000 !important;
 }
 .wporg-meeting-calendar__team-design {
 	border-color: #eec26a !important;
-	background-color: lighten(#eec26a, 30%) !important;
-	color: darken(#eec26a, 40%) !important;
+	background-color: color.adjust(#eec26a, $lightness: 30%) !important;
+	color: color.adjust(#eec26a, $lightness: -40%) !important;
 }
 .wporg-meeting-calendar__team-mobile {
 	border-color: #fba16c !important;
-	background-color: lighten(#fba16c, 30%) !important;
+	background-color: color.adjust(#fba16c, $lightness: 30%) !important;
 	color: #fba16c !important;
 }
 .wporg-meeting-calendar__team-polyglots {
 	border-color: #c32283 !important;
-	background-color: lighten(#c32283, 45%) !important;
-	color: darken(#c32283, 10%) !important;
+	background-color: color.adjust(#c32283, $lightness: 45%) !important;
+	color: color.adjust(#c32283, $lightness: -10%) !important;
 }
 .wporg-meeting-calendar__team-support {
 	border-color: #33b4ce !important;
-	background-color: lighten(#33b4ce, 40%) !important;
-	color: darken(#33b4ce, 20%) !important;
+	background-color: color.adjust(#33b4ce, $lightness: 40%) !important;
+	color: color.adjust(#33b4ce, $lightness: -20%) !important;
 }
 .wporg-meeting-calendar__team-docs,
 .wporg-meeting-calendar__team-documentation {
 	border-color: #3b7236 !important;
-	background-color: lighten(#3b7236, 55%) !important;
+	background-color: color.adjust(#3b7236, $lightness: 55%) !important;
 	color: #3b7236 !important;
 }
 .wporg-meeting-calendar__team-themes {
 	border-color: #4e3288 !important;
-	background-color: lighten(#4e3288, 55%) !important;
+	background-color: color.adjust(#4e3288, $lightness: 55%) !important;
 	color: #4e3288 !important;
 }
 .wporg-meeting-calendar__team-plugins {
 	border-color: #f06723 !important;
-	background-color: lighten(#f06723, 55%) !important;
+	background-color: color.adjust(#f06723, $lightness: 55%) !important;
 	color: #f06723 !important;
 }
 .wporg-meeting-calendar__team-accessibility,
 .wporg-meeting-calendar__team-community {
 	border-color: #11799d !important;
-	background-color: lighten(#11799d, 60%) !important;
-	color: darken(#11799d, 10%) !important;
+	background-color: color.adjust(#11799d, $lightness: 60%) !important;
+	color: color.adjust(#11799d, $lightness: -10%) !important;
 }
 .wporg-meeting-calendar__team-meta {
 	border-color: #aeadad !important;
-	background-color: lighten(#aeadad, 25%) !important;
-	color: darken(#aeadad, 30%) !important;
+	background-color: color.adjust(#aeadad, $lightness: 25%) !important;
+	color: color.adjust(#aeadad, $lightness: -30%) !important;
 }
 .wporg-meeting-calendar__team-training,
 .wporg-meeting-calendar__team-openverse {
 	border-color: #e9c02d !important;
-	background-color: lighten(#e9c02d, 40%) !important;
-	color: darken(#e9c02d, 25%) !important;
+	background-color: color.adjust(#e9c02d, $lightness: 40%) !important;
+	color: color.adjust(#e9c02d, $lightness: -25%) !important;
 }
 .wporg-meeting-calendar__team-tv {
 	border-color: #73ad30 !important;
-	background-color: lighten(#73ad30, 45%) !important;
-	color: darken(#73ad30, 20%) !important;
+	background-color: color.adjust(#73ad30, $lightness: 45%) !important;
+	color: color.adjust(#73ad30, $lightness: -20%) !important;
 }
 .wporg-meeting-calendar__team-marketing {
 	border-color: #47bea7 !important;
-	background-color: lighten(#47bea7, 55%) !important;
+	background-color: color.adjust(#47bea7, $lightness: 55%) !important;
 	color: #47bea7 !important;
 }
 .wporg-meeting-calendar__team-cli {
 	border-color: #424242 !important;
-	background-color: lighten(#424242, 55%) !important;
+	background-color: color.adjust(#424242, $lightness: 55%) !important;
 	color: #424242 !important;
 }
 .wporg-meeting-calendar__team-hosting {
 	border-color: #5358a6 !important;
-	background-color: lighten(#5358a6, 45%) !important;
+	background-color: color.adjust(#5358a6, $lightness: 45%) !important;
 	color: #5358a6 !important;
 }
 .wporg-meeting-calendar__team-tide {
 	border-color: #1526ff !important;
-	background-color: lighten(#1526ff, 40%) !important;
+	background-color: color.adjust(#1526ff, $lightness: 40%) !important;
 	color: #1526ff !important;
 }
 .wporg-meeting-calendar__team-bbpress,
 .wporg-meeting-calendar__team-sustainability {
 	border-color: #2d8e42 !important;
-	background-color: lighten(#2d8e42, 55%) !important;
-	color: darken(#2d8e42, 10%) !important;
+	background-color: color.adjust(#2d8e42, $lightness: 55%) !important;
+	color: color.adjust(#2d8e42, $lightness: -10%) !important;
 }
 .wporg-meeting-calendar__team-buddypress,
 .wporg-meeting-calendar__team-test {
 	border-color: #d84800 !important;
-	background-color: lighten(#d84800, 50%) !important;
-	color: darken(#d84800, 10%) !important;
+	background-color: color.adjust(#d84800, $lightness: 50%) !important;
+	color: color.adjust(#d84800, $lightness: -10%) !important;
 }
 
 .wporg-meeting-calendar__filter {
