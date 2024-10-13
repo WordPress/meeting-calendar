@@ -32,6 +32,7 @@
   "homepage": "https://github.com/Automattic/meeting-calendar#readme",
   "devDependencies": {
     "@wordpress/env": "9.7.0",
-    "@wordpress/scripts": "27.9.0"
+    "@wordpress/scripts": "27.9.0",
+    "@wordpress/stylelint-config": "21.34.0"
   }
 }
