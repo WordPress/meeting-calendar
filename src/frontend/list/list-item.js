@@ -21,9 +21,9 @@ function ListItem( { date, events } ) {
 
 	return (
 		<li key={ `row-${ date }` }>
-			<strong className="wporg-meeting-calendar__list-title">
+			<h3 className="wporg-meeting-calendar__list-title">
 				<span>{ format( 'l - F j, Y', date ) }</span>
-			</strong>
+			</h3>
 
 			{ events.map( ( event ) => {
 				const onTeamClick = ( clickEvent ) => {
@@ -70,7 +70,7 @@ function ListItem( { date, events } ) {
 							</div>
 						) }
 						<div className="wporg-meeting-calendar__list-event-header">
-							<h3 className="wporg-meeting-calendar__list-event-title">
+							<h4 className="wporg-meeting-calendar__list-event-title">
 								<a href={ event.link }>
 									<span>{ event.title }</span>
 									{ isCancelled( event.status ) && (
@@ -82,7 +82,7 @@ function ListItem( { date, events } ) {
 										</span>
 									) }
 								</a>
-							</h3>
+							</h4>
 							<div className="wporg-meeting-calendar__list-event-time">
 								{ format( 'g:i a ', event.datetime ) }
 								{ format( '(\\U\\T\\CP)', date ) }

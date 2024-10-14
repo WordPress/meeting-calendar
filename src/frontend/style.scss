@@ -288,10 +288,12 @@
 	text-decoration: underline !important;
 }
 
-h3.wporg-meeting-calendar__list-event-title {
+.wporg-meeting-calendar__list-event-title {
 	font-size: var(--wp--preset--font-size--normal, 16px);
 	font-weight: 400;
 	margin: unset !important;
+	padding-bottom: unset;
+	border-bottom: unset;
 
 	a {
 		color: var(--wp--preset--color--charcoal-1, #1e1e1e);
