@@ -842,7 +842,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$utc_time                = strftime( '%H:%M:%S', strtotime( $post->time ) );
 				$next_meeting_iso        = $next_meeting_datestring . 'T' . $utc_time . '+00:00';
 				$next_meeting_timestamp  = strtotime( $next_meeting_datestring . ' ' . $utc_time );
-				$next_meeting_display    = strftime( '%c %Z', $next_meeting_timestamp );
+				$date_time               = new DateTime( '@' . $next_meeting_timestamp );
+				$date_time->setTimezone( new DateTimeZone( 'UTC' ) );
+				$next_meeting_display    = $date_time->format( 'D M d H:i:s Y T' );
 
 				$slack_channel = null;
 				if ( $post->location && preg_match( '/^#([-\w]+)$/', trim( $post->location ), $match ) ) {
@@ -864,7 +866,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$out .= '<time class="date" date-time="' . esc_attr( $next_meeting_iso ) . '" title="' . esc_attr( $next_meeting_iso ) . '">' . $next_meeting_display . '</time> ';
 				$out .= sprintf( esc_html__( '(%s from now)', 'wporg-meeting-calendar' ), human_time_diff( $next_meeting_timestamp, current_time( 'timestamp' ) ) );
 				if ( $post->location && $slack_channel ) {
-					$out .= ' ' . sprintf( wp_kses( __( 'at <a href="%1$s">%2$s</a> on Slack', 'wporg-meeting-calendar' ), array( 'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel, $post->location );
+					$out .= ' ' . sprintf( wp_kses( __( 'accessible via <a href="%1$s">%2$s</a> on Slack or  <a href="%3$s">%4$s:community.wordpress.org</a> on Matrix', 'wporg-meeting-calendar' ), array( 'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel, $post->location, '/' . strtolower( 'Core Performance' === $attr['team'] ? 'performance' : $attr['team'] ) . '/chat/', $post->location );
 				}
 				$out .= '</span>';
 

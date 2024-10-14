@@ -9,7 +9,7 @@
 	},
 	"config": {
 		"platform": {
-			"php": "7.2"
+			"php": "7.4"
 		},
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
@@ -26,7 +26,8 @@
 		"wp-coding-standards/wpcs": "2.*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"wp-phpunit/wp-phpunit": "^5.4",
-		"phpunit/phpunit": "7.*"
+		"phpunit/phpunit": "^9.5",
+		"yoast/phpunit-polyfills": "^3.0"
 	},
 	"scripts": {
 		"format": "phpcbf -p",
@@ -35,5 +36,5 @@
 	"dependencies": {
 		"prettier": "^1.13.0",
 		"typescript": "^2.8.4"
-    }
+	}
 }

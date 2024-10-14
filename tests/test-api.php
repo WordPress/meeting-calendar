@@ -13,7 +13,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 	protected $server;
 	protected $meeting_ids;
 
-	function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		// Initialize a REST server
