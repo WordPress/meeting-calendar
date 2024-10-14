@@ -124,7 +124,9 @@ function EventTitle({ event }) {
 		<>
 			<span>{event.title}</span>
 			{isCancelled(event.status) && (
-				<span>{__(' Meeting is cancelled', 'wporg')}</span>
+				<span>
+					{__(' Meeting is cancelled', 'wporg-meeting-calendar')}
+				</span>
 			)}
 		</>
 	);

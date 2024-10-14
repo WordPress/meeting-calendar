@@ -39,7 +39,12 @@ function CalendarCell({
 					{format('F j', date)}{' '}
 					{sprintf(
 						// translators: %d: Count of all events, ie: 4.
-						_n('%d event', '%d events', dayEvents.length, 'wporg'),
+						_n(
+							'%d event',
+							'%d events',
+							dayEvents.length,
+							'wporg-meeting-calendar'
+						),
 						dayEvents.length
 					)}
 				</span>
@@ -83,7 +88,7 @@ function CalendarCell({
 									'%d more',
 									'%d more',
 									restOfEvents.length,
-									'wporg'
+									'wporg-meeting-calendar'
 								),
 								restOfEvents.length
 							)}
