@@ -3,7 +3,7 @@
  */
 import { SVG, Path } from '@wordpress/primitives';
 
-export default function() {
+export default function () {
 	return (
 		<SVG
 			xmlns="http://www.w3.org/2000/svg"
