@@ -8,7 +8,7 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass, isToday, isCancelled } from './utils';
+import { getTeamClass, isToday, isCancelled, isUpcoming } from './utils';
 
 function CalendarCell({
 	blank = false,
@@ -30,9 +30,7 @@ function CalendarCell({
 
 	return (
 		<td
-			className={`wporg-meeting-calendar__cell ${
-				isToday(date) ? 'is-today' : ''
-			}`}
+			className={`wporg-meeting-calendar__cell ${isToday(date) ? 'is-today' : ''} ${isUpcoming(date) ? 'is-upcoming' : ''}`}
 		>
 			<strong>
 				<span className="screen-reader-text">
@@ -54,7 +52,7 @@ function CalendarCell({
 				return (
 					<Button
 						key={event.instance_id}
-						isLink
+						variant="link"
 						onClick={() => void onEventClick(event)}
 						className={
 							'wporg-meeting-calendar__cell-event ' +

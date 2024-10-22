@@ -366,6 +366,7 @@
 
 .wporg-meeting-calendar__cell {
 	border: 1px solid var(--wp--preset--color--light-grey-1, #d9d9d9);
+	background-color: var(--wp--preset--color--light-grey-2, #f6f6f6);
 	padding: var(--wp--preset--spacing--10, 10px);
 	vertical-align: top;
 	height: 180px; /* height acts as min-height on table cells */
@@ -374,16 +375,24 @@
 		display: block;
 		text-align: center;
 		font-weight: 400;
-		font-size: var(--wp--preset--font-size--normal);
+		font-size: var(--wp--preset--font-size--normal, 16px);
+		color: var(--wp--preset--color--charcoal-4, #656a71);
 	}
 
-	&:first-child,
-	&:last-child {
-		background-color: var(--wp--preset--color--light-grey-2, #f6f6f6);
+	&.is-upcoming {
+		background-color: var(--wp--preset--color--white, #fff);
 	}
 
 	&.is-today {
 		background-color: var(--wp--preset--color--acid-green-3, #e2ffed);
+	}
+
+	&.is-upcoming,
+	&.is-today {
+
+		strong {
+			color: var(--wp--preset--color--charcoal-1, #1e1e1e);
+		}
 	}
 }
 
