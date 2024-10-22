@@ -364,26 +364,42 @@
 	border: 1px solid var(--wp--preset--color--light-grey-1, #d9d9d9);
 }
 
+.wporg-meeting-calendar__cell-day {
+	display: inline-block;
+	width: 30px;
+	height: 100%;
+}
+
 .wporg-meeting-calendar__cell {
 	border: 1px solid var(--wp--preset--color--light-grey-1, #d9d9d9);
+	background-color: var(--wp--preset--color--light-grey-2, #f6f6f6);
 	padding: var(--wp--preset--spacing--10, 10px);
 	vertical-align: top;
 	height: 180px; /* height acts as min-height on table cells */
 
 	strong {
 		display: block;
+		height: 30px;
+		line-height: 30px;
 		text-align: center;
 		font-weight: 400;
-		font-size: var(--wp--preset--font-size--normal);
+		font-size: var(--wp--preset--font-size--normal, 16px);
+		color: var(--wp--preset--color--charcoal-4, #656a71);
 	}
 
-	&:first-child,
-	&:last-child {
-		background-color: var(--wp--preset--color--light-grey-2, #f6f6f6);
+	&.is-today,
+	&.is-upcoming {
+		background-color: var(--wp--preset--color--white, #fff);
 	}
 
-	&.is-today {
-		background-color: var(--wp--preset--color--acid-green-3, #e2ffed);
+	&.is-today .wporg-meeting-calendar__cell-day {
+		background-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+		border-radius: 50%;
+		color: var(--wp--preset--color--white, #fff);
+	}
+
+	&.is-upcoming strong {
+		color: var(--wp--preset--color--charcoal-1, #1e1e1e);
 	}
 }
 
@@ -408,7 +424,7 @@
 
 .wporg-meeting-calendar__team-polyglots {
 	border-color: #c32283 !important;
-	background-color: color.adjust(#c32283, $lightness: 45%) !important;
+	background-color: color.adjust(#c32283, $lightness: 50%) !important;
 	color: color.adjust(#c32283, $lightness: -10%) !important;
 }
 
@@ -499,6 +515,11 @@
 	border-color: #d84800 !important;
 	background-color: color.adjust(#d84800, $lightness: 50%) !important;
 	color: color.adjust(#d84800, $lightness: -10%) !important;
+}
+
+.wporg-meeting-calendar__cell-event:not(.is-upcoming) {
+	opacity: 0.58;
+	color: #000 !important;
 }
 
 .wporg-meeting-calendar__modal {

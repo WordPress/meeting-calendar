@@ -8,7 +8,7 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass, isToday, isCancelled } from './utils';
+import { getTeamClass, isToday, isCancelled, isUpcoming } from './utils';
 
 function CalendarCell({
 	blank = false,
@@ -30,9 +30,7 @@ function CalendarCell({
 
 	return (
 		<td
-			className={`wporg-meeting-calendar__cell ${
-				isToday(date) ? 'is-today' : ''
-			}`}
+			className={`wporg-meeting-calendar__cell ${isToday(date) ? 'is-today' : ''} ${isUpcoming(date) ? 'is-upcoming' : ''}`}
 		>
 			<strong>
 				<span className="screen-reader-text">
@@ -48,19 +46,17 @@ function CalendarCell({
 						dayEvents.length
 					)}
 				</span>
-				<span aria-hidden>{day}</span>
+				<span className="wporg-meeting-calendar__cell-day" aria-hidden>
+					{day}
+				</span>
 			</strong>
 			{dayEvents.slice(0, MAX_EVENTS).map((event) => {
 				return (
 					<Button
 						key={event.instance_id}
-						isLink
+						variant="link"
 						onClick={() => void onEventClick(event)}
-						className={
-							'wporg-meeting-calendar__cell-event ' +
-							getTeamClass(event.team) +
-							(isCancelled(event.status) ? ' is-cancelled' : '')
-						}
+						className={`wporg-meeting-calendar__cell-event ${getTeamClass(event.team)} ${isCancelled(event.status) ? 'is-cancelled' : ''} ${isUpcoming(event.datetime) ? 'is-upcoming' : ''}`}
 					>
 						<div className="wporg-meeting-calendar__cell-event-time">
 							{format('g:i a ', event.datetime)}
