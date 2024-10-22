@@ -46,7 +46,9 @@ function CalendarCell({
 						dayEvents.length
 					)}
 				</span>
-				<span aria-hidden>{day}</span>
+				<span className="wporg-meeting-calendar__cell-day" aria-hidden>
+					{day}
+				</span>
 			</strong>
 			{dayEvents.slice(0, MAX_EVENTS).map((event) => {
 				return (
