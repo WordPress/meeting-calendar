@@ -56,11 +56,7 @@ function CalendarCell({
 						key={event.instance_id}
 						variant="link"
 						onClick={() => void onEventClick(event)}
-						className={
-							'wporg-meeting-calendar__cell-event ' +
-							getTeamClass(event.team) +
-							(isCancelled(event.status) ? ' is-cancelled' : '')
-						}
+						className={`wporg-meeting-calendar__cell-event ${getTeamClass(event.team)} ${isCancelled(event.status) ? 'is-cancelled' : ''} ${isUpcoming(event.datetime) ? 'is-upcoming' : ''}`}
 					>
 						<div className="wporg-meeting-calendar__cell-event-time">
 							{format('g:i a ', event.datetime)}

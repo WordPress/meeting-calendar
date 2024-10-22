@@ -424,7 +424,7 @@
 
 .wporg-meeting-calendar__team-polyglots {
 	border-color: #c32283 !important;
-	background-color: color.adjust(#c32283, $lightness: 45%) !important;
+	background-color: color.adjust(#c32283, $lightness: 50%) !important;
 	color: color.adjust(#c32283, $lightness: -10%) !important;
 }
 
@@ -515,6 +515,11 @@
 	border-color: #d84800 !important;
 	background-color: color.adjust(#d84800, $lightness: 50%) !important;
 	color: color.adjust(#d84800, $lightness: -10%) !important;
+}
+
+.wporg-meeting-calendar__cell-event:not(.is-upcoming) {
+	opacity: 0.58;
+	color: #000 !important;
 }
 
 .wporg-meeting-calendar__modal {
