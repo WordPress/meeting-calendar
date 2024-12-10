@@ -1,6 +1,6 @@
 === Meeting Calendar ===
 Contributors: tellyworth,dufresnesteven,dd32,ryelle
-Author URI: https://automattic.com/
+Author URI: https://make.wordpress.org/meta/
 Tags: meeting,calendar
 Requires at least: 4.5
 Tested up to: 5.2.1

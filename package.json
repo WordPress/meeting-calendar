@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Automattic/meeting-calendar.git"
+    "url": "git+https://github.com/WordPress/meeting-calendar.git"
   },
   "author": "",
   "license": "GPL-2.0-or-later",
   "bugs": {
-    "url": "https://github.com/Automattic/meeting-calendar/issues"
+    "url": "https://github.com/WordPress/meeting-calendar/issues"
   },
-  "homepage": "https://github.com/Automattic/meeting-calendar#readme",
+  "homepage": "https://github.com/WordPress/meeting-calendar#readme",
   "devDependencies": {
     "@wordpress/env": "10.13.0",
     "@wordpress/scripts": "30.6.0",
