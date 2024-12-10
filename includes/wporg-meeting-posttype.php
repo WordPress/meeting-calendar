@@ -64,7 +64,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			switch ( $column ) {
 				case 'team':
 					$team = get_post_meta( $post_id, 'team', true );
-					echo esc_html( $team );
+					echo esc_html( ucwords( $team ) );
 					break;
 			}
 			switch ( $column ) {
@@ -375,7 +375,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						'date'        => $occurrence,
 						'time'        => $meeting->time,
 						'datetime'    => "{$occurrence}T{$meeting->time}+00:00",
-						'team'        => $meeting->team,
+						'team'        => ucwords( $meeting->team ),
 						'link'        => $meeting->link,
 						'title'       => wp_specialchars_decode( $meeting->post_title, ENT_QUOTES ),
 						'location'    => $meeting->location,
