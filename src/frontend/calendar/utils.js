@@ -15,34 +15,34 @@ const emptyDate = {
  * @param {number} year
  * @param {number} month
  */
-export function getRows( year, month ) {
+export function getRows(year, month) {
 	const daysInWeek = 7;
-	const firstOffset = new Date( year, month, 1 ).getDay(); // Get day of the week.
-	const monthLength = new Date( year, month + 1, 0 ).getDate(); // 0 gets the last day of the next month.
+	const firstOffset = new Date(year, month, 1).getDay(); // Get day of the week.
+	const monthLength = new Date(year, month + 1, 0).getDate(); // 0 gets the last day of the next month.
 	const days = [];
 
-	for ( let i = 0; i < firstOffset; i++ ) {
-		days.push( emptyDate );
+	for (let i = 0; i < firstOffset; i++) {
+		days.push(emptyDate);
 	}
-	for ( let i = 1; i <= monthLength; i++ ) {
-		days.push( {
+	for (let i = 1; i <= monthLength; i++) {
+		days.push({
 			month,
 			year,
 			day: i,
-		} );
+		});
 	}
 
 	const rows = [];
-	for ( let i = 0; i < Math.ceil( days.length / daysInWeek ); i++ ) {
+	for (let i = 0; i < Math.ceil(days.length / daysInWeek); i++) {
 		const start = i * daysInWeek;
-		let row = days.slice( start, start + daysInWeek );
-		if ( row.length !== daysInWeek ) {
+		let row = days.slice(start, start + daysInWeek);
+		if (row.length !== daysInWeek) {
 			row = [
 				...row,
 				...Array( daysInWeek - row.length ).fill( emptyDate ),
 			];
 		}
-		rows.push( row );
+		rows.push(row);
 	}
 
 	return rows;
@@ -53,32 +53,32 @@ export function getRows( year, month ) {
  *
  * @param {Object} event
  */
-export function getFrequencyLabel( event ) {
+export function getFrequencyLabel(event) {
 	const occurrences = {
-		1: __( '1st', 'wporg-meeting-calendar' ),
-		2: __( '2nd', 'wporg-meeting-calendar' ),
-		3: __( '3rd', 'wporg-meeting-calendar' ),
-		4: __( '4th', 'wporg-meeting-calendar' ),
+		1: __('1st', 'wporg-meeting-calendar'),
+		2: __('2nd', 'wporg-meeting-calendar'),
+		3: __('3rd', 'wporg-meeting-calendar'),
+		4: __('4th', 'wporg-meeting-calendar'),
 	};
-	const dayOfWeek = format( 'l', event.datetime );
+	const dayOfWeek = format('l', event.datetime);
 
-	switch ( event.recurring ) {
+	switch (event.recurring) {
 		case 'weekly':
 			return sprintf( __( 'Every week on %s', 'wporg-meeting-calendar' ), dayOfWeek );
 
 		case 'biweekly':
 			return sprintf(
-				__( 'Every other week on %s', 'wporg-meeting-calendar' ),
+				__('Every other week on %s', 'wporg-meeting-calendar'),
 				dayOfWeek
 			);
 
 		case 'monthly':
-			return __( 'Every month', 'wporg-meeting-calendar' );
+			return __('Every month', 'wporg-meeting-calendar');
 
 		case 'occurrence':
-			if ( event.occurrence.length ) {
+			if (event.occurrence.length) {
 				return sprintf(
-					__( 'Every month on the %s %s', 'wporg-meeting-calendar' ),
+					__('Every month on the %s %s', 'wporg-meeting-calendar'),
 					event.occurrence
 						.map( ( o ) => occurrences[ o ] )
 						.join( ', ' ),
@@ -88,7 +88,7 @@ export function getFrequencyLabel( event ) {
 			return '';
 
 		default:
-			return __( 'Does not repeat', 'wporg-meeting-calendar' );
+			return __('Does not repeat', 'wporg-meeting-calendar');
 	}
 }
 
@@ -97,16 +97,16 @@ export function getFrequencyLabel( event ) {
  *
  * @param {string} location
  */
-export function getSlackLink( location ) {
-	if ( location[ 0 ] === '#' ) {
-		location = location.slice( 1 );
+export function getSlackLink(location) {
+	if (location[0] === '#') {
+		location = location.slice(1);
 	}
 
 	return (
 		<a
-			href={ `https://wordpress.slack.com/app_redirect?channel=${ location }` }
+			href={`https://wordpress.slack.com/app_redirect?channel=${location}`}
 		>
-			#{ location }
+			#{location}
 		</a>
 	);
 }
@@ -116,10 +116,10 @@ export function getSlackLink( location ) {
  *
  * @param {string} team
  */
-export function getTeamClass( team ) {
+export function getTeamClass(team) {
 	return (
 		'wporg-meeting-calendar__team-' +
-		team.replace( [ ' ', '.' ], '-' ).toLowerCase()
+		team.replace([' ', '.'], '-').toLowerCase()
 	);
 }
 
@@ -128,7 +128,7 @@ export function getTeamClass( team ) {
  *
  * @param {Object} date
  */
-export function isToday( date ) {
+export function isToday(date) {
 	const today = new Date();
 	return (
 		date.getDate() == today.getDate() &&
@@ -142,6 +142,15 @@ export function isToday( date ) {
  *
  * @param {string} status Status of the event Ie: active, cancelled
  */
-export function isCancelled( status ) {
+export function isCancelled(status) {
 	return 'cancelled' === status;
+}
+
+/**
+ * Checks whether a date is upcoming
+ *
+ * @param {string} eventDatetime The date and time of the event in UTC
+ */
+export function isUpcoming(eventDatetime) {
+	return new Date(eventDatetime) > new Date();
 }

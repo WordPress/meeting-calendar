@@ -8,121 +8,113 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass, isToday, isCancelled } from './utils';
+import { getTeamClass, isToday, isCancelled, isUpcoming } from './utils';
 
-function CalendarCell( {
+function CalendarCell({
 	blank = false,
 	year,
 	month,
 	day,
 	events,
 	onEventClick,
-} ) {
+}) {
 	const MAX_EVENTS = 25;
-	if ( blank ) {
+	if (blank) {
 		return <td className="wporg-meeting-calendar__cell" aria-hidden />;
 	}
 
-	const date = new Date( year, month, day );
-	const key = format( 'Y-m-d', date );
-	const dayEvents = events[ key ] || [];
-	const restOfEvents = dayEvents.slice( MAX_EVENTS );
+	const date = new Date(year, month, day);
+	const key = format('Y-m-d', date);
+	const dayEvents = events[key] || [];
+	const restOfEvents = dayEvents.slice(MAX_EVENTS);
 
 	return (
 		<td
-			className={ `wporg-meeting-calendar__cell ${
-				isToday( date ) ? 'is-today' : ''
-			}` }
+			className={`wporg-meeting-calendar__cell ${isToday(date) ? 'is-today' : ''} ${isUpcoming(date) ? 'is-upcoming' : ''}`}
 		>
 			<strong>
 				<span className="screen-reader-text">
-					{ format( 'F j', date ) }{ ' ' }
-					{ // translators: %d: Count of all events, ie: 4.
-					sprintf(
+					{format('F j', date)}{' '}
+					{sprintf(
+						// translators: %d: Count of all events, ie: 4.
 						_n(
 							'%d event',
 							'%d events',
 							dayEvents.length,
-							'wporg'
+							'wporg-meeting-calendar'
 						),
 						dayEvents.length
-					) }
+					)}
 				</span>
-				<span aria-hidden>{ day }</span>
+				<span className="wporg-meeting-calendar__cell-day" aria-hidden>
+					{day}
+				</span>
 			</strong>
-			{ dayEvents.slice( 0, MAX_EVENTS ).map( ( event ) => {
+			{dayEvents.slice(0, MAX_EVENTS).map((event) => {
 				return (
 					<Button
-						key={ event.instance_id }
-						isLink
-						onClick={ () => void onEventClick( event ) }
-						className={
-							'wporg-meeting-calendar__cell-event ' +
-							getTeamClass( event.team ) +
-							( isCancelled( event.status )
-								? ' is-cancelled'
-								: '' )
-						}
+						key={event.instance_id}
+						variant="link"
+						onClick={() => void onEventClick(event)}
+						className={`wporg-meeting-calendar__cell-event ${getTeamClass(event.team)} ${isCancelled(event.status) ? 'is-cancelled' : ''} ${isUpcoming(event.datetime) ? 'is-upcoming' : ''}`}
 					>
 						<div className="wporg-meeting-calendar__cell-event-time">
-							{ format( 'g:i a: ', event.datetime ) }
+							{format('g:i a ', event.datetime)}
 						</div>
 						<div className="wporg-meeting-calendar__cell-event-title">
-							{ event.title }
+							{event.title}
 						</div>
 					</Button>
 				);
-			} ) }
+			})}
 
-			{ !! restOfEvents.length && (
+			{!!restOfEvents.length && (
 				<Dropdown
 					className="wporg-meeting-calendar__dropdown"
 					position="bottom center"
-					renderToggle={ ( { isOpen, onToggle } ) => (
+					renderToggle={({ isOpen, onToggle }) => (
 						<Button
 							isLink
-							onClick={ onToggle }
-							aria-expanded={ isOpen }
+							onClick={onToggle}
+							aria-expanded={isOpen}
 						>
-							{ // translators: %d: Count of hidden events, ie: 4.
-							sprintf(
+							{sprintf(
+								// translators: %d: Count of hidden events, ie: 4.
 								_n(
 									'%d more',
 									'%d more',
 									restOfEvents.length,
-									'wporg'
+									'wporg-meeting-calendar'
 								),
 								restOfEvents.length
-							) }
+							)}
 						</Button>
-					) }
-					renderContent={ () => (
+					)}
+					renderContent={() => (
 						<MenuGroup>
-							{ restOfEvents.map( ( event ) => {
+							{restOfEvents.map((event) => {
 								return (
 									<MenuItem
-										key={ event.instance_id }
+										key={event.instance_id}
 										isLink
-										onClick={ () =>
-											void onEventClick( event )
-										}
+										onClick={() => void onEventClick(event)}
 										className={
 											'wporg-meeting-calendar__cell-event ' +
-											getTeamClass( event.team ) +
-											( isCancelled( event.status )
+											getTeamClass(event.team) +
+											(isCancelled(event.status)
 												? ' is-cancelled'
-												: '' )
+												: '')
 										}
 									>
-										{ format( 'g:i a: ', event.datetime ) }
-										{ event.title }
+										{format('g:i a: ', event.datetime)}
+										{event.title}
 									</MenuItem>
 								);
-							} ) }
+							})}
 						</MenuGroup>
-					) }
+					)}
 				/>
-			) }
+			)}
 		</td>
 	);
 }

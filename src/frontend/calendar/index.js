@@ -13,7 +13,13 @@ import { speak } from '@wordpress/a11y';
 import CalendarGrid from './grid';
 import List from '../list';
 import Filter from '../filter';
+import Feed from '../feed';
 import { useViews } from '../store/view-context';
+import {
+	list as ListIcon,
+	calendar as CalendarIcon,
+	arrow as ArrowIcon,
+} from '../icons';
 
 function Calendar() {
 	const today = new Date();
@@ -23,7 +29,7 @@ function Calendar() {
 		month: currentMonth,
 		year: currentYear,
 	};
-	const [ { month, year }, setDate ] = useState( currentMonthYear );
+	const [{ month, year }, setDate] = useState(currentMonthYear);
 	const {
 		isCalendarView,
 		isListView,
@@ -32,7 +38,7 @@ function Calendar() {
 		shouldForceListView,
 	} = useViews();
 
-	if ( shouldForceListView && ! isListView() ) {
+	if (shouldForceListView && !isListView()) {
 		setListView();
 	}
 
@@ -41,71 +47,82 @@ function Calendar() {
 			<div className="wporg-meeting-calendar__header">
 				<nav
 					className="wporg-meeting-calendar__btn-group"
-					aria-label={ __( 'Month navigation', 'wporg-meeting-calendar' ) }
+					aria-label={__(
+						'Month navigation',
+						'wporg-meeting-calendar'
+					)}
 				>
 					<Button
-						isSecondary
-						onClick={ () =>
-							void setDate( { month: month - 1, year } )
-						}
-						disabled={ month === currentMonth }
+						variant="secondary"
+						onClick={() => void setDate({ month: month - 1, year })}
+						disabled={month === currentMonth}
+						aria-label={__('Previous', 'wporg-meeting-calendar')}
 					>
-						{ __( 'Previous', 'wporg-meeting-calendar' ) }
+						<ArrowIcon aria-hidden="true" focusable="false" />
 					</Button>
 					<Button
-						isSecondary
-						onClick={ () =>
-							void setDate( { month: month + 1, year } )
-						}
-						disabled={ month > currentMonth }
+						variant="secondary"
+						onClick={() => void setDate({ month: month + 1, year })}
+						disabled={month > currentMonth}
+						aria-label={__('Next', 'wporg-meeting-calendar')}
 					>
-						{ __( 'Next', 'wporg-meeting-calendar' ) }
+						<ArrowIcon aria-hidden="true" focusable="false" />
 					</Button>
 				</nav>
 				<div>
 					<h2 aria-live="polite" aria-atomic>
-						{ date( 'F Y', new Date( year, month, 2 ) ) }
+						{date('F Y', new Date(year, month, 2))}
 					</h2>
 				</div>
 				<nav
 					className="components-button-group"
-					aria-label={ __( 'View options', 'wporg-meeting-calendar' ) }
+					aria-label={__('View options', 'wporg-meeting-calendar')}
 				>
 					<Button
-						isSecondary={ ! isCalendarView() }
-						isPrimary={ isCalendarView() }
-						onClick={ () => {
-							if ( ! isCalendarView() ) {
+						variant={isListView() ? 'primary' : 'secondary'}
+						onClick={() => {
+							if (!isListView()) {
 								speak(
-									__( 'Switched to calendar view', 'wporg-meeting-calendar' )
+									__(
+										'Switched to list view',
+										'wporg-meeting-calendar'
+									)
+								);
+							}
+							setListView();
+						}}
+						disabled={shouldForceListView}
+						aria-label={__('List view', 'wporg-meeting-calendar')}
+					>
+						<ListIcon aria-hidden="true" focusable="false" />
+					</Button>
+					<Button
+						variant={isCalendarView() ? 'primary' : 'secondary'}
+						onClick={() => {
+							if (!isCalendarView()) {
+								speak(
+									__(
+										'Switched to calendar view',
+										'wporg-meeting-calendar'
+									)
 								);
 							}
 							setCalendarView();
-						} }
-						disabled={ shouldForceListView }
+						}}
+						disabled={shouldForceListView}
+						aria-label={__(
+							'Calendar view',
+							'wporg-meeting-calendar'
+						)}
 					>
-						{ __( 'Month', 'wporg-meeting-calendar' ) }
-					</Button>
-					<Button
-						isSecondary={ ! isListView() }
-						isPrimary={ isListView() }
-						onClick={ () => {
-							if ( ! isListView() ) {
-								speak( __( 'Switched to list view', 'wporg-meeting-calendar' ) );
-							}
-							setListView();
-						} }
-						disabled={ shouldForceListView }
-					>
-						{ __( 'List', 'wporg-meeting-calendar' ) }
+						<CalendarIcon aria-hidden="true" focusable="false" />
 					</Button>
 				</nav>
 			</div>
 			<Filter />
-			{ isCalendarView() && (
-				<CalendarGrid month={ month } year={ year } />
-			) }
-			{ isListView() && <List month={ month } year={ year } /> }
+			{isCalendarView() && <CalendarGrid month={month} year={year} />}
+			{isListView() && <List month={month} year={year} />}
+			<Feed />
 		</Fragment>
 	);
 }
