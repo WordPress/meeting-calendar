@@ -19,6 +19,9 @@ const Filter = () => {
 		return null;
 	}
 
+	// Sort the teams alphabetically.
+	teams.sort( (a, b) => a.label.localeCompare( b.label ) );
+
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
 	const selected = teams.find((option) => team === option.value);
 
