@@ -5,7 +5,7 @@
 	"homepage": "https://make.wordpress.org/meetings",
 	"license": "GPL-2.0-or-later",
 	"support": {
-		"issues": "https://github.com/Automattic/meeting-calendar/issues"
+		"issues": "https://github.com/WordPress/meeting-calendar/issues"
 	},
 	"config": {
 		"platform": {

@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Meeting Calendar
  * Description: This provides a way of scheduling recurring meetings, and displaying a calendar or timetable..
- * Plugin URI: https://github.com/Automattic/meeting-calendar
- * Author: Automattic
+ * Plugin URI: https://github.com/WordPress/meeting-calendar
+ * Author: WordPress.org Contributors
  * Version: 1.1.0
  * Text Domain: wporg-meeting-calendar
  * License: GPL2+

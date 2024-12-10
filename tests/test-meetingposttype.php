@@ -24,7 +24,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 	}
 
 	function test_single_meeting() {
-		// See https://github.com/Automattic/meeting-calendar/issues/34
+		// See https://github.com/WordPress/meeting-calendar/issues/34
 
 		$meeting_id = $this->factory->post->create(
 			array(
@@ -124,7 +124,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 
 	/*
 	 * There was a bug with the meeting_set_next_meeting() filter, where it was interfering with the sorting of other post types.
-	 * See https://github.com/Automattic/meeting-calendar/issues/98
+	 * See https://github.com/WordPress/meeting-calendar/issues/98
 	 */
 	function test_sort_filter_bug() {
 		$category = $this->factory->category->create( array(
