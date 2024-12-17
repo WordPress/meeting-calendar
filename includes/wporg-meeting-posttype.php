@@ -863,7 +863,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					$out .= ' <a title="Click to view all meetings for this team" href="/meetings/#' . esc_attr( strtolower( $attr['team'] ) ) . '">' . sprintf( __( '(+%s more)', 'wporg-meeting-calendar' ), $display_more ) . '</a>';
 				}
 				$out .= '<br/>';
-				$out .= '<time class="date" date-time="' . esc_attr( $next_meeting_iso ) . '" title="' . esc_attr( $next_meeting_iso ) . '">' . $next_meeting_display . '</time> ';
+				$out .= '<time class="date" datetime="' . esc_attr( $next_meeting_iso ) . '" title="' . esc_attr( $next_meeting_iso ) . '">' . $next_meeting_display . '</time> ';
 				$out .= sprintf( esc_html__( '(%s from now)', 'wporg-meeting-calendar' ), human_time_diff( $next_meeting_timestamp, current_time( 'timestamp' ) ) );
 				if ( $post->location && $slack_channel ) {
 					$out .= ' ' . sprintf( wp_kses( __( 'accessible via <a href="%1$s">%2$s</a> on Slack', 'wporg-meeting-calendar' ), array( 'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel, $post->location );
@@ -964,7 +964,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 	for (var i=0; i<nodes.length; ++i) {
 		var node = nodes[i];
 		if (node.className === 'date') {
-			var d = parse_date(node.getAttribute('date-time'));
+			var d = parse_date(node.getAttribute('datetime'));
 			if (d) {
 				node.textContent = format_time(d);
 			}
