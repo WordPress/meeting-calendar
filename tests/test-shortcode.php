@@ -65,11 +65,11 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
-		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'tomorrow' ) );
+		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" datetime="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'tomorrow' ) );
 		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 
-		$expected = strftime( '<strong class="meeting-title">Meeting Two</strong><br/><time class="date" date-time="%Y-%m-%dT02:00:00+00:00" title="%Y-%m-%dT02:00:00+00:00">%a %b %e 02:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
+		$expected = strftime( '<strong class="meeting-title">Meeting Two</strong><br/><time class="date" datetime="%Y-%m-%dT02:00:00+00:00" title="%Y-%m-%dT02:00:00+00:00">%a %b %e 02:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
 		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting Two</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 	}
@@ -110,7 +110,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
 		// The shortcode should show the next meeting is in 7 days
-		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" date-time="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
+		$expected = strftime( '<strong class="meeting-title">Meeting One</strong><br/><time class="date" datetime="%Y-%m-%dT01:00:00+00:00" title="%Y-%m-%dT01:00:00+00:00">%a %b %e 01:00:00 %Y UTC</time>', strtotime( 'yesterday +7 days' ) );
 		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 
