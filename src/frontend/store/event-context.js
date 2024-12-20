@@ -15,7 +15,7 @@ import { getSortedEvents } from './utils';
 function getTeamOnLoad() {
 	const { location } = window;
 	const matches = location.href.match( /#(.+)/ );
-	return matches ? matches[ 1 ] : '';
+	return matches ? decodeURI( matches[ 1 ] ) : '';
 }
 
 /**
