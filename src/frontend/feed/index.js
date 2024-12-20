@@ -18,7 +18,8 @@ const Feed = () => {
 		if (!selected) {
 			return `${baseUrl}/meetings.ics`;
 		}
-		return `${baseUrl}/meetings-${selected.value}.ics`;
+		const urlSafeTeam = encodeURIComponent( selected.value );
+		return `${baseUrl}/meetings-${urlSafeTeam}.ics`;
 	};
 
 	const getGoogleCalendarUrl = () => {
