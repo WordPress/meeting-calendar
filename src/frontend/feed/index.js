@@ -18,7 +18,7 @@ const Feed = () => {
 		if (!selected) {
 			return `${baseUrl}/meetings.ics`;
 		}
-		const urlSafeTeam = selected.value.replace(/ /g, '_').toLowerCase();
+		const urlSafeTeam = encodeURIComponent( selected.value );
 		return `${baseUrl}/meetings-${urlSafeTeam}.ics`;
 	};
 
