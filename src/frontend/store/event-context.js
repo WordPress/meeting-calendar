@@ -15,7 +15,7 @@ import { getSortedEvents } from './utils';
 function getTeamOnLoad() {
 	const { location } = window;
 	const matches = location.href.match( /#(.+)/ );
-	return matches ? matches[ 1 ] : '';
+	return matches ? decodeURI( matches[ 1 ] ) : '';
 }
 
 /**
@@ -42,12 +42,6 @@ export function EventsProvider( { children, value } ) {
 
 	let eventsToDisplay = value;
 
-	if ( team && team.trim().length ) {
-		eventsToDisplay = value.filter(
-			( e ) => e.team.toLowerCase() === team.toLowerCase()
-		);
-	}
-
 	// Get a list of all teams available.
 	const teams = uniqBy(
 		value
@@ -58,6 +52,24 @@ export function EventsProvider( { children, value } ) {
 			.filter( ( { value } ) => !! value ),
 		'value'
 	);
+
+	// Validate the team is valid.
+	if ( team && team.trim().length ) {
+		const teamExists = teams.find(
+			( t ) => t.value.toLowerCase() === team.toLowerCase()
+		);
+		if ( ! teamExists ) {
+			team = '';
+			setTeam( '' );
+		}
+	}
+
+	// Filter the initial events list.
+	if ( team && team.trim().length ) {
+		eventsToDisplay = value.filter(
+			( e ) => e.team.toLowerCase() === team.toLowerCase()
+		);
+	}
 
 	const initialState = {
 		events: getSortedEvents( eventsToDisplay ),
