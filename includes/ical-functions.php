@@ -48,6 +48,7 @@ function parse_request( $request ) {
 	}
 
 	$team = strtolower( $request->query_vars[ QUERY_TEAM_KEY ] );
+	$team = str_replace( '_', ' ', $team );
 
 	// Grab the meetings, optionally
 	$posts = get_meeting_posts( $team );
