@@ -521,10 +521,6 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<?php _e( 'Start Date', 'wporg-meeting-calendar' ); ?>
 			<input type="text" required="required" name="start_date" id="start_date" class="date" value="<?php echo esc_attr( $start ); ?>">
 		</label>
-		<label for="end_date">
-			<?php _e( 'End Date', 'wporg-meeting-calendar' ); ?>
-			<input type="text" name="end_date" id="end_date" class="date" value="<?php echo esc_attr( $end ); ?>">
-		</label>
 		</p>
 		<p>
 		<label for="time">
@@ -534,6 +530,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		</p>
 		<p class="recurring">
 			<?php _e( 'Recurring: ', 'wporg-meeting-calendar' ); ?><br />
+		<label for="once-off">
+			<input type="radio" name="recurring" value="" id="once-off" class="regular-radio" <?php checked( $recurring, '' ); ?>>
+			<?php _e( 'Once-off', 'wporg-meeting-calendar' ); ?>
+		</label><br />
 		<label for="weekly">
 			<input type="radio" name="recurring" value="weekly" id="weekly" class="regular-radio" <?php checked( $recurring, 'weekly' ); ?>>
 			<?php _e( 'Weekly', 'wporg-meeting-calendar' ); ?>
@@ -570,6 +570,13 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<?php _e( 'Monthly', 'wporg-meeting-calendar' ); ?>
 		</label>
 		</p>
+
+		<p>
+		<label for="end_date">
+			<?php _e( 'End Date', 'wporg-meeting-calendar' ); ?>
+			<input type="text" name="end_date" id="end_date" class="date" value="<?php echo esc_attr( $end ); ?>">
+		</label>
+		</p>
 		<p>
 		<label for="link"><?php _e( 'Link: ', 'wporg-meeting-calendar' ); ?>
 			<input type="text" name="link" id="link" class="regular-text wide" value="<?php echo esc_url( $link ); ?>">
@@ -600,11 +607,15 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$('input[name="recurring"]').change( function() {
 				var disabled = ( 'occurrence' !== $(this).val() );
 				$('#meeting-info').find('[name^="occurrence"]').prop('disabled', disabled);
+
+				$('#end_date').prop( 'disabled', ! $(this).val() );
 			});
 
 			if ( 'occurrence' !== $('input[name="recurring"]:checked').val() ) {
 				$('#meeting-info').find('[name^="occurrence"]').prop('disabled', true);
 			}
+
+			$('#end_date').prop( 'disabled', ! $('input[name="recurring"]:checked').val() );
 		});
 		</script>
 			<?php
@@ -738,6 +749,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$meta['link']       = ( isset( $_POST['link'] ) ? esc_url( $_POST['link'] ) : '' );
 			$meta['location']   = ( isset( $_POST['location'] ) ? esc_textarea( $_POST['location'] ) : '' );
 			$meta['wptv_url']   = ( isset( $_POST['wptv_url'] ) ? esc_url( $_POST['wptv_url'] ) : '' );
+
+			// Non-recurring events should not have a end_date set.
+			if ( ! $meta['recurring'] && $meta['end_date'] ) {
+				$meta['end_date'] = '';
+			}
 
 			foreach ( $meta as $key => $value ) {
 				update_post_meta( $post->ID, $key, $value );
