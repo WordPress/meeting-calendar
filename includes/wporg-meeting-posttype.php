@@ -368,7 +368,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				}
 
 				foreach ( $occurrences as $occurrence ) {
-					$meeting->time = gmdate( '%H:%i:%s', strtotime( $meeting->time ) );
+					$meeting->time = gmdate( 'H:i:s', strtotime( $meeting->time ) );
 					$out[]         = array(
 						'meeting_id'  => $meeting->ID,
 						'instance_id' => "{$meeting->ID}:{$occurrence}",
