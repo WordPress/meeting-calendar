@@ -205,12 +205,13 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					$numerals  = array( 'first', 'second', 'third', 'fourth' );
 					$months    = array( 'last month', 'this month', 'next month', '+2 month' );
 
-					$next = clone $now;
+					$next       = clone $now;
+					$occurrence = get_post_meta( $post->ID, 'occurrence', true ) ?: array();
 
 					$limit = 12;
 					do {
 						$month_year = $next->format( 'F Y' );
-						foreach ( $post->occurrence as $index ) {
+						foreach ( $occurrence as $index ) {
 							$next = new DateTime( sprintf( '%s %s of %s %s GMT', $numerals[ $index - 1 ], $day_name, $month_year, $post->time ) );
 							if ( $next > $now ) {
 								break 2;
