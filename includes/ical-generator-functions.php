@@ -4,6 +4,22 @@ namespace WordPressdotorg\Meeting_Calendar\ICS\Generator;
 define( 'NEWLINE', "\r\n" );
 
 /**
+ * Escape a string for use in an iCalendar TEXT value per RFC 5545 Section 3.3.11.
+ *
+ * @param string $text
+ * @return string
+ */
+function escape_ical_text( $text ) {
+	$text = str_replace( '\\', '\\\\', $text );
+	$text = str_replace( ';', '\\;', $text );
+	$text = str_replace( ',', '\\,', $text );
+	$text = str_replace( "\r\n", '\\n', $text );
+	$text = str_replace( "\r", '\\n', $text );
+	$text = str_replace( "\n", '\\n', $text );
+	return $text;
+}
+
+/**
  * Generate an iCalendar for the given set of meetings.
  *
  * @param WP_Post[]   $posts
@@ -15,13 +31,13 @@ function generate( $posts, $team ) {
 
 	$ical  = 'BEGIN:VCALENDAR' . NEWLINE;
 	$ical .= 'VERSION:2.0' . NEWLINE;
-	$ical .= "PRODID:-//Make WordPress//{$team_name}Meeting Events Calendar//EN" . NEWLINE;
+	$ical .= 'PRODID:-//Make WordPress//' . escape_ical_text( "{$team_name}Meeting Events Calendar" ) . '//EN' . NEWLINE;
 	$ical .= 'METHOD:PUBLISH' . NEWLINE;
 	$ical .= 'CALSCALE:GREGORIAN' . NEWLINE;
 	$ical .= 'X-WR-TIMEZONE:UTC' . NEWLINE;
 
 	if ( $team ) {
-		$ical .= "X-WR-CALNAME:WordPress {$team_name}Meetings" . NEWLINE;
+		$ical .= 'X-WR-CALNAME:' . escape_ical_text( "WordPress {$team_name}Meetings" ) . NEWLINE;
 	} else {
 		$ical .= 'X-WR-CALNAME:Making WordPress Meetings' . NEWLINE;
 	}
@@ -67,12 +83,12 @@ function generate_event( $post ) {
 	}
 
 	if ( $wptv_url ) {
-		$description .= "WordPress.tv link: {$wptv_url}\\n";
+		$description .= "WordPress.tv link: {$wptv_url}\n";
 	}
 
 	if ( $link ) {
 		if ( $slack_channel ) {
-			$description .= "Slack channel link: https://wordpress.slack.com/messages/{$slack_channel}\\n";
+			$description .= "Slack channel link: https://wordpress.slack.com/messages/{$slack_channel}\n";
 		}
 
 		$description .= "For more information visit {$link}";
@@ -88,19 +104,19 @@ function generate_event( $post ) {
 	$event .= "DTEND:{$end_date_time}" . NEWLINE;
 	$event .= 'CATEGORIES:WordPress' . NEWLINE;
 	// Some calendars require the organizer's name and email address
-	$event .= "ORGANIZER;CN=WordPress {$team} Team:mailto:mail@example.com" . NEWLINE;
-	$event .= "SUMMARY:{$team}: {$title}" . NEWLINE;
+	$event .= 'ORGANIZER;CN=' . escape_ical_text( "WordPress {$team} Team" ) . ':mailto:mail@example.com' . NEWLINE;
+	$event .= 'SUMMARY:' . escape_ical_text( "{$team}: {$title}" ) . NEWLINE;
 	// Incrementing the sequence number updates the specified event
 	$event .= "SEQUENCE:{$sequence}" . NEWLINE;
 	$event .= 'STATUS:CONFIRMED' . NEWLINE;
 	$event .= 'TRANSP:OPAQUE' . NEWLINE;
 
 	if ( ! empty( $location ) ) {
-		$event .= "LOCATION:{$location}" . NEWLINE;
+		$event .= 'LOCATION:' . escape_ical_text( $location ) . NEWLINE;
 	}
 
 	if ( ! empty( $description ) ) {
-		$event .= "DESCRIPTION:{$description}" . NEWLINE;
+		$event .= 'DESCRIPTION:' . escape_ical_text( $description ) . NEWLINE;
 	}
 
 	if ( ! is_null( $frequency ) ) {
