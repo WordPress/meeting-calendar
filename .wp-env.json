@@ -6,5 +6,5 @@
 	"mappings": {
 		"wp-cli.yml": "./.wp-env/wp-cli.yml"
 	},
-	"phpVersion": "7.4"
+	"phpVersion": "8.4"
 }

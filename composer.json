@@ -9,7 +9,7 @@
 	},
 	"config": {
 		"platform": {
-			"php": "7.4"
+			"php": "8.4"
 		},
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
@@ -22,8 +22,8 @@
 		}
 	],
 	"require-dev": {
-		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-		"wp-coding-standards/wpcs": "2.*",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"wp-coding-standards/wpcs": "^3.0",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"wp-phpunit/wp-phpunit": "^5.4",
 		"phpunit/phpunit": "^9.5",
