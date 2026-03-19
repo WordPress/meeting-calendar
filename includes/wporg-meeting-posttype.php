@@ -494,19 +494,18 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', true, '1.12.1' );
 
-			$meta      = get_post_custom( $post->ID );
-			$team      = isset( $meta['team'][0] ) ? $meta['team'][0] : '';
-			$start     = isset( $meta['start_date'][0] ) ? $meta['start_date'][0] : '';
-			$end       = isset( $meta['end_date'][0] ) ? $meta['end_date'][0] : '';
-			$time      = isset( $meta['time'][0] ) ? $meta['time'][0] : '';
-			$recurring = isset( $meta['recurring'][0] ) ? $meta['recurring'][0] : '';
+			$team       = get_post_meta( $post->ID, 'team', true ) ?: '';
+			$start      = get_post_meta( $post->ID, 'start_date', true ) ?: '';
+			$end        = get_post_meta( $post->ID, 'end_date', true ) ?: '';
+			$time       = get_post_meta( $post->ID, 'time', true ) ?: '';
+			$recurring  = get_post_meta( $post->ID, 'recurring', true ) ?: '';
 			if ( '1' === $recurring ) {
 				$recurring = 'weekly';
 			}
-			$occurrence = isset( $meta['occurrence'][0] ) ? unserialize( $meta['occurrence'][0] ) : array();
-			$link       = isset( $meta['link'][0] ) ? $meta['link'][0] : '';
-			$location   = isset( $meta['location'][0] ) ? $meta['location'][0] : '';
-			$wptv_url   = isset( $meta['wptv_url'][0] ) ? $meta['wptv_url'][0] : '';
+			$occurrence = get_post_meta( $post->ID, 'occurrence', true ) ?: array();
+			$link       = get_post_meta( $post->ID, 'link', true ) ?: '';
+			$location   = get_post_meta( $post->ID, 'location', true ) ?: '';
+			$wptv_url   = get_post_meta( $post->ID, 'wptv_url', true ) ?: '';
 			wp_nonce_field( 'save_meeting_meta_' . $post->ID, 'meeting_nonce' );
 			?>
 
