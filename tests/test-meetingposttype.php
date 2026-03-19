@@ -33,7 +33,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 				'post_status' => 'publish',
 				'meta_input'  => array(
 					'team'       => 'Team-A',
-					'start_date' => strftime( '%Y-%m-%d', strtotime( 'tomorrow' ) ),
+					'start_date' => gmdate( 'Y-m-d', strtotime( 'tomorrow' ) ),
 					'end_date'   => '',
 					'time'       => '01:00',
 					'recurring'  => '',
@@ -63,7 +63,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 				'post_status' => 'publish',
 				'meta_input'  => array(
 					'team'       => 'Team-A',
-					'start_date' => strftime( '%Y-%m-%d', strtotime( 'tomorrow' ) ),
+					'start_date' => gmdate( 'Y-m-d', strtotime( 'tomorrow' ) ),
 					'end_date'   => '',
 					'time'       => '0100 UTC', // Some production data is formatted like this
 					'recurring'  => '',
@@ -95,7 +95,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 				'post_status' => 'publish',
 				'meta_input'  => array(
 					'team'       => 'Team-A&B',
-					'start_date' => strftime( '%Y-%m-%d', strtotime( 'tomorrow' ) ),
+					'start_date' => gmdate( 'Y-m-d', strtotime( 'tomorrow' ) ),
 					'end_date'   => '',
 					'time'       => '01:00',
 					'recurring'  => '',

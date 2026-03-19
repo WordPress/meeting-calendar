@@ -885,7 +885,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$out = '';
 			foreach ( array_slice( $query->posts, 0, $limit ) as $post ) {
 				$next_meeting_datestring = $post->next_date;
-				$utc_time                = strftime( '%H:%M:%S', strtotime( $post->time ) );
+				$utc_time                = gmdate( 'H:i:s', strtotime( $post->time ) );
 				$next_meeting_iso        = $next_meeting_datestring . 'T' . $utc_time . '+00:00';
 				$next_meeting_timestamp  = strtotime( $next_meeting_datestring . ' ' . $utc_time );
 				$date_time               = new DateTime( '@' . $next_meeting_timestamp );
