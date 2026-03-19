@@ -3,8 +3,7 @@
  * Create the meeting post type and assorted filters for https://make.wordpress.org/meetings
  */
 
-// @todo: Fix these phpcs errors correctly.
-// phpcs:disable Squiz.Commenting.FunctionComment.Missing, WordPress.Security.EscapeOutput.UnsafePrintingFunction, WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:disable Squiz.Commenting.FunctionComment.Missing
 
 use function WordPressdotorg\Meeting_Calendar\ICS\Generator\get_frequency;
 
@@ -43,7 +42,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_filter( 'widget_text', 'do_shortcode' );
 		}
 
-		public function meeting_column_width() { ?>
+		public function meeting_column_width() {
+			?>
 			<style type="text/css">
 				.column-team { width: 10em !important; overflow: hidden; }
 				#meeting-info .recurring label { padding-right: 10px; }
@@ -87,7 +87,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 
 		public function meeting_set_next_meeting( $posts ) {
-			$is_meeting_list = array_reduce( $posts, function( $is_meeting, $post ) {
+			$is_meeting_list = array_reduce( $posts, function ( $is_meeting, $post ) {
 				return $is_meeting && 'meeting' === $post->post_type;
 			}, true );
 			if ( ! $is_meeting_list ) {
@@ -120,7 +120,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				return $posts;
 			}
 
-			$is_meeting_list = array_reduce( $posts, function( $is_meeting, $post ) {
+			$is_meeting_list = array_reduce( $posts, function ( $is_meeting, $post ) {
 				return $is_meeting && 'meeting' === $post->post_type;
 			}, true );
 			if ( ! $is_meeting_list ) {
@@ -417,7 +417,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 			usort(
 				$out,
-				function( $a, $b ) {
+				function ( $a, $b ) {
 					return $a['datetime'] <=> $b['datetime'];
 				}
 			);
@@ -538,78 +538,78 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 		<p>
 		<label for="team">
-			<?php _e( 'Team: ', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Team: ', 'wporg-meeting-calendar' ); ?>
 			<input type="text" id="team" name="team" class="regular-text wide" value="<?php echo esc_attr( $team ); ?>">
 		</label>
 		</p>
 		<p>
 		<label for="start_date">
-			<?php _e( 'Start Date', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Start Date', 'wporg-meeting-calendar' ); ?>
 			<input type="text" required="required" name="start_date" id="start_date" class="date" value="<?php echo esc_attr( $start ); ?>">
 		</label>
 		</p>
 		<p>
 		<label for="time">
-			<?php _e( 'Time (UTC)', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Time (UTC)', 'wporg-meeting-calendar' ); ?>
 			<input type="text" required="required" placeholder="13:00" name="time" id="time" class="time" value="<?php echo esc_attr( $time ); ?>">
 		</label>
 		</p>
 		<p class="recurring">
-			<?php _e( 'Recurring: ', 'wporg-meeting-calendar' ); ?><br />
+			<?php esc_html_e( 'Recurring: ', 'wporg-meeting-calendar' ); ?><br />
 		<label for="once-off">
 			<input type="radio" name="recurring" value="" id="once-off" class="regular-radio" <?php checked( $recurring, '' ); ?>>
-			<?php _e( 'Once-off', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Once-off', 'wporg-meeting-calendar' ); ?>
 		</label><br />
 		<label for="weekly">
 			<input type="radio" name="recurring" value="weekly" id="weekly" class="regular-radio" <?php checked( $recurring, 'weekly' ); ?>>
-			<?php _e( 'Weekly', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Weekly', 'wporg-meeting-calendar' ); ?>
 		</label><br />
 
 		<label for="biweekly">
 			<input type="radio" name="recurring" value="biweekly" id="biweekly" class="regular-radio" <?php checked( $recurring, 'biweekly' ); ?>>
-			<?php _e( 'Biweekly', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Biweekly', 'wporg-meeting-calendar' ); ?>
 		</label><br />
 
 		<label for="occurrence">
 			<input type="radio" name="recurring" value="occurrence" id="occurrence" class="regular-radio" <?php checked( $recurring, 'occurrence' ); ?>>
-			<?php _e( 'Occurrence in a month:', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Occurrence in a month:', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-1">
 			<input type="checkbox" name="occurrence[]" value="1" id="week-1" <?php checked( in_array( 1, $occurrence ) ); ?>>
-			<?php _e( '1st', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( '1st', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-2">
 			<input type="checkbox" name="occurrence[]" value="2" id="week-2" <?php checked( in_array( 2, $occurrence ) ); ?>>
-			<?php _e( '2nd', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( '2nd', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-3">
 			<input type="checkbox" name="occurrence[]" value="3" id="week-3" <?php checked( in_array( 3, $occurrence ) ); ?>>
-			<?php _e( '3rd', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( '3rd', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-4">
 			<input type="checkbox" name="occurrence[]" value="4" id="week-4" <?php checked( in_array( 4, $occurrence ) ); ?>>
-			<?php _e( '4th', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( '4th', 'wporg-meeting-calendar' ); ?>
 		</label><br />
 
 		<label for="monthly">
 			<input type="radio" name="recurring" value="monthly" id="monthly" class="regular-radio" <?php checked( $recurring, 'monthly' ); ?>>
-			<?php _e( 'Monthly', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'Monthly', 'wporg-meeting-calendar' ); ?>
 		</label>
 		</p>
 
 		<p>
 		<label for="end_date">
-			<?php _e( 'End Date', 'wporg-meeting-calendar' ); ?>
+			<?php esc_html_e( 'End Date', 'wporg-meeting-calendar' ); ?>
 			<input type="text" name="end_date" id="end_date" class="date" value="<?php echo esc_attr( $end ); ?>">
 		</label>
 		</p>
 		<p>
-		<label for="link"><?php _e( 'Link: ', 'wporg-meeting-calendar' ); ?>
+		<label for="link"><?php esc_html_e( 'Link: ', 'wporg-meeting-calendar' ); ?>
 			<input type="text" name="link" id="link" class="regular-text wide" value="<?php echo esc_url( $link ); ?>">
 		</label>
 		</p>
 		<p>
-		<label for="location"><?php _e( 'Location: ', 'wporg-meeting-calendar' ); ?>
+		<label for="location"><?php esc_html_e( 'Location: ', 'wporg-meeting-calendar' ); ?>
 			<input type="text" name="location" id="location" class="regular-text wide" value="<?php echo esc_attr( $location ); ?>">
 		</label>
 		</p>
@@ -659,12 +659,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					?>
 					<li>
 						<label>
-							<?php printf( __( '%1$s at %2$s', 'wporg-meeting-calendar' ), $occurrence, $meeting->time ); ?>
+							<?php printf( esc_html__( '%1$s at %2$s', 'wporg-meeting-calendar' ), esc_html( $occurrence ), esc_html( $meeting->time ) ); ?>
 							<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr( $meeting->ID ) . ':' . esc_attr( $occurrence ); ?>" <?php checked( ! $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ); ?> />
 							<span class="meeting-status">
 								<?php
 								if ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ) {
-									echo __( 'Cancelled', 'wporg-meeting-calendar' );
+									esc_html_e( 'Cancelled', 'wporg-meeting-calendar' );
 								}
 								?>
 							</span>
@@ -678,7 +678,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 			} else {
 				?>
-				<p><?php _e( 'No upcoming meetings.', 'wporg-meeting-calendar' ); ?></p>
+				<p><?php esc_html_e( 'No upcoming meetings.', 'wporg-meeting-calendar' ); ?></p>
 				<?php
 			}
 
@@ -688,7 +688,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			jQuery(document).ready( function($) {
 
 				var root = '<?php echo esc_url_raw( rest_url() ); ?>';
-				var nonce = '<?php echo wp_create_nonce( 'wp_rest' ); ?>';
+				var nonce = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
 				var cancelled = '<?php echo esc_html__( 'Cancelled', 'wporg-meeting-calendar' ); ?>';
 
 
@@ -912,7 +912,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$out .= '<time class="date" datetime="' . esc_attr( $next_meeting_iso ) . '" title="' . esc_attr( $next_meeting_iso ) . '">' . $next_meeting_display . '</time> ';
 				$out .= sprintf( esc_html__( '(%s from now)', 'wporg-meeting-calendar' ), human_time_diff( $next_meeting_timestamp, current_time( 'timestamp' ) ) );
 				if ( $post->location && $slack_channel ) {
-					$out .= ' ' . sprintf( wp_kses( __( 'accessible via <a href="%1$s">%2$s</a> on Slack', 'wporg-meeting-calendar' ), array( 'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel, $post->location );
+					$out .= ' ' . sprintf( wp_kses( __( 'accessible via <a href="%1$s">%2$s</a> on Slack', 'wporg-meeting-calendar' ), array( 'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel, esc_html( $post->location ) );
 				}
 				$out .= '</span>';
 

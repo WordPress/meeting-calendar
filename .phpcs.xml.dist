@@ -81,7 +81,7 @@
 		<exclude name="WordPress.PHP.DevelopmentFunctions.error_log_print_r" />
 
 		<!-- Allow short ternary pattern -->
-		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
+		<exclude name="Universal.Operators.DisallowShortTernary.Found" />
 	</rule>
 
 	<rule ref="WordPress-Docs">
@@ -125,11 +125,12 @@
 		<exclude name="PSR2.Namespaces.NamespaceDeclaration.BlankLineAfter" />
 	</rule>
 
-	<!-- Verify that the text_domain is set to the desired text-domain. Multiple valid text domains can be
-	     provided as a comma-delimited list. -->
+	<!-- Verify that the text_domain is set to the desired text-domain. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="wporg-meeting-calendar" />
+			<property name="text_domain" type="array">
+				<element value="wporg-meeting-calendar" />
+			</property>
 		</properties>
 	</rule>
 </ruleset>
