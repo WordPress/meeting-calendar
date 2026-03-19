@@ -212,6 +212,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			1  =>
 			array(
@@ -229,6 +230,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=MONTHLY',
+				'edit_url'    => '',
 			),
 			2  =>
 			array(
@@ -246,6 +248,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			3  =>
 			array(
@@ -263,6 +266,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			4  =>
 			array(
@@ -283,6 +287,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				),
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=MONTHLY;BYDAY=3WE',
+				'edit_url'    => '',
 			),
 			5  =>
 			array(
@@ -300,6 +305,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			6  =>
 			array(
@@ -317,6 +323,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			7  =>
 			array(
@@ -334,6 +341,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=MONTHLY',
+				'edit_url'    => '',
 			),
 			8  =>
 			array(
@@ -351,6 +359,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			9  =>
 			array(
@@ -368,6 +377,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			10 =>
 			array(
@@ -385,6 +395,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 			11 =>
 			array(
@@ -405,6 +416,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				),
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=MONTHLY;BYDAY=3WE',
+				'edit_url'    => '',
 			),
 			12 =>
 			array(
@@ -422,6 +434,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 				'occurrence'  => '',
 				'status'      => 'active',
 				'rrule'       => 'RRULE:FREQ=WEEKLY',
+				'edit_url'    => '',
 			),
 		);
 	}
@@ -514,6 +527,10 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 		$january_meetings              = $this->_january_meetings();
 		$january_meetings[3]['status'] = 'cancelled';
+		// Set expected edit URLs since we are logged in as an editor.
+		foreach ( $january_meetings as &$meeting ) {
+			$meeting['edit_url'] = get_edit_post_link( $meeting['meeting_id'], 'raw' );
+		}
 		$this->assertEquals( $january_meetings, $meetings );
 
 		// Now uncancel it
