@@ -452,12 +452,33 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 
 		public function cancel_meeting( $request ) {
-			// TODO: should validate that the meeting does occur on the given date
+			if ( ! $this->is_valid_occurrence( $request['meeting_id'], $request['date'] ) ) {
+				return new \WP_Error( 'invalid_date', 'The meeting does not occur on the given date.', array( 'status' => 400 ) );
+			}
 			return add_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'], false );
 		}
 
 		public function uncancel_meeting( $request ) {
 			return delete_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'] );
+		}
+
+		public function is_valid_occurrence( $meeting_id, $date ) {
+			$meeting = get_post( $meeting_id );
+			if ( ! $meeting || 'meeting' !== $meeting->post_type ) {
+				return false;
+			}
+
+			// Non-recurring meetings only occur on their start date.
+			if ( empty( $meeting->recurring ) ) {
+				return $date === $meeting->start_date;
+			}
+
+			// Check if the date is a valid occurrence by finding the next occurrence
+			// from just before the target date and seeing if it matches.
+			$before = gmdate( 'Y-m-d H:i:s P', strtotime( $date . ' ' . $meeting->time . ' -1 minute' ) );
+			$next   = $this->get_next_occurrence( $meeting, $before );
+
+			return $next === $date;
 		}
 
 		public function can_cancel_meeting( $request ) {

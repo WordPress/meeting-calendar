@@ -531,5 +531,18 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( $january_meetings, $meetings );
 	}
 
+	public function test_cancel_meeting_invalid_date() {
+		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $user_id );
+
+		// 2020-01-16 is a Thursday, not a valid occurrence for the weekly Wednesday meeting.
+		$request  = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-16' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+
+		// Verify no cancellation was stored.
+		$cancellations = get_post_meta( $this->meeting_ids[0], 'meeting_cancelled', false );
+		$this->assertNotContains( '2020-01-16', $cancellations );
+	}
 
 }

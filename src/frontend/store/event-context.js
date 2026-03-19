@@ -15,7 +15,12 @@ import { getSortedEvents } from './utils';
 function getTeamOnLoad() {
 	const { location } = window;
 	const matches = location.href.match( /#(.+)/ );
-	return matches ? decodeURI( matches[ 1 ] ) : '';
+	if ( ! matches ) {
+		return '';
+	}
+	const candidate = decodeURI( matches[ 1 ] );
+	// Only allow alphanumeric characters, spaces, hyphens, and underscores.
+	return /^[\w\s-]+$/.test( candidate ) ? candidate : '';
 }
 
 /**
