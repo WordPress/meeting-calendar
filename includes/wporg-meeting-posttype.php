@@ -735,19 +735,23 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				return false;
 			}
 
-			$meta['team']       = ( isset( $_POST['team'] ) ? esc_textarea( $_POST['team'] ) : '' );
-			$meta['start_date'] = ( isset( $_POST['start_date'] ) ? esc_textarea( $_POST['start_date'] ) : '' );
-			$meta['end_date']   = ( isset( $_POST['end_date'] ) ? esc_textarea( $_POST['end_date'] ) : '' );
-			$meta['time']       = ( isset( $_POST['time'] ) ? esc_textarea( $_POST['time'] ) : '' );
-			$meta['recurring']  = ( isset( $_POST['recurring'] )
-								 && in_array( $_POST['recurring'], array( 'weekly', 'biweekly', 'occurrence', 'monthly' ) )
-								 ? ( $_POST['recurring'] ) : '' );
-			$meta['occurrence'] = ( isset( $_POST['occurrence'] ) && 'occurrence' === $meta['recurring']
-								 && is_array( $_POST['occurrence'] )
-								 ? array_map( 'intval', $_POST['occurrence'] ) : array() );
-			$meta['link']       = ( isset( $_POST['link'] ) ? esc_url( $_POST['link'] ) : '' );
-			$meta['location']   = ( isset( $_POST['location'] ) ? esc_textarea( $_POST['location'] ) : '' );
-			$meta['wptv_url']   = ( isset( $_POST['wptv_url'] ) ? esc_url( $_POST['wptv_url'] ) : '' );
+			$meta['team']       = sanitize_text_field( $_POST['team'] ?? '' );
+			$meta['start_date'] = sanitize_text_field( $_POST['start_date'] ?? '' );
+			$meta['end_date']   = sanitize_text_field( $_POST['end_date'] ?? '' );
+			$meta['time']       = sanitize_text_field( $_POST['time'] ?? '' );
+			$meta['link']       = esc_url_raw( $_POST['link'] ?? '' );
+			$meta['location']   = sanitize_text_field( $_POST['location'] ?? '' );
+			$meta['wptv_url']   = esc_url_raw( $_POST['wptv_url'] ?? '' );
+
+			$meta['recurring'] = $_POST['recurring'] ?? '';
+			if ( ! in_array( $meta['recurring'], array( 'weekly', 'biweekly', 'occurrence', 'monthly' ), true ) ) {
+				$meta['recurring'] = '';
+			}
+
+			$meta['occurrence'] = array();
+			if ( 'occurrence' === $meta['recurring'] && is_array( $_POST['occurrence'] ?? null ) ) {
+				$meta['occurrence'] = array_map( 'intval', $_POST['occurrence'] );
+			}
 
 			// Non-recurring events should not have a end_date set.
 			if ( ! $meta['recurring'] && $meta['end_date'] ) {
