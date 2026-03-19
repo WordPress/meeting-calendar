@@ -63,7 +63,8 @@ function parse_request( $request ) {
 
 	// If the calendar has a 'method' property, the 'Content-Type' header must also specify it
 	header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
-	header( 'Content-Disposition: inline; filename=' . 'meetings' . ( $team ? "-{$team}" : '' ) . '.ics' );
+	$filename = sanitize_file_name( 'meetings' . ( $team ? "-{$team}" : '' ) . '.ics' );
+	header( 'Content-Disposition: inline; filename="' . $filename . '"' );
 
 	// phpcs:ignore -- Direct output okay.
 	echo Generator\generate( $posts, $team );
