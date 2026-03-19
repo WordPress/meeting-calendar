@@ -80,6 +80,13 @@ function EventModal( { event, onRequestClose } ) {
 					</a>
 				</p>
 			) }
+			{ !! event.edit_url && (
+				<p>
+					<a href={ event.edit_url }>
+						{ __( 'Edit Meeting', 'wporg-meeting-calendar' ) }
+					</a>
+				</p>
+			) }
 		</Modal>
 	);
 }

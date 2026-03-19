@@ -37,11 +37,23 @@ function get_meeting_data( $per_page ) {
  */
 function render_callback( $attributes, $content ) {
 	$meetings = get_meeting_data( 12 );
-	return sprintf(
+	$output   = sprintf(
 		'<div class="alignwide wporg-block-meeting-calendar" id="%s" data-meetings="%s">Loading Calendar ...</div>',
 		'wporg-meeting-calendar-js',
 		htmlspecialchars( $meetings, ENT_QUOTES )
 	);
+
+	if ( current_user_can( 'edit_posts' ) ) {
+		$output .= sprintf(
+			'<p class="wporg-meeting-calendar__admin-links"><a href="%s">%s</a> | <a href="%s">%s</a></p>',
+			esc_url( admin_url( 'post-new.php?post_type=meeting' ) ),
+			esc_html__( 'Add New Meeting', 'wporg-meeting-calendar' ),
+			esc_url( admin_url( 'edit.php?post_type=meeting' ) ),
+			esc_html__( 'Edit Meetings', 'wporg-meeting-calendar' )
+		);
+	}
+
+	return $output;
 }
 
 /**

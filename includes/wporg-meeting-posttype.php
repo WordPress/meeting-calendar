@@ -410,6 +410,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						'occurrence'  => $meeting->occurrence,
 						'status'      => ( $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ? 'cancelled' : 'active' ),
 						'rrule'       => $frequency ? "RRULE:FREQ={$frequency}" : '',
+						'edit_url'    => current_user_can( 'edit_post', $meeting->ID ) ? get_edit_post_link( $meeting->ID, 'raw' ) : '',
 					);
 				}
 			}
