@@ -291,30 +291,56 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 
 		public function register_meta() {
-			// Most are string types
-			$meta_keys = array(
-				'team',
-				'start_date',
-				'end_date',
-				'time',
-				'recurring',
-				'link',
-				'location',
-				'wptv_url',
-			);
-			foreach ( $meta_keys as $key ) {
+			// Text fields
+			$text_keys = array( 'team', 'start_date', 'end_date', 'time', 'location' );
+			foreach ( $text_keys as $key ) {
 				register_meta(
 					'post',
 					$key,
 					array(
-						'object_subtype' => 'meeting',
-						'type'           => 'string',
-						'single'         => true,
-						'show_in_rest'   => true,
+						'object_subtype'    => 'meeting',
+						'type'              => 'string',
+						'single'            => true,
+						'show_in_rest'      => true,
+						'sanitize_callback' => 'sanitize_text_field',
 					)
 				);
 			}
-			// 'occurrence' is an array of strings
+
+			// URL fields
+			$url_keys = array( 'link', 'wptv_url' );
+			foreach ( $url_keys as $key ) {
+				register_meta(
+					'post',
+					$key,
+					array(
+						'object_subtype'    => 'meeting',
+						'type'              => 'string',
+						'single'            => true,
+						'show_in_rest'      => true,
+						'sanitize_callback' => 'esc_url_raw',
+					)
+				);
+			}
+
+			// Recurring field
+			register_meta(
+				'post',
+				'recurring',
+				array(
+					'object_subtype'    => 'meeting',
+					'type'              => 'string',
+					'single'            => true,
+					'show_in_rest'      => array(
+						'schema' => array(
+							'type' => 'string',
+							'enum' => array( '', 'weekly', 'biweekly', 'occurrence', 'monthly' ),
+						),
+					),
+				)
+			);
+
+			// 'occurrence' is an array of integers (1-4, representing week numbers in a month)
 			register_meta(
 				'post',
 				'occurrence',
@@ -327,6 +353,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 							'type'  => 'array',
 							'items' => array(
 								'type' => 'integer',
+								'enum' => array( 1, 2, 3, 4 ),
 							),
 						),
 					),
