@@ -37,9 +37,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_action( 'wp_enqueue_scripts', array( $mpt, 'add_edit_meetings_icon_to_admin_bar' ) );
 			add_shortcode( 'meeting_time', array( $mpt, 'meeting_time_shortcode' ) );
 
-			// shortcodes aren't normally processed in widgets, add this to allow meeting_type in text widgets
-			// TODO make this more specific and only add this shortcode to widget processing
-			add_filter( 'widget_text', 'do_shortcode' );
+			// Process only the [meeting_time] shortcode in text widgets.
+			add_filter( 'widget_text', array( $mpt, 'process_widget_shortcode' ) );
 		}
 
 		public function meeting_column_width() {
@@ -830,6 +829,17 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			}
 		'
 			);
+		}
+
+		/**
+		 * Process only the [meeting_time] shortcode in widget text.
+		 */
+		public function process_widget_shortcode( $text ) {
+			if ( has_shortcode( $text, 'meeting_time' ) ) {
+				$pattern = get_shortcode_regex( array( 'meeting_time' ) );
+				$text    = preg_replace_callback( "/$pattern/", 'do_shortcode_tag', $text );
+			}
+			return $text;
 		}
 
 		/**
