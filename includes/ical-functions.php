@@ -54,11 +54,7 @@ function parse_request( $request ) {
 
 	// Output a 404 if there's no meetings, but still generate a ICS feed.
 	if ( ! $posts ) {
-		header(
-			( $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.0' ) . ' 404 No Meetings Found',
-			true,
-			404
-		);
+		status_header( 404 );
 	}
 
 	// If the calendar has a 'method' property, the 'Content-Type' header must also specify it
