@@ -500,7 +500,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return current_user_can( 'edit_post', $request['meeting_id'] );
 		}
 
-		public function get_future_occurrences( $meeting, $attr, $request ) {
+		public function get_future_occurrences( $meeting, $attr = null, $request = null, $object_type = null ) {
 			if ( is_array( $meeting ) && ! empty( $meeting['id'] ) ) {
 				// The register_rest_field callback passes a prepared array but we need the post object
 				$meeting = get_post( $meeting['id'] );
@@ -549,21 +549,43 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				wp_send_json_error();
 			}
 
+			$end_date = sanitize_text_field( $_POST['end_date'] ?? '' );
+			if ( $end_date && false === strtotime( $end_date ) ) {
+				$end_date = '';
+			}
+
 			// Build a temporary post object to pass to get_future_occurrences().
 			$post              = new \stdClass();
 			$post->ID          = 0;
 			$post->post_type   = 'meeting';
 			$post->start_date  = $start_date;
-			$post->end_date    = '';
+			$post->end_date    = $end_date;
 			$post->time        = $time;
 			$post->recurring   = $recurring;
 			$post->occurrence  = $occurrence;
 
-			$dates = $this->get_future_occurrences( $post, null, null );
+			// Use a longer window than the default 2 months to ensure we get enough dates.
+			$from = DateTime::createFromFormat( 'U', strtotime( '-30 minutes' ) );
+			$end  = new \DateTime( '+6 months' );
+			if ( $post->end_date ) {
+				$end = DateTime::createFromFormat( 'Y-m-d', $post->end_date );
+			}
+
+			$max         = 12;
+			$dates       = array();
+			do {
+				$next = $this->get_next_occurrence( $post, $from->format( 'Y-m-d H:i:s P' ) );
+				if ( $next ) {
+					$from = new \DateTime( "{$next} {$post->time}" );
+					if ( $from <= $end ) {
+						$dates[] = $next;
+					}
+				}
+			} while ( --$max > 0 && $next && $from && $from < $end && count( $dates ) < 4 );
 
 			// Format dates with day names for display (e.g. "Wednesday, 2026-03-25").
 			$formatted = array();
-			foreach ( array_slice( $dates, 0, 4 ) as $date ) {
+			foreach ( $dates as $date ) {
 				$dt          = new \DateTime( $date );
 				$formatted[] = $dt->format( 'l, Y-m-d' );
 			}
@@ -763,6 +785,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					action: 'meeting_date_preview',
 					nonce: '<?php echo esc_js( wp_create_nonce( 'meeting_date_preview' ) ); ?>',
 					start_date: startDate,
+					end_date: $('#end_date').val() || '',
 					time: time,
 					recurring: recurring,
 					occurrence: occurrence
@@ -782,7 +805,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				});
 			}
 
-			$('#start_date, #time').on( 'change', updateDatePreview );
+			$('#start_date, #time, #end_date').on( 'change', updateDatePreview );
 			$('input[name="occurrence[]"]').on( 'change', updateDatePreview );
 
 			// Initial preview if editing an existing recurring meeting.
