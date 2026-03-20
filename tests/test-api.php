@@ -562,4 +562,82 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertNotContains( '2020-01-16', $cancellations );
 	}
 
+	public function test_meeting_last_wednesday() {
+		// Create a meeting on the last Wednesday of each month.
+		// 2020-01-01 is a Wednesday, so the day of week is Wednesday.
+		$meeting_id = wp_insert_post(
+			array(
+				'post_title'  => 'Last Wednesday of each month',
+				'post_type'   => 'meeting',
+				'post_status' => 'publish',
+				'meta_input'  => array(
+					'team'       => 'Team-D',
+					'start_date' => '2020-01-01',
+					'end_date'   => '',
+					'time'       => '17:00:00',
+					'recurring'  => 'occurrence',
+					'occurrence' => array( -1 ),
+					'link'       => 'https://wordpress.org',
+					'location'   => '#meta',
+					'wptv_url'   => '',
+				),
+			)
+		);
+
+		$mpt  = Meeting_Post_Type::getInstance();
+		$post = get_post( $meeting_id );
+
+		// Check from January 2020.
+		$next = $mpt->get_next_occurrence( $post, '2020-01-01 00:00:00 +00:00' );
+		// Last Wednesday of January 2020 is the 29th.
+		$this->assertEquals( '2020-01-29', $next );
+
+		// Check from February 2020.
+		$next = $mpt->get_next_occurrence( $post, '2020-01-30 00:00:00 +00:00' );
+		// Last Wednesday of February 2020 is the 26th.
+		$this->assertEquals( '2020-02-26', $next );
+
+		// Check from March 2020.
+		$next = $mpt->get_next_occurrence( $post, '2020-02-27 00:00:00 +00:00' );
+		// Last Wednesday of March 2020 is the 25th.
+		$this->assertEquals( '2020-03-25', $next );
+	}
+
+	public function test_meeting_first_and_last_wednesday() {
+		// Create a meeting on the 1st and last Wednesday of each month.
+		$meeting_id = wp_insert_post(
+			array(
+				'post_title'  => 'First and last Wednesday',
+				'post_type'   => 'meeting',
+				'post_status' => 'publish',
+				'meta_input'  => array(
+					'team'       => 'Team-E',
+					'start_date' => '2020-01-01',
+					'end_date'   => '',
+					'time'       => '18:00:00',
+					'recurring'  => 'occurrence',
+					'occurrence' => array( 1, -1 ),
+					'link'       => 'https://wordpress.org',
+					'location'   => '#meta',
+					'wptv_url'   => '',
+				),
+			)
+		);
+
+		$mpt  = Meeting_Post_Type::getInstance();
+		$post = get_post( $meeting_id );
+
+		// First Wednesday of January 2020 is the 1st.
+		$next = $mpt->get_next_occurrence( $post, '2020-01-01 00:00:00 +00:00' );
+		$this->assertEquals( '2020-01-01', $next );
+
+		// After the 1st, the next should be last Wednesday = 29th.
+		$next = $mpt->get_next_occurrence( $post, '2020-01-02 00:00:00 +00:00' );
+		$this->assertEquals( '2020-01-29', $next );
+
+		// After the 29th, next should be first Wednesday of Feb = 5th.
+		$next = $mpt->get_next_occurrence( $post, '2020-01-30 00:00:00 +00:00' );
+		$this->assertEquals( '2020-02-05', $next );
+	}
+
 }

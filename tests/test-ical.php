@@ -45,6 +45,20 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$this->assertEquals( 'MONTHLY;BYDAY=4FR', $freq );
 	}
 
+	public function test_get_recurring_strings_last_weekday() {
+		// Last Wednesday of the month.
+		$freq = get_frequencies_by_day( array( -1 ), '2020-01-01' );
+		$this->assertEquals( 'MONTHLY;BYDAY=-1WE', $freq );
+
+		// 1st and last Wednesday of the month.
+		$freq = get_frequencies_by_day( array( 1, -1 ), '2020-01-01' );
+		$this->assertEquals( 'MONTHLY;BYDAY=1WE,-1WE', $freq );
+
+		// Last Friday of the month.
+		$freq = get_frequencies_by_day( array( -1 ), '2025-03-14' );
+		$this->assertEquals( 'MONTHLY;BYDAY=-1FR', $freq );
+	}
+
 	public function test_get_ical() {
 		$posts      = get_meeting_posts();
 		$ical_feed  = generate( $posts, '' );
