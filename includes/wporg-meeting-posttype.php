@@ -791,13 +791,13 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					occurrence: occurrence
 				}, function( response ) {
 					$('#meeting-date-spinner').removeClass('is-active');
+					var list = $('#meeting-date-preview-list').empty();
 					if ( response.success && response.data.length ) {
-						var list = $('#meeting-date-preview-list').empty();
 						$.each( response.data, function( i, date ) {
 							list.append( '<li>' + $('<span>').text( date ).html() + '</li>' );
 						});
 					} else {
-						$('#meeting-date-preview').hide();
+						list.append( '<li><?php echo esc_js( __( 'No upcoming dates.', 'wporg-meeting-calendar' ) ); ?></li>' );
 					}
 				}).fail( function() {
 					$('#meeting-date-spinner').removeClass('is-active');
