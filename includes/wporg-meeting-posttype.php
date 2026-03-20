@@ -561,7 +561,14 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 			$dates = $this->get_future_occurrences( $post, null, null );
 
-			wp_send_json_success( array_slice( $dates, 0, 6 ) );
+			// Format dates with day names for display (e.g. "Wednesday, 2026-03-25").
+			$formatted = array();
+			foreach ( array_slice( $dates, 0, 4 ) as $date ) {
+				$dt          = new \DateTime( $date );
+				$formatted[] = $dt->format( 'l, Y-m-d' );
+			}
+
+			wp_send_json_success( $formatted );
 		}
 
 		public function add_meta_boxes() {
@@ -669,6 +676,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 		<div id="meeting-date-preview" style="margin: 10px 0; padding: 8px 12px; background: #f0f0f1; border-left: 4px solid #2271b1; display: none;">
 			<strong><?php esc_html_e( 'Upcoming dates:', 'wporg-meeting-calendar' ); ?></strong>
+			<span class="spinner" id="meeting-date-spinner" style="float: none; margin: 0 0 0 4px;"></span>
 			<ul id="meeting-date-preview-list" style="margin: 4px 0 0 16px;"></ul>
 		</div>
 
@@ -746,6 +754,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					}
 				}
 
+				// Show the preview box with spinner immediately.
+				$('#meeting-date-preview-list').empty();
+				$('#meeting-date-spinner').addClass('is-active');
+				$('#meeting-date-preview').show();
+
 				$.post( ajaxurl, {
 					action: 'meeting_date_preview',
 					nonce: '<?php echo esc_js( wp_create_nonce( 'meeting_date_preview' ) ); ?>',
@@ -754,15 +767,18 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					recurring: recurring,
 					occurrence: occurrence
 				}, function( response ) {
+					$('#meeting-date-spinner').removeClass('is-active');
 					if ( response.success && response.data.length ) {
 						var list = $('#meeting-date-preview-list').empty();
 						$.each( response.data, function( i, date ) {
 							list.append( '<li>' + $('<span>').text( date ).html() + '</li>' );
 						});
-						$('#meeting-date-preview').show();
 					} else {
 						$('#meeting-date-preview').hide();
 					}
+				}).fail( function() {
+					$('#meeting-date-spinner').removeClass('is-active');
+					$('#meeting-date-preview').hide();
 				});
 			}
 
