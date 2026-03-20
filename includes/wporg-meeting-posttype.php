@@ -593,7 +593,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			wp_send_json_success( $formatted );
 		}
 
-		public function add_meta_boxes() {
+		public function add_meta_boxes( $post ) {
 			add_meta_box(
 				'meeting-info',
 				'Meeting Info',
@@ -602,14 +602,16 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				'normal',
 				'high'
 			);
-			add_meta_box(
-				'upcoming-meetings',
-				'Upcoming Meetings',
-				array( $this, 'render_meta_upcoming' ),
-				'meeting',
-				'normal',
+			if ( 'auto-draft' !== $post->post_status ) {
+				add_meta_box(
+					'upcoming-meetings',
+					'Upcoming Meetings',
+					array( $this, 'render_meta_upcoming' ),
+					'meeting',
+					'normal',
 				'high'
-			);
+				);
+			}
 		}
 
 		public function render_meta_boxes( $post ) {
