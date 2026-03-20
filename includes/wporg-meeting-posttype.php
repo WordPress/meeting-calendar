@@ -206,7 +206,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					$numerals  = array( 'first', 'second', 'third', 'fourth' );
 
 					$next       = clone $now;
-					$occurrence = get_post_meta( $post->ID, 'occurrence', true ) ?: array();
+					$occurrence = $post->occurrence ?: array();
 
 					// Sort so numbered weeks (1-4) come first, -1 (last) comes last.
 					$sorted = $occurrence;
@@ -558,20 +558,6 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$post->time        = $time;
 			$post->recurring   = $recurring;
 			$post->occurrence  = $occurrence;
-
-			// Store occurrence in a transient so get_next_occurrence can read it via get_post_meta.
-			// Since post ID is 0, we override get_next_occurrence's meta lookup by using a filter.
-			add_filter(
-				'get_post_metadata',
-				function ( $value, $object_id, $meta_key ) use ( $occurrence ) {
-					if ( 0 === $object_id && 'occurrence' === $meta_key ) {
-						return array( $occurrence );
-					}
-					return $value;
-				},
-				10,
-				3
-			);
 
 			$dates = $this->get_future_occurrences( $post, null, null );
 
