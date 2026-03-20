@@ -208,22 +208,14 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					$next       = clone $now;
 					$occurrence = get_post_meta( $post->ID, 'occurrence', true ) ?: array();
 
-					// Sort so numbered weeks come first, -1 (last) comes last.
-					sort( $occurrence, SORT_NUMERIC );
-					$sorted = array();
-					foreach ( $occurrence as $val ) {
-						if ( $val === -1 ) {
-							$sorted[] = $val;
-						} else {
-							array_unshift( $sorted, $val );
-						}
+					// Sort so numbered weeks (1-4) come first, -1 (last) comes last.
+					$sorted = $occurrence;
+					sort( $sorted );
+					// Move -1 from the front to the end.
+					if ( reset( $sorted ) === -1 ) {
+						array_shift( $sorted );
+						$sorted[] = -1;
 					}
-					// Re-sort: positives ascending, then -1.
-					usort( $sorted, function ( $a, $b ) {
-						if ( $a === -1 ) return 1;
-						if ( $b === -1 ) return -1;
-						return $a - $b;
-					} );
 
 					$limit = 12;
 					do {
