@@ -36,6 +36,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_action( 'admin_bar_menu', array( $mpt, 'add_edit_meetings_item_to_admin_bar' ), 80 );
 			add_action( 'wp_enqueue_scripts', array( $mpt, 'add_edit_meetings_icon_to_admin_bar' ) );
 			add_shortcode( 'meeting_time', array( $mpt, 'meeting_time_shortcode' ) );
+			add_action( 'wp_ajax_meeting_date_preview', array( $mpt, 'ajax_date_preview' ) );
 
 			// Process only the [meeting_time] shortcode in text widgets.
 			add_filter( 'widget_text', array( $mpt, 'process_widget_shortcode' ) );
@@ -203,16 +204,28 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					$day_index = gmdate( 'w', strtotime( sprintf( '%s %s GMT', $post->start_date, $post->time ) ) );
 					$day_name  = $GLOBALS['wp_locale']->get_weekday( $day_index );
 					$numerals  = array( 'first', 'second', 'third', 'fourth' );
-					$months    = array( 'last month', 'this month', 'next month', '+2 month' );
 
 					$next       = clone $now;
-					$occurrence = get_post_meta( $post->ID, 'occurrence', true ) ?: array();
+					$occurrence = $post->occurrence ?: array();
+
+					// Sort so numbered weeks (1-4) come first, -1 (last) comes last.
+					$sorted = $occurrence;
+					sort( $sorted );
+					// Move -1 from the front to the end.
+					if ( reset( $sorted ) === -1 ) {
+						array_shift( $sorted );
+						$sorted[] = -1;
+					}
 
 					$limit = 12;
 					do {
 						$month_year = $next->format( 'F Y' );
-						foreach ( $occurrence as $index ) {
-							$next = new DateTime( sprintf( '%s %s of %s %s GMT', $numerals[ $index - 1 ], $day_name, $month_year, $post->time ) );
+						foreach ( $sorted as $index ) {
+							if ( -1 === $index ) {
+								$next = new DateTime( sprintf( 'last %s of %s %s GMT', $day_name, $month_year, $post->time ) );
+							} else {
+								$next = new DateTime( sprintf( '%s %s of %s %s GMT', $numerals[ $index - 1 ], $day_name, $month_year, $post->time ) );
+							}
 							if ( $next > $now ) {
 								break 2;
 							}
@@ -353,7 +366,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 							'type'  => 'array',
 							'items' => array(
 								'type' => 'integer',
-								'enum' => array( 1, 2, 3, 4 ),
+								'enum' => array( -1, 1, 2, 3, 4 ),
 							),
 						),
 					),
@@ -487,7 +500,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return current_user_can( 'edit_post', $request['meeting_id'] );
 		}
 
-		public function get_future_occurrences( $meeting, $attr, $request ) {
+		public function get_future_occurrences( $meeting, $attr = null, $request = null, $object_type = null ) {
 			if ( is_array( $meeting ) && ! empty( $meeting['id'] ) ) {
 				// The register_rest_field callback passes a prepared array but we need the post object
 				$meeting = get_post( $meeting['id'] );
@@ -520,7 +533,67 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $occurrences;
 		}
 
-		public function add_meta_boxes() {
+		public function ajax_date_preview() {
+			check_ajax_referer( 'meeting_date_preview', 'nonce' );
+
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				wp_send_json_error();
+			}
+
+			$start_date = sanitize_text_field( $_POST['start_date'] ?? '' );
+			$time       = sanitize_text_field( $_POST['time'] ?? '' );
+			$recurring  = sanitize_text_field( $_POST['recurring'] ?? '' );
+			$occurrence = array_map( 'intval', (array) ( $_POST['occurrence'] ?? array() ) );
+
+			if ( ! $start_date || ! $time || ! $recurring || false === strtotime( $start_date ) || false === strtotime( $time ) ) {
+				wp_send_json_error();
+			}
+
+			$end_date = sanitize_text_field( $_POST['end_date'] ?? '' );
+			if ( $end_date && false === strtotime( $end_date ) ) {
+				$end_date = '';
+			}
+
+			// Build a temporary post object to pass to get_future_occurrences().
+			$post              = new \stdClass();
+			$post->ID          = 0;
+			$post->post_type   = 'meeting';
+			$post->start_date  = $start_date;
+			$post->end_date    = $end_date;
+			$post->time        = $time;
+			$post->recurring   = $recurring;
+			$post->occurrence  = $occurrence;
+
+			// Use a longer window than the default 2 months to ensure we get enough dates.
+			$from = DateTime::createFromFormat( 'U', strtotime( '-30 minutes' ) );
+			$end  = new \DateTime( '+6 months' );
+			if ( $post->end_date ) {
+				$end = DateTime::createFromFormat( 'Y-m-d', $post->end_date );
+			}
+
+			$max         = 12;
+			$dates       = array();
+			do {
+				$next = $this->get_next_occurrence( $post, $from->format( 'Y-m-d H:i:s P' ) );
+				if ( $next ) {
+					$from = new \DateTime( "{$next} {$post->time}" );
+					if ( $from <= $end ) {
+						$dates[] = $next;
+					}
+				}
+			} while ( --$max > 0 && $next && $from && $from < $end && count( $dates ) < 4 );
+
+			// Format dates with day names for display (e.g. "Wednesday, 2026-03-25").
+			$formatted = array();
+			foreach ( $dates as $date ) {
+				$dt          = new \DateTime( $date );
+				$formatted[] = $dt->format( 'l, Y-m-d' );
+			}
+
+			wp_send_json_success( $formatted );
+		}
+
+		public function add_meta_boxes( $post ) {
 			add_meta_box(
 				'meeting-info',
 				'Meeting Info',
@@ -529,14 +602,16 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				'normal',
 				'high'
 			);
-			add_meta_box(
-				'upcoming-meetings',
-				'Upcoming Meetings',
-				array( $this, 'render_meta_upcoming' ),
-				'meeting',
-				'normal',
+			if ( 'auto-draft' !== $post->post_status ) {
+				add_meta_box(
+					'upcoming-meetings',
+					'Upcoming Meetings',
+					array( $this, 'render_meta_upcoming' ),
+					'meeting',
+					'normal',
 				'high'
-			);
+				);
+			}
 		}
 
 		public function render_meta_boxes( $post ) {
@@ -611,6 +686,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		<label for="week-4">
 			<input type="checkbox" name="occurrence[]" value="4" id="week-4" <?php checked( in_array( 4, $occurrence ) ); ?>>
 			<?php esc_html_e( '4th', 'wporg-meeting-calendar' ); ?>
+		</label>
+		<label for="week-last">
+			<input type="checkbox" name="occurrence[]" value="-1" id="week-last" <?php checked( in_array( -1, $occurrence ) ); ?>>
+			<?php esc_html_e( 'Last', 'wporg-meeting-calendar' ); ?>
 		</label><br />
 
 		<label for="monthly">
@@ -618,6 +697,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<?php esc_html_e( 'Monthly', 'wporg-meeting-calendar' ); ?>
 		</label>
 		</p>
+
+		<div id="meeting-date-preview" style="margin: 10px 0; padding: 8px 12px; background: #f0f0f1; border-left: 4px solid #2271b1; display: none;">
+			<strong><?php esc_html_e( 'Upcoming dates:', 'wporg-meeting-calendar' ); ?></strong>
+			<span class="spinner" id="meeting-date-spinner" style="float: none; margin: 0 0 0 4px;"></span>
+			<ul id="meeting-date-preview-list" style="margin: 4px 0 0 16px;"></ul>
+		</div>
 
 		<p>
 		<label for="end_date">
@@ -657,6 +742,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$('#meeting-info').find('[name^="occurrence"]').prop('disabled', disabled);
 
 				$('#end_date').prop( 'disabled', ! $(this).val() );
+				updateDatePreview();
 			});
 
 			if ( 'occurrence' !== $('input[name="recurring"]:checked').val() ) {
@@ -664,6 +750,70 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			}
 
 			$('#end_date').prop( 'disabled', ! $('input[name="recurring"]:checked').val() );
+
+			var previewTimer;
+			function updateDatePreview() {
+				clearTimeout( previewTimer );
+				previewTimer = setTimeout( fetchDatePreview, 300 );
+			}
+
+			function fetchDatePreview() {
+				var recurring = $('input[name="recurring"]:checked').val();
+				var startDate = $('#start_date').val();
+				var time = $('#time').val();
+
+				if ( ! recurring || ! startDate || ! time ) {
+					$('#meeting-date-preview').hide();
+					return;
+				}
+
+				var occurrence = [];
+				if ( 'occurrence' === recurring ) {
+					$('input[name="occurrence[]"]:checked:not(:disabled)').each( function() {
+						occurrence.push( $(this).val() );
+					});
+					if ( ! occurrence.length ) {
+						$('#meeting-date-preview').hide();
+						return;
+					}
+				}
+
+				// Show the preview box with spinner immediately.
+				$('#meeting-date-preview-list').empty();
+				$('#meeting-date-spinner').addClass('is-active');
+				$('#meeting-date-preview').show();
+
+				$.post( ajaxurl, {
+					action: 'meeting_date_preview',
+					nonce: '<?php echo esc_js( wp_create_nonce( 'meeting_date_preview' ) ); ?>',
+					start_date: startDate,
+					end_date: $('#end_date').val() || '',
+					time: time,
+					recurring: recurring,
+					occurrence: occurrence
+				}, function( response ) {
+					$('#meeting-date-spinner').removeClass('is-active');
+					var list = $('#meeting-date-preview-list').empty();
+					if ( response.success && response.data.length ) {
+						$.each( response.data, function( i, date ) {
+							list.append( '<li>' + $('<span>').text( date ).html() + '</li>' );
+						});
+					} else {
+						list.append( '<li><?php echo esc_js( __( 'No upcoming dates.', 'wporg-meeting-calendar' ) ); ?></li>' );
+					}
+				}).fail( function() {
+					$('#meeting-date-spinner').removeClass('is-active');
+					$('#meeting-date-preview').hide();
+				});
+			}
+
+			$('#start_date, #time, #end_date').on( 'change', updateDatePreview );
+			$('input[name="occurrence[]"]').on( 'change', updateDatePreview );
+
+			// Initial preview if editing an existing recurring meeting.
+			if ( $('input[name="recurring"]:checked').val() ) {
+				fetchDatePreview();
+			}
 		});
 		</script>
 			<?php

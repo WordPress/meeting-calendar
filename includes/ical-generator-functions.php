@@ -179,6 +179,8 @@ function get_frequency( $recurrence, $date, $occurrences ) {
  *   $date = '2019-09-15' // the day is Sunday
  * it will return: 'MONTHLY;BYDAY=1SU,3SU'
  *
+ * Use -1 for "last week of the month" (e.g., -1WE for last Wednesday).
+ *
  * @param int[]  $occurrences Array of week numbers for repetition.
  * @param string $date        The date of the first event.
  * @return string
