@@ -206,7 +206,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					$numerals  = array( 'first', 'second', 'third', 'fourth' );
 
 					$next       = clone $now;
-					$occurrence = $post->occurrence ?: array();
+					$occurrence = $post->ID ? get_post_meta( $post->ID, 'occurrence', true ) : $post->occurrence;
+					$occurrence = $occurrence ?: array();
 
 					// Sort so numbered weeks (1-4) come first, -1 (last) comes last.
 					$sorted = $occurrence;
