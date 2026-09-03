@@ -122,16 +122,16 @@ function generate_event( $post ) {
 	if ( ! is_null( $frequency ) ) {
 		$event .= "RRULE:FREQ={$frequency}" . NEWLINE;
 
-		$cancelled = get_post_meta( $post->ID, 'meeting_cancelled', false );
-		if ( $cancelled ) {
-			foreach ( $cancelled as $i => $cancelled_date ) {
-				$exdate = strtotime( $cancelled_date );
-				// Only list cancelled dates that are valid and in the future or recent past
-				if ( $exdate >= strtotime( 'yesterday' ) ) {
-					$cancelled[ $i ] = gmdate( 'Ymd', $exdate );
-				}
+		$exdates = array();
+		foreach ( (array) get_post_meta( $post->ID, 'meeting_cancelled', false ) as $cancelled_date ) {
+			$exdate = strtotime( $cancelled_date );
+			// Only list cancelled dates that are valid and in the future or recent past.
+			if ( false !== $exdate && $exdate >= strtotime( 'yesterday' ) ) {
+				$exdates[] = gmdate( 'Ymd', $exdate );
 			}
-			$event .= 'EXDATE:' . implode( ',', $cancelled ) . NEWLINE;
+		}
+		if ( $exdates ) {
+			$event .= 'EXDATE:' . implode( ',', $exdates ) . NEWLINE;
 		}
 	}
 
