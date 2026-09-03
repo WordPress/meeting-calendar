@@ -3,7 +3,7 @@ name: Build new theme and push to `build` branch.
 on:
   push:
     branches:
-      - master
+      - trunk
   # Enable manually running action if necessary.
   workflow_dispatch:
 
