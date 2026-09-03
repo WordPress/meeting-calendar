@@ -97,4 +97,38 @@ class MeetingiCalTest extends WP_UnitTestCase {
 			preg_split( '/\r\n|\r|\n/', $ical_feed )
 		);
 	}
+
+	/**
+	 * Only valid, upcoming cancellations should be listed in EXDATE, formatted as dates.
+	 */
+	public function test_get_ical_exdate_only_lists_valid_upcoming_cancellations() {
+		$posts       = get_meeting_posts( 'Team-A' );
+		$occurrences = Meeting_Post_Type::getInstance()->get_future_occurrences( get_post( $posts[0]->ID ), null, null );
+
+		add_post_meta( $posts[0]->ID, 'meeting_cancelled', $occurrences[1] );
+		add_post_meta( $posts[0]->ID, 'meeting_cancelled', '2020-01-08' );
+		add_post_meta( $posts[0]->ID, 'meeting_cancelled', "not a date\r\nsecond line" );
+
+		$lines = preg_split( '/\r\n|\r|\n/', generate( $posts, '' ) );
+
+		$this->assertSame(
+			array( 'EXDATE:' . str_replace( '-', '', $occurrences[1] ) . 'T140000Z' ),
+			array_values( preg_grep( '/^EXDATE:/', $lines ) )
+		);
+		$this->assertNotContains( 'second line', $lines );
+	}
+
+	/**
+	 * EXDATE should be omitted entirely when no valid, upcoming cancellation exists.
+	 */
+	public function test_get_ical_omits_exdate_without_valid_upcoming_cancellations() {
+		$posts = get_meeting_posts( 'Team-A' );
+
+		add_post_meta( $posts[0]->ID, 'meeting_cancelled', '2020-01-08' );
+		add_post_meta( $posts[0]->ID, 'meeting_cancelled', 'not-a-date' );
+
+		$lines = preg_split( '/\r\n|\r|\n/', generate( $posts, '' ) );
+
+		$this->assertEmpty( preg_grep( '/^EXDATE:/', $lines ) );
+	}
 }

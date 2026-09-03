@@ -19,6 +19,6 @@ TRANSP:OPAQUE
 LOCATION:#meta channel on Slack
 DESCRIPTION:WordPress.tv link: https://wordpress.tv\nSlack channel link: https://wordpress.slack.com/messages/#meta\nFor more information visit https://wordpress.org
 RRULE:FREQ=WEEKLY
-EXDATE:%EXDATE%
+EXDATE:%EXDATE%T140000Z
 END:VEVENT
 END:VCALENDAR
