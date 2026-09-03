@@ -12,7 +12,7 @@ on:
       - '*.json'
       - '*.xml.dist'
     branches:
-      - master
+      - trunk
 
 jobs:
   phpcs:
