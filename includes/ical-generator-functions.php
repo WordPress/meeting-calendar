@@ -128,7 +128,7 @@ function generate_event( $post ) {
 			$exdate = strtotime( $cancelled_date );
 			// Only list cancelled dates that are valid and in the future or recent past.
 			if ( false !== $exdate && $exdate >= $cutoff ) {
-				$exdates[] = gmdate( 'Ymd', $exdate );
+				$exdates[] = gmdate( 'Ymd', $exdate ) . "T{$start_time}Z";
 			}
 		}
 		if ( $exdates ) {

@@ -112,7 +112,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$lines = preg_split( '/\r\n|\r|\n/', generate( $posts, '' ) );
 
 		$this->assertSame(
-			array( 'EXDATE:' . str_replace( '-', '', $occurrences[1] ) ),
+			array( 'EXDATE:' . str_replace( '-', '', $occurrences[1] ) . 'T140000Z' ),
 			array_values( preg_grep( '/^EXDATE:/', $lines ) )
 		);
 		$this->assertNotContains( 'second line', $lines );
