@@ -123,10 +123,11 @@ function generate_event( $post ) {
 		$event .= "RRULE:FREQ={$frequency}" . NEWLINE;
 
 		$exdates = array();
+		$cutoff  = strtotime( 'yesterday' );
 		foreach ( (array) get_post_meta( $post->ID, 'meeting_cancelled', false ) as $cancelled_date ) {
 			$exdate = strtotime( $cancelled_date );
 			// Only list cancelled dates that are valid and in the future or recent past.
-			if ( false !== $exdate && $exdate >= strtotime( 'yesterday' ) ) {
+			if ( false !== $exdate && $exdate >= $cutoff ) {
 				$exdates[] = gmdate( 'Ymd', $exdate );
 			}
 		}
