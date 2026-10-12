@@ -152,6 +152,7 @@ function init() {
 	require_once __DIR__ . '/includes/class-admin.php';
 	require_once __DIR__ . '/includes/class-rest-api.php';
 
+	\Meeting_Post_Type::init();
 	Admin::init();
 	REST_API::init();
 }
