@@ -65,7 +65,7 @@ jobs:
     - name: Install WordPress
       run: |
         chmod -R 767 ./ # TODO: Possibly integrate in wp-env
-        npm run wp-env start
+        npm run wp-env:test start
 
     - name: Run unit tests
       run: npm run test:unit-php

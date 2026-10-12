@@ -1,0 +1,9 @@
+{
+	"core": "https://wordpress.org/nightly-builds/wordpress-latest.zip",
+	"plugins": [
+		"."
+	],
+	"phpVersion": "8.4",
+	"port": 8889,
+	"testsEnvironment": false
+}

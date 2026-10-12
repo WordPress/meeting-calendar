@@ -15,8 +15,9 @@
     "lint:pkg-json": "wp-scripts lint-pkg-json",
     "packages-update": "wp-scripts packages-update",
     "start": "wp-scripts start index=./src/index.js calendar=./src/frontend/index.js",
-    "test:unit-php": "wp-env run cli --env-cwd=wp-content/plugins/meeting-calendar vendor/bin/phpunit",
-    "wp-env": "wp-env"
+    "test:unit-php": "wp-env --config=.wp-env.test.json run cli --env-cwd=wp-content/plugins/meeting-calendar vendor/bin/phpunit",
+    "wp-env": "wp-env",
+    "wp-env:test": "wp-env --config=.wp-env.test.json"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,7 @@
   },
   "homepage": "https://github.com/WordPress/meeting-calendar#readme",
   "devDependencies": {
-    "@wordpress/env": "^11.2.0",
+    "@wordpress/env": "^11.17.0",
     "@wordpress/scripts": "^36.1.0"
   }
 }
