@@ -512,10 +512,6 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 
 		public function register_rest_routes() {
-			$date_arg = array(
-				'validate_callback' => array( $this, 'is_valid_date' ),
-			);
-
 			register_rest_route(
 				'wporg/v1',
 				'/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
@@ -524,7 +520,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					'callback'            => array( $this, 'get_occurrences_for_period' ),
 					'permission_callback' => '__return_true',
 					'args'                => array(
-						'month' => $date_arg,
+						'month' => array(
+							'validate_callback' => array( $this, 'is_valid_date' ),
+						),
 					),
 				)
 			);
@@ -533,7 +531,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				'/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)',
 				array(
 					'args' => array(
-						'date' => $date_arg,
+						'date' => array(
+							'validate_callback' => array( $this, 'is_valid_date' ),
+						),
 					),
 					array(
 						'methods'             => 'DELETE',
