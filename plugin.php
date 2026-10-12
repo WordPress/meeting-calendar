@@ -16,15 +16,19 @@ namespace WordPressdotorg\Meeting_Calendar;
  * Retrieves meetings
  *
  * @param integer $per_page Number of meetings per page.
- * @return string List of meetings in JSON format
+ * @return string|\WP_Error List of meetings in JSON format, or an error if the request failed.
  */
 function get_meeting_data( $per_page ) {
 	$date    = gmdate( 'Y-m-d', strtotime( 'first day of this month' ) );
 	$request = new \WP_REST_Request( 'GET', '/wp/v2/meetings/from/' . $date );
 	$request->set_query_params( array( 'per_page' => $per_page ) );
 	$response = rest_do_request( $request );
-	$server   = rest_get_server();
-	$data     = $server->response_to_data( $response, false );
+	if ( $response->is_error() ) {
+		return $response->as_error();
+	}
+
+	$server = rest_get_server();
+	$data   = $server->response_to_data( $response, false );
 	return wp_json_encode( $data );
 }
 
@@ -37,11 +41,18 @@ function get_meeting_data( $per_page ) {
  */
 function render_callback( $attributes, $content ) {
 	$meetings = get_meeting_data( 12 );
-	$output   = sprintf(
-		'<div class="alignwide wporg-block-meeting-calendar" id="%s" data-meetings="%s">Loading Calendar ...</div>',
-		'wporg-meeting-calendar-js',
-		htmlspecialchars( $meetings, ENT_QUOTES )
-	);
+	if ( is_wp_error( $meetings ) ) {
+		$output = sprintf(
+			'<div class="alignwide wporg-block-meeting-calendar"><p>%s</p></div>',
+			esc_html__( 'The meeting calendar could not be loaded. Please try again later.', 'wporg-meeting-calendar' )
+		);
+	} else {
+		$output = sprintf(
+			'<div class="alignwide wporg-block-meeting-calendar" id="%s" data-meetings="%s">Loading Calendar ...</div>',
+			'wporg-meeting-calendar-js',
+			htmlspecialchars( $meetings, ENT_QUOTES )
+		);
+	}
 
 	if ( current_user_can( 'edit_posts' ) ) {
 		$output .= sprintf(
