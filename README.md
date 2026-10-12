@@ -28,7 +28,7 @@ You can (optionally) use [`wp-env`](https://developer.wordpress.org/block-editor
 4. Run the tests with `npm run test:unit-php`
 
 ### ICS links
-Calendars can be accessed through `.ics` links, for example http://localhost:8888/meetings.ics or http://localhost:8888/meetings-core.ics. These need pretty permalinks, which wp-env enables by default.
+Calendars can be accessed through `.ics` links, for example http://localhost:8888/meetings.ics or http://localhost:8888/meetings-core.ics.
 
 ## License
 
