@@ -1,11 +1,16 @@
 <?php
 /**
  * Create the meeting post type and assorted filters for https://make.wordpress.org/meetings
+ *
+ * @package WordPressdotorg\Meeting_Calendar
  */
 
 use function WordPressdotorg\Meeting_Calendar\ICS\Generator\get_frequency;
 
 if ( ! class_exists( 'Meeting_Post_Type' ) ) :
+	/**
+	 * The meeting post type: registration, meta, REST API, admin screens and the [meeting_time] shortcode.
+	 */
 	class Meeting_Post_Type {
 
 		/**
@@ -39,7 +44,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_action( 'save_post_meeting', array( $mpt, 'save_meta_boxes' ), 10, 2 );
 			add_filter( 'pre_get_posts', array( $mpt, 'meeting_archive_page_query' ) );
 			add_filter( 'the_posts', array( $mpt, 'meeting_set_next_meeting' ) );
-			add_filter( 'the_posts', array( $mpt, 'meeting_sort_upcoming_meetings' ), 10, 2 );
+			add_filter( 'the_posts', array( $mpt, 'meeting_sort_upcoming_meetings' ) );
 			add_filter( 'manage_meeting_posts_columns', array( $mpt, 'meeting_add_custom_columns' ) );
 			add_action( 'manage_meeting_posts_custom_column', array( $mpt, 'meeting_custom_columns' ), 11, 2 );
 			add_action( 'admin_head', array( $mpt, 'meeting_column_width' ) );
@@ -97,7 +102,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			switch ( $column ) {
 				case 'wptv_url':
 					$wptv_url = get_post_meta( $post_id, 'wptv_url', true );
-					echo esc_html( $wptv_url ?: '—' );
+					echo esc_html( $wptv_url ? $wptv_url : '—' );
 					break;
 			}
 		}
@@ -181,10 +186,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			if ( is_admin() || ! $query->is_main_query() || ! $query->is_post_type_archive( 'meeting' ) ) {
 				return;
 			}
-			// turn off paging on the archive page, to show all meetings in the table
+			// turn off paging on the archive page, to show all meetings in the table.
 			$query->set( 'nopaging', true );
 
-			// meta query to eliminate expired meetings from query
+			// meta query to eliminate expired meetings from query.
 			$query->set( 'meta_query', $this->meeting_meta_query() );
 		}
 
@@ -195,14 +200,18 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * @return WP_Post[]
 		 */
 		public function meeting_set_next_meeting( $posts ) {
-			$is_meeting_list = array_reduce( $posts, function ( $is_meeting, $post ) {
-				return $is_meeting && 'meeting' === $post->post_type;
-			}, true );
+			$is_meeting_list = array_reduce(
+				$posts,
+				function ( $is_meeting, $post ) {
+					return $is_meeting && 'meeting' === $post->post_type;
+				},
+				true
+			);
 			if ( ! $is_meeting_list ) {
 				return $posts;
 			}
 
-			// for each entry, set a fake meta value to show the next date for recurring meetings
+			// for each entry, set a fake meta value to show the next date for recurring meetings.
 			array_walk(
 				$posts,
 				function ( &$post ) {
@@ -213,7 +222,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					if ( $next ) {
 						$post->next_date = $next;
 					} else {
-						// if the datetime is invalid, then set the post->next_date to the start date instead
+						// if the datetime is invalid, then set the post->next_date to the start date instead.
 						$post->next_date = $post->start_date;
 					}
 				}
@@ -226,29 +235,32 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * Sort meetings by their next occurrence on the frontend.
 		 *
 		 * @param WP_Post[] $posts Queried posts.
-		 * @param WP_Query  $query The query.
 		 * @return WP_Post[]
 		 */
-		public function meeting_sort_upcoming_meetings( $posts, $query ) {
+		public function meeting_sort_upcoming_meetings( $posts ) {
 			// Avoid reordering posts in the admin.
 			if ( is_admin() || ! is_array( $posts ) ) {
 				return $posts;
 			}
 
-			$is_meeting_list = array_reduce( $posts, function ( $is_meeting, $post ) {
-				return $is_meeting && 'meeting' === $post->post_type;
-			}, true );
+			$is_meeting_list = array_reduce(
+				$posts,
+				function ( $is_meeting, $post ) {
+					return $is_meeting && 'meeting' === $post->post_type;
+				},
+				true
+			);
 			if ( ! $is_meeting_list ) {
 				return $posts;
 			}
 
-			// reorder the posts by next_date + time
+			// reorder the posts by next_date + time.
 			usort(
 				$posts,
 				function ( $a, $b ) {
 					$adate = strtotime( $a->next_date . ' ' . $a->time );
 					$bdate = strtotime( $b->next_date . ' ' . $b->time );
-					if ( $adate == $bdate ) {
+					if ( $adate === $bdate ) {
 						return 0;
 					}
 					return ( $adate < $bdate ) ? -1 : 1;
@@ -275,15 +287,15 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 			if ( 'weekly' === $post->recurring || '1' === $post->recurring ) {
 				try {
-					// from the start date, advance the week until it's past now
+					// from the start date, advance the week until it's past now.
 					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
 					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
+					// minus 30 minutes to account for currently ongoing meetings.
 					$now = new DateTime( $after_datetime );
 
 					if ( $next <= $now ) {
 						$interval = $start->diff( $now );
-						// add one to days to account for events that happened earlier today
+						// add one to days to account for events that happened earlier today.
 						$weekdiff = ceil( ( $interval->days + 1 ) / 7 );
 						$next->modify( '+ ' . $weekdiff . ' weeks' );
 					}
@@ -294,10 +306,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				}
 			} elseif ( 'biweekly' === $post->recurring ) {
 				try {
-					// advance the start date 2 weeks at a time until it's past now
+					// advance the start date 2 weeks at a time until it's past now.
 					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
 					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
+					// minus 30 minutes to account for currently ongoing meetings.
 					$now = new DateTime( $after_datetime );
 
 					while ( $next <= $now ) {
@@ -310,10 +322,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				}
 			} elseif ( 'occurrence' === $post->recurring ) {
 				try {
-					// advance the occurrence day in the current month until it's past now
+					// advance the occurrence day in the current month until it's past now.
 					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
 					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
+					// minus 30 minutes to account for currently ongoing meetings.
 					$now = new DateTime( $after_datetime );
 
 					$day_index = gmdate( 'w', strtotime( sprintf( '%s %s GMT', $post->start_date, $post->time ) ) );
@@ -322,7 +334,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 					$next       = clone $now;
 					$occurrence = $post->ID ? get_post_meta( $post->ID, 'occurrence', true ) : $post->occurrence;
-					$occurrence = $occurrence ?: array();
+					$occurrence = $occurrence ? $occurrence : array();
 
 					// Sort so numbered weeks (1-4) come first, -1 (last) comes last.
 					$sorted = $occurrence;
@@ -354,10 +366,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				}
 			} elseif ( 'monthly' === $post->recurring ) {
 				try {
-					// advance the start date 1 month at a time until it's past now
+					// advance the start date 1 month at a time until it's past now.
 					$start = new DateTime( sprintf( '%s %s GMT', $post->start_date, $post->time ) );
 					$next  = $start;
-					// minus 30 minutes to account for currently ongoing meetings
+					// minus 30 minutes to account for currently ongoing meetings.
 					$now = new DateTime( $after_datetime );
 
 					while ( $next <= $now ) {
@@ -426,7 +438,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * Register the meeting meta fields.
 		 */
 		public function register_meta() {
-			// Text fields
+			// Text fields.
 			$text_keys = array( 'team', 'start_date', 'end_date', 'time', 'location' );
 			foreach ( $text_keys as $key ) {
 				register_meta(
@@ -442,7 +454,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				);
 			}
 
-			// URL fields
+			// URL fields.
 			$url_keys = array( 'link', 'wptv_url' );
 			foreach ( $url_keys as $key ) {
 				register_meta(
@@ -458,15 +470,15 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				);
 			}
 
-			// Recurring field
+			// Recurring field.
 			register_meta(
 				'post',
 				'recurring',
 				array(
-					'object_subtype'    => 'meeting',
-					'type'              => 'string',
-					'single'            => true,
-					'show_in_rest'      => array(
+					'object_subtype' => 'meeting',
+					'type'           => 'string',
+					'single'         => true,
+					'show_in_rest'   => array(
 						'schema' => array(
 							'type' => 'string',
 							'enum' => array( '', 'weekly', 'biweekly', 'occurrence', 'monthly' ),
@@ -517,7 +529,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * @return bool
 		 */
 		public function is_meeting_cancelled( $meeting_id, $date ) {
-			// Note: this assumes the meeting does occur on $date
+			// Note: this assumes the meeting does occur on $date.
 			$cancellations = get_post_meta( $meeting_id, 'meeting_cancelled', false );
 			return in_array( $date, $cancellations, true );
 		}
@@ -728,17 +740,16 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * @param WP_Post|array        $meeting     Meeting, or its prepared REST data.
 		 * @param string|null          $attr        REST field name.
 		 * @param WP_REST_Request|null $request     Request, whose `month` sets the start of the period.
-		 * @param string|null          $object_type REST object type.
 		 * @return string[] Occurrence dates, Y-m-d.
 		 */
-		public function get_future_occurrences( $meeting, $attr = null, $request = null, $object_type = null ) {
+		public function get_future_occurrences( $meeting, $attr = null, $request = null ) {
 			if ( is_array( $meeting ) && ! empty( $meeting['id'] ) ) {
-				// The register_rest_field callback passes a prepared array but we need the post object
+				// The register_rest_field callback passes a prepared array but we need the post object.
 				$meeting = get_post( $meeting['id'] );
 			}
 
 			// The month the occurrences should be within.
-			// Passed to the API endpoint as /meetings?month=2020-09-01
+			// Passed to the API endpoint as /meetings?month=2020-09-01.
 			$now = time();
 			if ( isset( $request['month'] ) && $this->is_valid_date( $request['month'] ) ) {
 				$now = strtotime( $request['month'] );
@@ -774,29 +785,29 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				wp_send_json_error();
 			}
 
-			$start_date = sanitize_text_field( $_POST['start_date'] ?? '' );
-			$time       = sanitize_text_field( $_POST['time'] ?? '' );
-			$recurring  = sanitize_text_field( $_POST['recurring'] ?? '' );
+			$start_date = sanitize_text_field( wp_unslash( $_POST['start_date'] ?? '' ) );
+			$time       = sanitize_text_field( wp_unslash( $_POST['time'] ?? '' ) );
+			$recurring  = sanitize_text_field( wp_unslash( $_POST['recurring'] ?? '' ) );
 			$occurrence = array_map( 'intval', (array) ( $_POST['occurrence'] ?? array() ) );
 
 			if ( ! $start_date || ! $time || ! $recurring || false === strtotime( $start_date ) || false === strtotime( $time ) ) {
 				wp_send_json_error();
 			}
 
-			$end_date = sanitize_text_field( $_POST['end_date'] ?? '' );
+			$end_date = sanitize_text_field( wp_unslash( $_POST['end_date'] ?? '' ) );
 			if ( $end_date && false === strtotime( $end_date ) ) {
 				$end_date = '';
 			}
 
 			// Build a temporary post object to pass to get_future_occurrences().
-			$post              = new \stdClass();
-			$post->ID          = 0;
-			$post->post_type   = 'meeting';
-			$post->start_date  = $start_date;
-			$post->end_date    = $end_date;
-			$post->time        = $time;
-			$post->recurring   = $recurring;
-			$post->occurrence  = $occurrence;
+			$post             = new \stdClass();
+			$post->ID         = 0;
+			$post->post_type  = 'meeting';
+			$post->start_date = $start_date;
+			$post->end_date   = $end_date;
+			$post->time       = $time;
+			$post->recurring  = $recurring;
+			$post->occurrence = $occurrence;
 
 			// Use a longer window than the default 2 months to ensure we get enough dates.
 			$from = DateTime::createFromFormat( 'U', strtotime( '-30 minutes' ) );
@@ -805,8 +816,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$end = DateTime::createFromFormat( 'Y-m-d', $post->end_date );
 			}
 
-			$max         = 12;
-			$dates       = array();
+			$max   = 12;
+			$dates = array();
 			// Collect up to 4 upcoming dates; `isset( $dates[3] )` means there are 4.
 			do {
 				$next = $this->get_next_occurrence( $post, $from->format( 'Y-m-d H:i:s P' ) );
@@ -863,18 +874,18 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', true, '1.12.1' );
 
-			$team       = get_post_meta( $post->ID, 'team', true ) ?: '';
-			$start      = get_post_meta( $post->ID, 'start_date', true ) ?: '';
-			$end        = get_post_meta( $post->ID, 'end_date', true ) ?: '';
-			$time       = get_post_meta( $post->ID, 'time', true ) ?: '';
-			$recurring  = get_post_meta( $post->ID, 'recurring', true ) ?: '';
+			$team      = (string) get_post_meta( $post->ID, 'team', true );
+			$start     = (string) get_post_meta( $post->ID, 'start_date', true );
+			$end       = (string) get_post_meta( $post->ID, 'end_date', true );
+			$time      = (string) get_post_meta( $post->ID, 'time', true );
+			$recurring = (string) get_post_meta( $post->ID, 'recurring', true );
 			if ( '1' === $recurring ) {
 				$recurring = 'weekly';
 			}
-			$occurrence = get_post_meta( $post->ID, 'occurrence', true ) ?: array();
-			$link       = get_post_meta( $post->ID, 'link', true ) ?: '';
-			$location   = get_post_meta( $post->ID, 'location', true ) ?: '';
-			$wptv_url   = get_post_meta( $post->ID, 'wptv_url', true ) ?: '';
+			$occurrence = array_map( 'intval', (array) get_post_meta( $post->ID, 'occurrence', true ) );
+			$link       = (string) get_post_meta( $post->ID, 'link', true );
+			$location   = (string) get_post_meta( $post->ID, 'location', true );
+			$wptv_url   = (string) get_post_meta( $post->ID, 'wptv_url', true );
 			wp_nonce_field( 'save_meeting_meta_' . $post->ID, 'meeting_nonce' );
 			?>
 
@@ -917,23 +928,23 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<?php esc_html_e( 'Occurrence in a month:', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-1">
-			<input type="checkbox" name="occurrence[]" value="1" id="week-1" <?php checked( in_array( 1, $occurrence ) ); ?>>
+			<input type="checkbox" name="occurrence[]" value="1" id="week-1" <?php checked( in_array( 1, $occurrence, true ) ); ?>>
 			<?php esc_html_e( '1st', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-2">
-			<input type="checkbox" name="occurrence[]" value="2" id="week-2" <?php checked( in_array( 2, $occurrence ) ); ?>>
+			<input type="checkbox" name="occurrence[]" value="2" id="week-2" <?php checked( in_array( 2, $occurrence, true ) ); ?>>
 			<?php esc_html_e( '2nd', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-3">
-			<input type="checkbox" name="occurrence[]" value="3" id="week-3" <?php checked( in_array( 3, $occurrence ) ); ?>>
+			<input type="checkbox" name="occurrence[]" value="3" id="week-3" <?php checked( in_array( 3, $occurrence, true ) ); ?>>
 			<?php esc_html_e( '3rd', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-4">
-			<input type="checkbox" name="occurrence[]" value="4" id="week-4" <?php checked( in_array( 4, $occurrence ) ); ?>>
+			<input type="checkbox" name="occurrence[]" value="4" id="week-4" <?php checked( in_array( 4, $occurrence, true ) ); ?>>
 			<?php esc_html_e( '4th', 'wporg-meeting-calendar' ); ?>
 		</label>
 		<label for="week-last">
-			<input type="checkbox" name="occurrence[]" value="-1" id="week-last" <?php checked( in_array( -1, $occurrence ) ); ?>>
+			<input type="checkbox" name="occurrence[]" value="-1" id="week-last" <?php checked( in_array( -1, $occurrence, true ) ); ?>>
 			<?php esc_html_e( 'Last', 'wporg-meeting-calendar' ); ?>
 		</label><br />
 
@@ -1081,7 +1092,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					?>
 					<li>
 						<label>
-							<?php printf( esc_html__( '%1$s at %2$s', 'wporg-meeting-calendar' ), esc_html( $occurrence ), esc_html( $meeting->time ) ); ?>
+							<?php
+							/* translators: 1: Date of the meeting. 2: Time of the meeting. */
+							printf( esc_html__( '%1$s at %2$s', 'wporg-meeting-calendar' ), esc_html( $occurrence ), esc_html( $meeting->time ) );
+							?>
 							<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr( $meeting->ID ) . ':' . esc_attr( $occurrence ); ?>" <?php checked( ! $this->is_meeting_cancelled( $meeting->ID, $occurrence ) ); ?> />
 							<span class="meeting-status">
 								<?php
@@ -1150,55 +1164,49 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		public function save_meta_boxes( $post_id ) {
 			global $post;
 
-			// Verify nonce
-			if ( ! isset( $_POST['meeting_nonce'] ) || ! wp_verify_nonce( $_POST['meeting_nonce'], 'save_meeting_meta_' . $post_id ) ) {
+			// Verify nonce.
+			if ( ! isset( $_POST['meeting_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['meeting_nonce'] ) ), 'save_meeting_meta_' . $post_id ) ) {
 				return $post_id;
 			}
 
-			// Check autosave
+			// Check autosave.
 			if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
 				return $post_id;
 			}
 
-			// Don't save for revisions
+			// Don't save for revisions.
 			if ( isset( $post->post_type ) && 'revision' === $post->post_type ) {
 				return $post_id;
 			}
 
-			// Check permissions
+			// Check permissions.
 			if ( ! current_user_can( 'edit_post', $post->ID ) ) {
 				return $post_id;
 			}
 
-			// Basic validation
-			if ( empty( trim( $_POST['post_title'] ) ) ) {
+			$meta['team']       = sanitize_text_field( wp_unslash( $_POST['team'] ?? '' ) );
+			$meta['start_date'] = sanitize_text_field( wp_unslash( $_POST['start_date'] ?? '' ) );
+			$meta['end_date']   = sanitize_text_field( wp_unslash( $_POST['end_date'] ?? '' ) );
+			$meta['time']       = sanitize_text_field( wp_unslash( $_POST['time'] ?? '' ) );
+			$meta['link']       = esc_url_raw( wp_unslash( $_POST['link'] ?? '' ) );
+			$meta['location']   = sanitize_text_field( wp_unslash( $_POST['location'] ?? '' ) );
+			$meta['wptv_url']   = esc_url_raw( wp_unslash( $_POST['wptv_url'] ?? '' ) );
+
+			// Basic validation.
+			if ( '' === sanitize_text_field( wp_unslash( $_POST['post_title'] ?? '' ) ) ) {
 				return false;
 			}
-			if ( empty( trim( $_POST['start_date'] ) ) ) {
+			if ( '' === $meta['start_date'] || false === strtotime( $meta['start_date'] ) ) {
 				return false;
 			}
-			if ( false === strtotime( $_POST['start_date'] ) ) {
+			if ( '' !== $meta['end_date'] && false === strtotime( $meta['end_date'] ) ) {
 				return false;
 			}
-			if ( ! empty( trim( $_POST['end_date'] ) ) && false === strtotime( $_POST['end_date'] ) ) {
-				return false;
-			}
-			if ( empty( trim( $_POST['time'] ) ) ) {
-				return false;
-			}
-			if ( false === strtotime( $_POST['time'] ) ) {
+			if ( '' === $meta['time'] || false === strtotime( $meta['time'] ) ) {
 				return false;
 			}
 
-			$meta['team']       = sanitize_text_field( $_POST['team'] ?? '' );
-			$meta['start_date'] = sanitize_text_field( $_POST['start_date'] ?? '' );
-			$meta['end_date']   = sanitize_text_field( $_POST['end_date'] ?? '' );
-			$meta['time']       = sanitize_text_field( $_POST['time'] ?? '' );
-			$meta['link']       = esc_url_raw( $_POST['link'] ?? '' );
-			$meta['location']   = sanitize_text_field( $_POST['location'] ?? '' );
-			$meta['wptv_url']   = esc_url_raw( $_POST['wptv_url'] ?? '' );
-
-			$meta['recurring'] = $_POST['recurring'] ?? '';
+			$meta['recurring'] = sanitize_text_field( wp_unslash( $_POST['recurring'] ?? '' ) );
 			if ( ! in_array( $meta['recurring'], array( 'weekly', 'biweekly', 'occurrence', 'monthly' ), true ) ) {
 				$meta['recurring'] = '';
 			}
@@ -1214,7 +1222,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			}
 
 			foreach ( $meta as $key => $value ) {
-				update_post_meta( $post->ID, $key, $value );
+				// update_post_meta() expects slashed data.
+				update_post_meta( $post->ID, $key, wp_slash( $value ) );
 			}
 		}
 
@@ -1262,6 +1271,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 		/**
 		 * Process only the [meeting_time] shortcode in widget text.
+		 *
+		 * @param string $text Widget text.
+		 * @return string
 		 */
 		public function process_widget_shortcode( $text ) {
 			if ( has_shortcode( $text, 'meeting_time' ) ) {
@@ -1273,8 +1285,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 		/**
 		 * Renders meeting information with the next meeting time based on user's local timezone. Used in Make homepage.
+		 *
+		 * @param array|string $attr Shortcode attributes.
+		 * @return string
 		 */
-		public function meeting_time_shortcode( $attr, $content = '' ) {
+		public function meeting_time_shortcode( $attr ) {
 			$attr = shortcode_atts(
 				array(
 					'team'     => null,
@@ -1298,7 +1313,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				add_action( 'wp_footer', array( $this, 'time_conversion_script' ), 999 );
 			}
 
-			// If we're on a network, assume the calendar exists on the main site
+			// If we're on a network, assume the calendar exists on the main site.
 			if ( function_exists( 'switch_to_blog' ) ) {
 				switch_to_blog( get_main_site_id() );
 			}
@@ -1307,7 +1322,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				array(
 					'post_type'  => 'meeting',
 					'nopaging'   => true,
-					'meta_query' => array(
+					'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meeting data is stored in post meta.
 						'relation' => 'AND',
 						array(
 							'key'     => 'team',
@@ -1329,7 +1344,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$next_meeting_timestamp  = strtotime( $next_meeting_datestring . ' ' . $utc_time );
 				$date_time               = new DateTime( '@' . $next_meeting_timestamp );
 				$date_time->setTimezone( new DateTimeZone( 'UTC' ) );
-				$next_meeting_display    = $date_time->format( 'D M d H:i:s Y T' );
+				$next_meeting_display = $date_time->format( 'D M d H:i:s Y T' );
 
 				$slack_channel = null;
 				if ( $post->location && preg_match( '/^#([-\w]+)$/', trim( $post->location ), $match ) ) {
@@ -1345,12 +1360,15 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$out         .= '<strong class="meeting-title">' . esc_html( $post->post_title ) . '</strong>';
 				$display_more = $query->found_posts - intval( $limit );
 				if ( $display_more > 0 ) {
+					/* translators: %s: Number of additional meetings. */
 					$out .= ' <a title="Click to view all meetings for this team" href="/meetings/#' . esc_attr( strtolower( $attr['team'] ) ) . '">' . sprintf( __( '(+%s more)', 'wporg-meeting-calendar' ), $display_more ) . '</a>';
 				}
 				$out .= '<br/>';
 				$out .= '<time class="date" datetime="' . esc_attr( $next_meeting_iso ) . '" title="' . esc_attr( $next_meeting_iso ) . '">' . $next_meeting_display . '</time> ';
-				$out .= sprintf( esc_html__( '(%s from now)', 'wporg-meeting-calendar' ), human_time_diff( $next_meeting_timestamp, current_time( 'timestamp' ) ) );
+				/* translators: %s: Time until the meeting, e.g. "2 hours". */
+				$out .= sprintf( esc_html__( '(%s from now)', 'wporg-meeting-calendar' ), human_time_diff( $next_meeting_timestamp, time() ) );
 				if ( $post->location && $slack_channel ) {
+					/* translators: 1: Slack channel URL. 2: Slack channel name. */
 					$out .= ' ' . sprintf( wp_kses( __( 'accessible via <a href="%1$s">%2$s</a> on Slack', 'wporg-meeting-calendar' ), array( 'a' => array( 'href' => array() ) ) ), 'https://wordpress.slack.com/messages/' . $slack_channel, esc_html( $post->location ) );
 				}
 				$out .= '</span>';
@@ -1367,6 +1385,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						}
 					}
 					if ( $next_meeting ) {
+						/* translators: %s: Date of the next meeting. */
 						$out .= '<i>' . sprintf( esc_html__( 'This event is cancelled. The next meeting is scheduled for %s.', 'wporg-meeting-calendar' ), $next_meeting ) . '</i>';
 					} else {
 						$out .= '<i>' . esc_html__( 'This event is cancelled.', 'wporg-meeting-calendar' ) . '</i>';
@@ -1390,7 +1409,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		public function meeting_meta_query() {
 			return array(
 				'relation' => 'OR',
-				// not recurring  AND start_date >= CURDATE() = one-time meeting today or still in future
+				// not recurring  AND start_date >= CURDATE() = one-time meeting today or still in future.
 				array(
 					'relation' => 'AND',
 					array(
@@ -1405,7 +1424,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						'value'   => gmdate( 'Y-m-d' ),
 					),
 				),
-				// recurring = 1 AND ( end_date = '' OR end_date > CURDATE() ) = recurring meeting that has no end or has not ended yet
+				// recurring = 1 AND ( end_date = '' OR end_date > CURDATE() ) = recurring meeting that has no end or has not ended yet.
 				array(
 					'relation' => 'AND',
 					array(
@@ -1467,7 +1486,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 	}
 
-	// fire it up
+	// fire it up.
 	Meeting_Post_Type::init();
 endif;
 

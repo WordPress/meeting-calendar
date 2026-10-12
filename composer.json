@@ -23,8 +23,8 @@
 	],
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-		"wp-coding-standards/wpcs": "^3.0",
-		"phpcompatibility/phpcompatibility-wp": "*",
+		"wp-coding-standards/wpcs": "^3.4.1",
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
 		"wp-phpunit/wp-phpunit": "^5.4",
 		"phpunit/phpunit": "^9.5",
 		"yoast/phpunit-polyfills": "^3.0"

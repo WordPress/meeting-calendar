@@ -1,4 +1,10 @@
 <?php
+/**
+ * Generate iCalendar (RFC 5545) output for meetings.
+ *
+ * @package WordPressdotorg\Meeting_Calendar
+ */
+
 namespace WordPressdotorg\Meeting_Calendar\ICS\Generator;
 
 define( 'NEWLINE', "\r\n" );
@@ -6,7 +12,7 @@ define( 'NEWLINE', "\r\n" );
 /**
  * Escape a string for use in an iCalendar TEXT value per RFC 5545 Section 3.3.11.
  *
- * @param string $text
+ * @param string $text Text to escape.
  * @return string
  */
 function escape_ical_text( $text ) {
@@ -22,8 +28,8 @@ function escape_ical_text( $text ) {
 /**
  * Generate an iCalendar for the given set of meetings.
  *
- * @param WP_Post[]   $posts
- * @param string|null $team
+ * @param WP_Post[]   $posts Meetings.
+ * @param string|null $team  Team name, or empty for all meetings.
  * @return string
  */
 function generate( $posts, $team ) {
@@ -53,7 +59,7 @@ function generate( $posts, $team ) {
 /**
  * Generate an event for a meeting.
  *
- * @param WP_Post $post
+ * @param WP_Post $post Meeting.
  * @return string
  */
 function generate_event( $post ) {
@@ -103,10 +109,10 @@ function generate_event( $post ) {
 	$event .= "DTSTART:{$start_date_time}" . NEWLINE;
 	$event .= "DTEND:{$end_date_time}" . NEWLINE;
 	$event .= 'CATEGORIES:WordPress' . NEWLINE;
-	// Some calendars require the organizer's name and email address
+	// Some calendars require the organizer's name and email address.
 	$event .= 'ORGANIZER;CN=' . escape_ical_text( "WordPress {$team} Team" ) . ':mailto:mail@example.com' . NEWLINE;
 	$event .= 'SUMMARY:' . escape_ical_text( "{$team}: {$title}" ) . NEWLINE;
-	// Incrementing the sequence number updates the specified event
+	// Incrementing the sequence number updates the specified event.
 	$event .= "SEQUENCE:{$sequence}" . NEWLINE;
 	$event .= 'STATUS:CONFIRMED' . NEWLINE;
 	$event .= 'TRANSP:OPAQUE' . NEWLINE;
@@ -187,7 +193,7 @@ function get_frequency( $recurrence, $date, $occurrences ) {
  * @return string
  */
 function get_frequencies_by_day( $occurrences, $date ) {
-	// Get the first two letters of the day of the start date in uppercase letters
+	// Get the first two letters of the day of the start date in uppercase letters.
 	$day = strtoupper(
 		substr( gmdate( 'D', strtotime( $date ) ), 0, 2 )
 	);

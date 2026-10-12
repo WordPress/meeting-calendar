@@ -8,6 +8,8 @@
  * Text Domain: wporg-meeting-calendar
  * License: GPL2+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
+ *
+ * @package WordPressdotorg\Meeting_Calendar
  */
 
 namespace WordPressdotorg\Meeting_Calendar;
@@ -33,11 +35,9 @@ function get_meeting_data() {
 /**
  * Render the block content (html) on the frontend of the site.
  *
- * @param array  $attributes
- * @param string $content
  * @return string HTML output used by the calendar JS.
  */
-function render_callback( $attributes, $content ) {
+function render_callback() {
 	$meetings = get_meeting_data();
 	if ( is_wp_error( $meetings ) ) {
 		$output = sprintf(
@@ -98,7 +98,7 @@ function register_assets() {
 		$block_info['version']
 	);
 
-	// No frontend scripts in the editor
+	// No frontend scripts in the editor.
 	if ( ! is_admin() ) {
 		wp_register_script(
 			'wporg-calendar-script',
@@ -148,7 +148,7 @@ add_action( 'enqueue_block_assets', __NAMESPACE__ . '\conditionally_load_assets'
  * Set up the Meetings post type.
  */
 function init() {
-	require_once __DIR__ . '/includes/wporg-meeting-posttype.php';
+	require_once __DIR__ . '/includes/class-meeting-post-type.php';
 	new \Meeting_Post_Type();
 }
 add_action( 'plugins_loaded', __NAMESPACE__ . '\init' );
@@ -166,6 +166,8 @@ add_action( 'plugins_loaded', __NAMESPACE__ . '\ics_init' );
  * First-Install activation hook.
  *
  * Creates some sample data, and sets up the Rewrite rules.
+ *
+ * @param bool $is_network_wide Whether the plugin is being network-activated.
  */
 function install( $is_network_wide ) {
 	if ( ! $is_network_wide ) {

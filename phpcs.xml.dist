@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<ruleset name="Meeting Calendar Coding Standards">
+	<description>Apply the WordPress Coding Standards to the Meeting Calendar plugin, following the WordPress.org ruleset.</description>
+
+	<!-- Show sniff codes in all reports -->
+	<arg value="ps" />
+	<arg name="colors" />
+
+	<!-- Speed up scans: parallel workers, and a cache of unchanged file results. -->
+	<arg name="parallel" value="10" />
+	<arg name="cache" value=".phpcs.cache" />
+
+	<!-- Report file paths relative to the repository root. -->
+	<arg name="basepath" value="." />
+
+	<!-- Exclude 3rd-party files -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+
+	<!-- Exclude generated wp-scripts asset files. -->
+	<exclude-pattern>*/build/*</exclude-pattern>
+
+	<!-- Scan all (php) files in the current folder and subfolders -->
+	<file>.</file>
+	<arg name="extensions" value="php" />
+
+	<!-- Matches "Requires at least" in readme.txt. -->
+	<config name="minimum_wp_version" value="6.2"/>
+
+	<!-- Check for PHP cross-version compatibility. -->
+	<config name="testVersion" value="8.4-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="wporg-meeting-calendar" />
+			</property>
+		</properties>
+	</rule>
+
+	<!-- PHPUnit requires test files to be named after the test class they contain. -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+</ruleset>

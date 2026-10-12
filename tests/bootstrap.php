@@ -37,8 +37,8 @@ require_once $_tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function _manually_load_plugin() {
-	require_once dirname( __FILE__ ) . '/../plugin.php';
-	require_once dirname( __FILE__ ) . '/../includes/wporg-meeting-install.php';
+	require_once __DIR__ . '/../plugin.php';
+	require_once __DIR__ . '/../includes/wporg-meeting-install.php';
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
