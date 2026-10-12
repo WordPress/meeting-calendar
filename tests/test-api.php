@@ -548,6 +548,49 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( $january_meetings, $meetings );
 	}
 
+	/**
+	 * Test that the period route rejects dates that don't exist.
+	 */
+	public function test_meetings_from_impossible_date() {
+		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-13-01' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertEquals( 'rest_invalid_param', $response->as_error()->get_error_code() );
+	}
+
+	/**
+	 * Test that cancelling and uncancelling reject dates that don't exist.
+	 */
+	public function test_cancel_meeting_impossible_date() {
+		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $user_id );
+
+		foreach ( array( 'DELETE', 'PUT' ) as $method ) {
+			$request  = new WP_REST_Request( $method, '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-02-30' );
+			$response = $this->server->dispatch( $request );
+			$this->assertEquals( 400, $response->get_status(), $method );
+			$this->assertEquals( 'rest_invalid_param', $response->as_error()->get_error_code(), $method );
+		}
+	}
+
+	/**
+	 * Test that a non-string date, e.g. from `?date[]=`, is rejected instead of erroring.
+	 */
+	public function test_meeting_date_array_param() {
+		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $user_id );
+
+		$request = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
+		$request->set_query_params( array( 'month' => array( 'x' ) ) );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+
+		$request = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request->set_query_params( array( 'date' => array( 'x' ) ) );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+	}
+
 	public function test_cancel_meeting_invalid_date() {
 		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $user_id );
