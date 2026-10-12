@@ -3,6 +3,11 @@
  */
 import { getSettings } from '@wordpress/date';
 
+/**
+ * Render the weekday names above the grid.
+ *
+ * @return {Element} Table head element.
+ */
 function CalendarHeader() {
 	const { l10n } = getSettings();
 	return (

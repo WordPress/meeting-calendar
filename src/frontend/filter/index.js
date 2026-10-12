@@ -11,6 +11,11 @@ import { useRef } from '@wordpress/element';
  */
 import { useEvents } from '../store/event-context';
 
+/**
+ * Render the team filter, if there's more than one team.
+ *
+ * @return {?Element} Filter element, or null.
+ */
 const Filter = () => {
 	const { teams, team, setTeam } = useEvents();
 	const filterLabel = useRef( null );

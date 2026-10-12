@@ -16,6 +16,18 @@ import {
 	isUpcoming,
 } from './utils';
 
+/**
+ * Render a day in the calendar grid, with its events.
+ *
+ * @param {Object}                  props              Component props.
+ * @param {boolean}                 props.blank        Whether the cell is outside the month.
+ * @param {number}                  props.year         Year.
+ * @param {number}                  props.month        Month, zero-based.
+ * @param {number}                  props.day          Day of the month.
+ * @param {Object[]}                props.events       Events on this day.
+ * @param {(event: Object) => void} props.onEventClick Called with an event when it's clicked.
+ * @return {Element} Table cell element.
+ */
 function CalendarCell( {
 	blank = false,
 	year,

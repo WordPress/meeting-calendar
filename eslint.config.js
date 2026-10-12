@@ -24,5 +24,19 @@ module.exports = [
 				'lodash',
 			],
 		},
+		rules: {
+			// Every function gets a docblock, including arrow functions and methods.
+			'jsdoc/require-jsdoc': [
+				'error',
+				{
+					publicOnly: false,
+					require: {
+						ArrowFunctionExpression: true,
+						FunctionDeclaration: true,
+						FunctionExpression: true,
+					},
+				},
+			],
+		},
 	},
 ];

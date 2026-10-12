@@ -21,6 +21,11 @@ import {
 	arrow as ArrowIcon,
 } from '../icons';
 
+/**
+ * Render the calendar: month navigation, view switcher, filter, and the grid or list.
+ *
+ * @return {Element} Calendar element.
+ */
 function Calendar() {
 	const today = new Date();
 	const currentMonth = today.getMonth();

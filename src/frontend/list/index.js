@@ -19,6 +19,14 @@ import { getRows } from '../calendar/utils';
 import { useEvents } from '../store/event-context';
 import ListItem from './list-item';
 
+/**
+ * Render the month as a list of days with events, optionally hiding past days.
+ *
+ * @param {Object} props       Component props.
+ * @param {number} props.month Month, zero-based.
+ * @param {number} props.year  Year.
+ * @return {Element} List element.
+ */
 function List( { month, year } ) {
 	const [ showPast, setShowPast ] = useState( false );
 	const rows = getRows( year, month );

@@ -17,6 +17,14 @@ import {
 } from '../calendar/utils';
 import { useEvents } from '../store/event-context';
 
+/**
+ * Render a day and its events in the list view.
+ *
+ * @param {Object}   props        Component props.
+ * @param {Date}     props.date   Day.
+ * @param {Object[]} props.events Events on this day.
+ * @return {Element} List item element.
+ */
 function ListItem( { date, events } ) {
 	const { setTeam } = useEvents();
 
@@ -27,6 +35,11 @@ function ListItem( { date, events } ) {
 			</h3>
 
 			{ events.map( ( event ) => {
+				/**
+				 * Filter the list to the event's team.
+				 *
+				 * @param {Event} clickEvent Click event.
+				 */
 				const onTeamClick = ( clickEvent ) => {
 					clickEvent.preventDefault();
 					setTeam( event.team );
@@ -121,6 +134,13 @@ function ListItem( { date, events } ) {
 	);
 }
 
+/**
+ * Render an event's title, noting when it's cancelled.
+ *
+ * @param {Object} props       Component props.
+ * @param {Object} props.event Event.
+ * @return {Element} Title element.
+ */
 function EventTitle( { event } ) {
 	return (
 		<>

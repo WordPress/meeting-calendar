@@ -3,6 +3,11 @@
  */
 import { SVG, Path } from '@wordpress/primitives';
 
+/**
+ * Render the calendar icon.
+ *
+ * @return {Element} SVG element.
+ */
 export default function () {
 	return (
 		<SVG

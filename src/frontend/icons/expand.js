@@ -3,6 +3,11 @@
  */
 import { SVG, Path } from '@wordpress/primitives';
 
+/**
+ * Render the expand icon.
+ *
+ * @return {Element} SVG element.
+ */
 export default function () {
 	return (
 		<SVG

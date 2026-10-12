@@ -11,6 +11,8 @@ import { getSortedEvents } from './utils';
 
 /**
  * Gets the team name if present in url.
+ *
+ * @return {string} Team name, or an empty string.
  */
 function getTeamOnLoad() {
 	const { location } = window;
@@ -42,6 +44,14 @@ function setTeamEffect( team = '' ) {
 
 const StateContext = createContext();
 
+/**
+ * Provide the events, filtered to the selected team, and the list of teams.
+ *
+ * @param {Object}   props          Component props.
+ * @param {Element}  props.children Child elements.
+ * @param {Object[]} props.value    Meeting occurrences.
+ * @return {Element} Context provider element.
+ */
 export function EventsProvider( { children, value } ) {
 	const [ selectedTeam, setTeam ] = useState( getTeamOnLoad() );
 
@@ -76,6 +86,11 @@ export function EventsProvider( { children, value } ) {
 		events: getSortedEvents( eventsToDisplay ),
 		team,
 		teams,
+		/**
+		 * Select a team and add it to the URL.
+		 *
+		 * @param {string} newTeam Team name, or an empty string for all teams.
+		 */
 		setTeam: ( newTeam ) => {
 			newTeam = newTeam.toLowerCase();
 			setTeam( newTeam );
@@ -90,6 +105,11 @@ export function EventsProvider( { children, value } ) {
 	);
 }
 
+/**
+ * Get the events state.
+ *
+ * @return {Object} Events, teams, the selected team, and its setter.
+ */
 export function useEvents() {
 	const context = useContext( StateContext );
 	if ( context === undefined ) {
