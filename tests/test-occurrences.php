@@ -91,6 +91,17 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that [meeting_time] skips a meeting without a next date, instead of showing today.
+	 */
+	public function test_shortcode_skips_meeting_without_next_date(): void {
+		// No weeks and no start date, so the next date falls back to the empty start date.
+		$meeting = $this->create_occurrence_meeting( '', array() );
+		update_post_meta( $meeting->ID, 'team', 'Team-Y' );
+
+		$this->assertSame( '', do_shortcode( '[meeting_time team="Team-Y" /]' ) );
+	}
+
+	/**
 	 * Create a meeting that recurs on given weeks of the month, on the start date's weekday.
 	 *
 	 * @param string $start_date Start date, Y-m-d.
