@@ -42,17 +42,17 @@ function get_meeting_data( $per_page ) {
 function render_callback( $attributes, $content ) {
 	$meetings = get_meeting_data( 12 );
 	if ( is_wp_error( $meetings ) ) {
-		return sprintf(
+		$output = sprintf(
 			'<div class="alignwide wporg-block-meeting-calendar"><p>%s</p></div>',
 			esc_html__( 'The meeting calendar could not be loaded. Please try again later.', 'wporg-meeting-calendar' )
 		);
+	} else {
+		$output = sprintf(
+			'<div class="alignwide wporg-block-meeting-calendar" id="%s" data-meetings="%s">Loading Calendar ...</div>',
+			'wporg-meeting-calendar-js',
+			htmlspecialchars( $meetings, ENT_QUOTES )
+		);
 	}
-
-	$output = sprintf(
-		'<div class="alignwide wporg-block-meeting-calendar" id="%s" data-meetings="%s">Loading Calendar ...</div>',
-		'wporg-meeting-calendar-js',
-		htmlspecialchars( $meetings, ENT_QUOTES )
-	);
 
 	if ( current_user_can( 'edit_posts' ) ) {
 		$output .= sprintf(
