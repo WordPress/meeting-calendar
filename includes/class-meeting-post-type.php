@@ -7,7 +7,7 @@
 
 if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 	/**
-	 * The meeting post type: registration, meta, REST API, admin screens and the [meeting_time] shortcode.
+	 * The meeting post type: registration, meta, occurrence logic, and the [meeting_time] shortcode.
 	 */
 	class Meeting_Post_Type {
 
