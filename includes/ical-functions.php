@@ -85,9 +85,9 @@ function get_feed_status( $posts, $team ) {
 }
 
 /**
- * Whether any meeting, including past and unpublished ones, belongs to a team.
+ * Whether any published meeting, including past ones, belongs to a team.
  *
- * Matches the teams offered in the admin list table filter: trashed meetings don't count.
+ * Unpublished meetings don't count, so the feed's status can't reveal their team names.
  *
  * @param string $team Name of the team.
  * @return bool
@@ -96,7 +96,7 @@ function is_known_team( $team ) {
 	$query = new \WP_Query(
 		array(
 			'post_type'      => 'meeting',
-			'post_status'    => 'any',
+			'post_status'    => 'publish',
 			'posts_per_page' => 1,
 			'fields'         => 'ids',
 			'no_found_rows'  => true,

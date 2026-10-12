@@ -169,7 +169,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test which teams count as known: any non-trashed meeting, past or unpublished, case-insensitive.
+	 * Test which teams count as known: published meetings, including past ones, case-insensitive.
 	 */
 	public function test_is_known_team() {
 		$this->create_team_meeting( 'Team-Past' );
@@ -179,7 +179,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$this->assertEmpty( get_meeting_posts( 'team-past' ) );
 		$this->assertTrue( is_known_team( 'team-past' ) );
 		$this->assertTrue( is_known_team( 'TEAM-PAST' ) );
-		$this->assertTrue( is_known_team( 'team-draft' ) );
+		$this->assertFalse( is_known_team( 'team-draft' ) );
 		$this->assertFalse( is_known_team( 'team-trashed' ) );
 		$this->assertFalse( is_known_team( 'not-a-team' ) );
 	}
