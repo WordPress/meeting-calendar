@@ -552,10 +552,14 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		/**
 		 * Checks that a route parameter is a real calendar date in Y-m-d format.
 		 *
-		 * @param string $value The parameter value.
+		 * @param mixed $value The parameter value.
 		 * @return bool
 		 */
 		public function is_valid_date( $value ) {
+			if ( ! is_string( $value ) ) {
+				return false;
+			}
+
 			$date = DateTime::createFromFormat( '!Y-m-d', $value );
 
 			return $date && $date->format( 'Y-m-d' ) === $value;
