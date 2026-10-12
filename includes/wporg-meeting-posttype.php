@@ -3,23 +3,33 @@
  * Create the meeting post type and assorted filters for https://make.wordpress.org/meetings
  */
 
-// phpcs:disable Squiz.Commenting.FunctionComment.Missing
-
 use function WordPressdotorg\Meeting_Calendar\ICS\Generator\get_frequency;
 
 if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 	class Meeting_Post_Type {
 
+		/**
+		 * The single instance of the class.
+		 *
+		 * @var Meeting_Post_Type|null
+		 */
 		protected static $instance = null;
 
-		// phpcs:ignore -- CamelCase name OK.
-		public static function getInstance() {
+		/**
+		 * Get the single instance of the class.
+		 *
+		 * @return Meeting_Post_Type
+		 */
+		public static function getInstance() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName -- CamelCase name OK.
 			if ( null === self::$instance ) {
 				self::$instance = new self();
 			}
 			return self::$instance;
 		}
 
+		/**
+		 * Register the hooks for the meeting post type.
+		 */
 		public static function init() {
 			$mpt = self::getInstance();
 			add_action( 'init', array( $mpt, 'register_meeting_post_type' ) );
@@ -44,6 +54,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_filter( 'widget_text', array( $mpt, 'process_widget_shortcode' ) );
 		}
 
+		/**
+		 * Print the styles for the meetings list table columns and meta box.
+		 */
 		public function meeting_column_width() {
 			?>
 			<style type="text/css">
@@ -53,6 +66,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<?php
 		}
 
+		/**
+		 * Add the Team and WPTV URL columns to the meetings list table.
+		 *
+		 * @param array $columns List table columns.
+		 * @return array
+		 */
 		public function meeting_add_custom_columns( $columns ) {
 			$columns = array_slice( $columns, 0, 1, true )
 				+ array( 'team' => __( 'Team', 'wporg-meeting-calendar' ) )
@@ -62,6 +81,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $columns;
 		}
 
+		/**
+		 * Print the content of the custom list table columns.
+		 *
+		 * @param string $column  Column name.
+		 * @param int    $post_id Meeting ID.
+		 */
 		public function meeting_custom_columns( $column, $post_id ) {
 			switch ( $column ) {
 				case 'team':
@@ -147,6 +172,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$query->set( 'meta_query', $team_query );
 		}
 
+		/**
+		 * Show all upcoming meetings, unpaged, on the meeting archive.
+		 *
+		 * @param WP_Query $query The query being prepared.
+		 */
 		public function meeting_archive_page_query( $query ) {
 			if ( is_admin() || ! $query->is_main_query() || ! $query->is_post_type_archive( 'meeting' ) ) {
 				return;
@@ -158,6 +188,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			$query->set( 'meta_query', $this->meeting_meta_query() );
 		}
 
+		/**
+		 * Set the next occurrence on each meeting, as `next_date`.
+		 *
+		 * @param WP_Post[] $posts Queried posts.
+		 * @return WP_Post[]
+		 */
 		public function meeting_set_next_meeting( $posts ) {
 			$is_meeting_list = array_reduce( $posts, function ( $is_meeting, $post ) {
 				return $is_meeting && 'meeting' === $post->post_type;
@@ -186,6 +222,13 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $posts;
 		}
 
+		/**
+		 * Sort meetings by their next occurrence on the frontend.
+		 *
+		 * @param WP_Post[] $posts Queried posts.
+		 * @param WP_Query  $query The query.
+		 * @return WP_Post[]
+		 */
 		public function meeting_sort_upcoming_meetings( $posts, $query ) {
 			// Avoid reordering posts in the admin.
 			if ( is_admin() || ! is_array( $posts ) ) {
@@ -332,6 +375,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $next_date;
 		}
 
+		/**
+		 * Register the meeting post type.
+		 */
 		public function register_meeting_post_type() {
 			$labels = array(
 				'name'               => _x( 'Meetings', 'Post Type General Name', 'wporg-meeting-calendar' ),
@@ -376,6 +422,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			register_post_type( 'meeting', $args );
 		}
 
+		/**
+		 * Register the meeting meta fields.
+		 */
 		public function register_meta() {
 			// Text fields
 			$text_keys = array( 'team', 'start_date', 'end_date', 'time', 'location' );
@@ -447,6 +496,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			);
 		}
 
+		/**
+		 * Add the upcoming occurrences to meetings in the REST API, as `future_occurrences`.
+		 */
 		public function register_rest_field() {
 			register_rest_field(
 				'meeting',
@@ -457,12 +509,25 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			);
 		}
 
+		/**
+		 * Whether a meeting's occurrence is cancelled.
+		 *
+		 * @param int    $meeting_id Meeting ID.
+		 * @param string $date       Occurrence date, Y-m-d.
+		 * @return bool
+		 */
 		public function is_meeting_cancelled( $meeting_id, $date ) {
 			// Note: this assumes the meeting does occur on $date
 			$cancellations = get_post_meta( $meeting_id, 'meeting_cancelled', false );
 			return in_array( $date, $cancellations, true );
 		}
 
+		/**
+		 * Get all meeting occurrences in the period starting at the requested month.
+		 *
+		 * @param WP_REST_Request $request Request.
+		 * @return array[] Occurrences, sorted by date and time.
+		 */
 		public function get_occurrences_for_period( $request ) {
 			$meetings = get_posts(
 				array(
@@ -511,6 +576,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $out;
 		}
 
+		/**
+		 * Register the REST routes for listing occurrences and (un)cancelling them.
+		 */
 		public function register_rest_routes() {
 			register_rest_route(
 				'wporg/v1',
@@ -565,6 +633,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $date && $date->format( 'Y-m-d' ) === $value;
 		}
 
+		/**
+		 * Cancel a meeting's occurrence.
+		 *
+		 * @param WP_REST_Request $request Request.
+		 * @return int|false|WP_Error Meta ID, false on failure, or an error if the meeting doesn't occur on the date.
+		 */
 		public function cancel_meeting( $request ) {
 			if ( ! $this->is_valid_occurrence( $request['meeting_id'], $request['date'] ) ) {
 				return new \WP_Error( 'invalid_date', 'The meeting does not occur on the given date.', array( 'status' => 400 ) );
@@ -572,10 +646,23 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return add_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'], false );
 		}
 
+		/**
+		 * Un-cancel a meeting's occurrence.
+		 *
+		 * @param WP_REST_Request $request Request.
+		 * @return bool Whether the cancellation was removed.
+		 */
 		public function uncancel_meeting( $request ) {
 			return delete_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'] );
 		}
 
+		/**
+		 * Whether a meeting occurs on a date.
+		 *
+		 * @param int    $meeting_id Meeting ID.
+		 * @param string $date       Date, Y-m-d.
+		 * @return bool
+		 */
 		public function is_valid_occurrence( $meeting_id, $date ) {
 			$meeting = get_post( $meeting_id );
 			if ( ! $meeting || 'meeting' !== $meeting->post_type ) {
@@ -595,10 +682,27 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $next === $date;
 		}
 
+		/**
+		 * Whether the current user can (un)cancel the requested meeting.
+		 *
+		 * @param WP_REST_Request $request Request.
+		 * @return bool
+		 */
 		public function can_cancel_meeting( $request ) {
 			return current_user_can( 'edit_post', $request['meeting_id'] );
 		}
 
+		/**
+		 * Get a meeting's upcoming occurrences.
+		 *
+		 * Also the `future_occurrences` REST field callback.
+		 *
+		 * @param WP_Post|array        $meeting     Meeting, or its prepared REST data.
+		 * @param string|null          $attr        REST field name.
+		 * @param WP_REST_Request|null $request     Request, whose `month` sets the start of the period.
+		 * @param string|null          $object_type REST object type.
+		 * @return string[] Occurrence dates, Y-m-d.
+		 */
 		public function get_future_occurrences( $meeting, $attr = null, $request = null, $object_type = null ) {
 			if ( is_array( $meeting ) && ! empty( $meeting['id'] ) ) {
 				// The register_rest_field callback passes a prepared array but we need the post object
@@ -632,6 +736,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $occurrences;
 		}
 
+		/**
+		 * Send a preview of the next dates for the meeting settings in the edit screen, via Ajax.
+		 */
 		public function ajax_date_preview() {
 			check_ajax_referer( 'meeting_date_preview', 'nonce' );
 
@@ -693,6 +800,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			wp_send_json_success( $formatted );
 		}
 
+		/**
+		 * Add the meeting info and upcoming meetings meta boxes.
+		 *
+		 * @param WP_Post $post Meeting.
+		 */
 		public function add_meta_boxes( $post ) {
 			add_meta_box(
 				'meeting-info',
@@ -714,6 +826,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			}
 		}
 
+		/**
+		 * Render the meeting info meta box.
+		 *
+		 * @param WP_Post $post Meeting.
+		 */
 		public function render_meta_boxes( $post ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', true, '1.12.1' );
@@ -919,6 +1036,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<?php
 		}
 
+		/**
+		 * Render the upcoming meetings meta box, with checkboxes to (un)cancel each occurrence.
+		 *
+		 * @param WP_Post $meeting Meeting.
+		 */
 		public function render_meta_upcoming( $meeting ) {
 			$occurrences = $this->get_future_occurrences( $meeting, null, null );
 			if ( count( $occurrences ) ) {
@@ -991,6 +1113,12 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			<?php
 		}
 
+		/**
+		 * Save the meeting info meta box fields.
+		 *
+		 * @param int $post_id Meeting ID.
+		 * @return int|false|void Meeting ID or false when nothing was saved.
+		 */
 		public function save_meta_boxes( $post_id ) {
 			global $post;
 
@@ -1226,6 +1354,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			return $out;
 		}
 
+		/**
+		 * Get the meta query for meetings that haven't ended.
+		 *
+		 * @return array
+		 */
 		public function meeting_meta_query() {
 			return array(
 				'relation' => 'OR',
@@ -1270,6 +1403,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			);
 		}
 
+		/**
+		 * Print the script that converts meeting times to the visitor's time zone.
+		 */
 		public function time_conversion_script() {
 			wp_print_inline_script_tag(
 				<<<'JS'

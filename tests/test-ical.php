@@ -17,6 +17,9 @@ class MeetingiCalTest extends WP_UnitTestCase {
 	protected $server;
 	protected $meeting_ids;
 
+	/**
+	 * Set up the test fixtures.
+	 */
 	public function setUp(): void {
 		parent::setUp();
 
@@ -32,6 +35,9 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		Meeting_Post_Type::getInstance()->register_meta();
 	}
 
+	/**
+	 * Test the RRULE frequencies for meetings on given weeks of the month.
+	 */
 	public function test_get_recurring_strings() {
 		// 2020-01-01 is a Sunday.
 		$freq = get_frequencies_by_day( array( 1, 3 ), '2019-09-15' );
@@ -46,6 +52,9 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$this->assertEquals( 'MONTHLY;BYDAY=4FR', $freq );
 	}
 
+	/**
+	 * Test the RRULE frequencies for meetings on the last weekday of the month.
+	 */
 	public function test_get_recurring_strings_last_weekday() {
 		// Last Wednesday of the month.
 		$freq = get_frequencies_by_day( array( -1 ), '2020-01-01' );
@@ -60,6 +69,9 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$this->assertEquals( 'MONTHLY;BYDAY=-1FR', $freq );
 	}
 
+	/**
+	 * Test the feed for all meetings against the fixture.
+	 */
 	public function test_get_ical() {
 		$posts = get_meeting_posts();
 
@@ -86,6 +98,9 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * Test that a cancelled occurrence is listed as an EXDATE.
+	 */
 	public function test_get_ical_with_cancellation() {
 		$posts = get_meeting_posts( 'Team-A' );
 		// Cancel the second occurrence of the weekly meeting

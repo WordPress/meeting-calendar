@@ -14,6 +14,9 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 	protected $meeting_ids;
 	protected $mpt;
 
+	/**
+	 * Set up the test fixtures.
+	 */
 	public function setUp(): void {
 		parent::setUp();
 
@@ -23,6 +26,9 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->mpt = Meeting_Post_Type::getInstance();
 	}
 
+	/**
+	 * Test that a one-off meeting is listed exactly once.
+	 */
 	function test_single_meeting() {
 		// See https://github.com/WordPress/meeting-calendar/issues/34
 
@@ -55,6 +61,9 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->assertEquals( 1, $found, 'There should be exactly one instance of a single meeting.' );
 	}
 
+	/**
+	 * Test that a non-standard time like "0100 UTC" is normalized in the API output.
+	 */
 	function test_invalid_time() {
 		$meeting_id = $this->factory->post->create(
 			array(
@@ -87,6 +96,9 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->assertGreaterThan( 0, $found, 'Found no meeting to test' );
 	}
 
+	/**
+	 * Test that special characters in meeting fields aren't double-encoded in the API output.
+	 */
 	function test_encoding() {
 		$meeting_id = $this->factory->post->create(
 			array(
@@ -122,8 +134,9 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->assertGreaterThan( 0, $found, 'Found no meeting to test' );
 	}
 
-	/*
-	 * There was a bug with the meeting_set_next_meeting() filter, where it was interfering with the sorting of other post types.
+	/**
+	 * Test that meeting_set_next_meeting() doesn't interfere with sorting other post types.
+	 *
 	 * See https://github.com/WordPress/meeting-calendar/issues/98
 	 */
 	function test_sort_filter_bug() {
