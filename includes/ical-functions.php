@@ -52,13 +52,7 @@ function parse_request( $request ) {
 	// Grab the meetings, optionally
 	$posts = get_meeting_posts( $team );
 
-	/*
-	 * Only 404 for teams that never had meetings. A team without upcoming meetings
-	 * still gets an empty feed, so existing subscribers see its meetings go away.
-	 */
-	if ( ! $posts && $team && ! is_known_team( $team ) ) {
-		status_header( 404 );
-	}
+	status_header( get_feed_status( $posts, $team ) );
 
 	// If the calendar has a 'method' property, the 'Content-Type' header must also specify it
 	header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
@@ -73,7 +67,27 @@ function parse_request( $request ) {
 add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
 
 /**
- * Whether any published meeting, including past ones, belongs to a team.
+ * Get the HTTP status for a feed.
+ *
+ * Only 404 for teams that never had meetings. A team without upcoming meetings
+ * still gets an empty feed, so existing subscribers see its meetings go away.
+ *
+ * @param WP_Post[] $posts The upcoming meetings in the feed.
+ * @param string    $team  Name of the team, or empty for all meetings.
+ * @return int
+ */
+function get_feed_status( $posts, $team ) {
+	if ( ! $posts && $team && ! is_known_team( $team ) ) {
+		return 404;
+	}
+
+	return 200;
+}
+
+/**
+ * Whether any meeting, including past and unpublished ones, belongs to a team.
+ *
+ * Matches the teams offered in the admin list table filter: trashed meetings don't count.
  *
  * @param string $team Name of the team.
  * @return bool
@@ -82,7 +96,7 @@ function is_known_team( $team ) {
 	$query = new \WP_Query(
 		array(
 			'post_type'      => 'meeting',
-			'post_status'    => 'publish',
+			'post_status'    => 'any',
 			'posts_per_page' => 1,
 			'fields'         => 'ids',
 			'no_found_rows'  => true,

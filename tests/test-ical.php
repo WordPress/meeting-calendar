@@ -1,7 +1,7 @@
 <?php
 use WordPressdotorg\Meeting_Calendar;
 use function WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts;
-use function WordPressdotorg\Meeting_Calendar\ICS\is_known_team;
+use function WordPressdotorg\Meeting_Calendar\ICS\{get_feed_status, is_known_team};
 use function WordPressdotorg\Meeting_Calendar\ICS\Generator\{generate, get_frequencies_by_day};
 
 /**
@@ -146,25 +146,54 @@ class MeetingiCalTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test that a team with only past meetings is still known, so its feed isn't a 404.
+	 * Create a meeting for a team.
+	 *
+	 * @param string $team   Name of the team.
+	 * @param string $status Post status.
+	 * @param string $date   Start date.
+	 * @return int
 	 */
-	public function test_is_known_team() {
-		$this->factory->post->create(
+	protected function create_team_meeting( $team, $status = 'publish', $date = '2020-01-01' ) {
+		return $this->factory->post->create(
 			array(
 				'post_type'   => 'meeting',
-				'post_status' => 'publish',
+				'post_status' => $status,
 				'meta_input'  => array(
-					'team'       => 'Team-D',
-					'start_date' => '2020-01-01',
+					'team'       => $team,
+					'start_date' => $date,
 					'time'       => '12:00:00',
 					'recurring'  => '',
 				),
 			)
 		);
+	}
 
-		$this->assertEmpty( get_meeting_posts( 'team-d' ) );
-		$this->assertTrue( is_known_team( 'team-d' ) );
-		$this->assertTrue( is_known_team( 'Team-A' ) );
+	/**
+	 * Test which teams count as known: any non-trashed meeting, past or unpublished, case-insensitive.
+	 */
+	public function test_is_known_team() {
+		$this->create_team_meeting( 'Team-Past' );
+		$this->create_team_meeting( 'Team-Draft', 'draft' );
+		$this->create_team_meeting( 'Team-Trashed', 'trash' );
+
+		$this->assertEmpty( get_meeting_posts( 'team-past' ) );
+		$this->assertTrue( is_known_team( 'team-past' ) );
+		$this->assertTrue( is_known_team( 'TEAM-PAST' ) );
+		$this->assertTrue( is_known_team( 'team-draft' ) );
+		$this->assertFalse( is_known_team( 'team-trashed' ) );
 		$this->assertFalse( is_known_team( 'not-a-team' ) );
+	}
+
+	/**
+	 * Test that only unknown teams get a 404, and empty feeds otherwise get a 200.
+	 */
+	public function test_get_feed_status() {
+		$this->create_team_meeting( 'Team-Past' );
+		$upcoming = get_post( $this->create_team_meeting( 'Team-Upcoming', 'publish', gmdate( 'Y-m-d', strtotime( '+1 week' ) ) ) );
+
+		$this->assertSame( 200, get_feed_status( array( $upcoming ), 'team-upcoming' ) );
+		$this->assertSame( 200, get_feed_status( array(), 'team-past' ) );
+		$this->assertSame( 200, get_feed_status( array(), '' ) );
+		$this->assertSame( 404, get_feed_status( array(), 'not-a-team' ) );
 	}
 }
