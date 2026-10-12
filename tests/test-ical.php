@@ -1,6 +1,7 @@
 <?php
 use WordPressdotorg\Meeting_Calendar;
 use function WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts;
+use function WordPressdotorg\Meeting_Calendar\ICS\is_known_team;
 use function WordPressdotorg\Meeting_Calendar\ICS\Generator\{generate, get_frequencies_by_day};
 
 /**
@@ -142,5 +143,28 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$lines = preg_split( '/\r\n|\r|\n/', generate( $posts, '' ) );
 
 		$this->assertEmpty( preg_grep( '/^EXDATE:/', $lines ) );
+	}
+
+	/**
+	 * Test that a team with only past meetings is still known, so its feed isn't a 404.
+	 */
+	public function test_is_known_team() {
+		$this->factory->post->create(
+			array(
+				'post_type'   => 'meeting',
+				'post_status' => 'publish',
+				'meta_input'  => array(
+					'team'       => 'Team-D',
+					'start_date' => '2020-01-01',
+					'time'       => '12:00:00',
+					'recurring'  => '',
+				),
+			)
+		);
+
+		$this->assertEmpty( get_meeting_posts( 'team-d' ) );
+		$this->assertTrue( is_known_team( 'team-d' ) );
+		$this->assertTrue( is_known_team( 'Team-A' ) );
+		$this->assertFalse( is_known_team( 'not-a-team' ) );
 	}
 }

@@ -52,8 +52,11 @@ function parse_request( $request ) {
 	// Grab the meetings, optionally
 	$posts = get_meeting_posts( $team );
 
-	// Output a 404 if there's no meetings, but still generate a ICS feed.
-	if ( ! $posts ) {
+	/*
+	 * Only 404 for teams that never had meetings. A team without upcoming meetings
+	 * still gets an empty feed, so existing subscribers see its meetings go away.
+	 */
+	if ( ! $posts && $team && ! is_known_team( $team ) ) {
 		status_header( 404 );
 	}
 
@@ -68,6 +71,32 @@ function parse_request( $request ) {
 	exit;
 }
 add_action( 'parse_request', __NAMESPACE__ . '\parse_request' );
+
+/**
+ * Whether any published meeting, including past ones, belongs to a team.
+ *
+ * @param string $team Name of the team.
+ * @return bool
+ */
+function is_known_team( $team ) {
+	$query = new \WP_Query(
+		array(
+			'post_type'      => 'meeting',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'meta_query'     => array(
+				array(
+					'key'   => 'team',
+					'value' => $team,
+				),
+			),
+		)
+	);
+
+	return (bool) $query->posts;
+}
 
 /**
  * Get all meetings for a team. If the 'team' parameter is empty, all meetings are returned.
