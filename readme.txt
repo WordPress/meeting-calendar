@@ -2,7 +2,7 @@
 Contributors: tellyworth,dufresnesteven,dd32,ryelle
 Author URI: https://make.wordpress.org/meta/
 Tags: meeting,calendar
-Requires at least: 4.5
+Requires at least: 6.2
 Tested up to: 5.2.1
 Stable tag: 0.0.0
 License: GPLv2 or later

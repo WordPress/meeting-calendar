@@ -1,10 +1,15 @@
 /**
  * WordPress dependencies
  */
-import { __experimentalGetSettings } from '@wordpress/date';
+import { getSettings } from '@wordpress/date';
 
+/**
+ * Render the weekday names above the grid.
+ *
+ * @return {Element} Table head element.
+ */
 function CalendarHeader() {
-	const { l10n } = __experimentalGetSettings();
+	const { l10n } = getSettings();
 	return (
 		<thead>
 			<tr>

@@ -12,6 +12,14 @@ import EventModal from './modal';
 import { getRows } from './utils';
 import { useEvents } from '../store/event-context';
 
+/**
+ * Render the month grid, and the modal for the clicked event.
+ *
+ * @param {Object} props       Component props.
+ * @param {number} props.month Month, zero-based.
+ * @param {number} props.year  Year.
+ * @return {Element} Grid element.
+ */
 function CalendarGrid( { month, year } ) {
 	const [ activeEvent, setActiveEvent ] = useState( null );
 	const rows = getRows( year, month );

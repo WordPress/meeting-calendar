@@ -11,6 +11,14 @@ import { Modal, Notice } from '@wordpress/components';
  */
 import { getFrequencyLabel, getSlackLink, isCancelled } from './utils';
 
+/**
+ * Render the details of an event in a modal.
+ *
+ * @param {Object}     props                Component props.
+ * @param {Object}     props.event          Event to show.
+ * @param {() => void} props.onRequestClose Called when the modal should close.
+ * @return {Element} Modal element.
+ */
 function EventModal( { event, onRequestClose } ) {
 	const start = gmdate( 'Ymd\\THis\\Z', event.datetime );
 	const endTimestamp = Number( gmdate( 'U', event.datetime ) ) + 3600;
@@ -75,7 +83,13 @@ function EventModal( { event, onRequestClose } ) {
 			</p>
 			{ !! event.wptv_url && (
 				<p>
-					<a aria-label={ __( 'WordPress.tv URL for the meeting recording', 'wporg-meeting-calendar' ) } href={ event.wptv_url }>
+					<a
+						aria-label={ __(
+							'WordPress.tv URL for the meeting recording',
+							'wporg-meeting-calendar'
+						) }
+						href={ event.wptv_url }
+					>
 						{ __( 'View Recording', 'wporg-meeting-calendar' ) }
 					</a>
 				</p>

@@ -14,5 +14,10 @@ registerBlockType( 'wporg-meeting-calendar/main', {
 	category: 'widgets',
 	attributes: {},
 	edit,
+	/**
+	 * Save nothing; the block is rendered on the server.
+	 *
+	 * @return {null} No markup.
+	 */
 	save: () => null,
 } );
