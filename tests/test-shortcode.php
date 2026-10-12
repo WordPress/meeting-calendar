@@ -146,4 +146,17 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		// It should give the next date.
 		$this->assertGreaterThan( 0, strpos( $actual, 'This event is cancelled. The next meeting is scheduled for ' . gmdate( 'Y-m-d', strtotime( 'yesterday +14 days' ) ) . '.' ) );
 	}
+
+	/**
+	 * Test that [meeting_time] enqueues the time conversion script.
+	 */
+	public function test_shortcode_enqueues_time_conversion_script() {
+		wp_dequeue_script( 'wporg-meeting-time-conversion' );
+
+		do_shortcode( '[meeting_time team="Team-F" /]' );
+
+		$this->assertTrue( wp_script_is( 'wporg-meeting-time-conversion' ) );
+		$this->assertStringEndsWith( '/includes/time-conversion.js', wp_scripts()->registered['wporg-meeting-time-conversion']->src );
+		$this->assertSame( 'defer', wp_scripts()->get_data( 'wporg-meeting-time-conversion', 'strategy' ) );
+	}
 }
