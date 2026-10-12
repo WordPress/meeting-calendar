@@ -32,7 +32,7 @@
   "homepage": "https://github.com/WordPress/meeting-calendar#readme",
   "devDependencies": {
     "@wordpress/env": "^11.2.0",
-    "@wordpress/scripts": "^31.7.0",
+    "@wordpress/scripts": "^36.1.0",
     "@wordpress/stylelint-config": "^23.34.0"
   }
 }
