@@ -8,7 +8,13 @@ import { format } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { getTeamClass, isToday, isCancelled, isUpcoming } from './utils';
+import {
+	getTeamClass,
+	getTeamStyle,
+	isToday,
+	isCancelled,
+	isUpcoming,
+} from './utils';
 
 function CalendarCell({
 	blank = false,
@@ -57,6 +63,7 @@ function CalendarCell({
 						variant="link"
 						onClick={() => void onEventClick(event)}
 						className={`wporg-meeting-calendar__cell-event ${getTeamClass(event.team)} ${isCancelled(event.status) ? 'is-cancelled' : ''} ${isUpcoming(event.datetime) ? 'is-upcoming' : ''}`}
+						style={getTeamStyle(event.team)}
 					>
 						<div className="wporg-meeting-calendar__cell-event-time">
 							{format('g:i a ', event.datetime)}
@@ -105,6 +112,7 @@ function CalendarCell({
 												? ' is-cancelled'
 												: '')
 										}
+										style={getTeamStyle(event.team)}
 									>
 										{format('g:i a: ', event.datetime)}
 										{event.title}

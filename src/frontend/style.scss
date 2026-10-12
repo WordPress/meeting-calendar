@@ -403,8 +403,21 @@
 	}
 }
 
+/**
+ * Fallback color for teams without one of their own below, using a hue
+ * derived from the team name. The team rules below have the same
+ * specificity and come later, so they override it.
+ */
+.wporg-meeting-calendar__team-color {
+	border-color: hsl(var(--wporg-meeting-calendar-team-hue, 230) 55% 45%) !important;
+	background-color: hsl(var(--wporg-meeting-calendar-team-hue, 230) 70% 94%) !important;
+	color: hsl(var(--wporg-meeting-calendar-team-hue, 230) 60% 28%) !important;
+}
+
 /** Colors for each team */
-.wporg-meeting-calendar__team-core {
+.wporg-meeting-calendar__team-core,
+.wporg-meeting-calendar__team-core-passwords,
+.wporg-meeting-calendar__team-core-performance {
 	border-color: #cd0000 !important;
 	background-color: color.adjust(#cd0000, $lightness: 55%) !important;
 	color: #cd0000 !important;
@@ -515,6 +528,36 @@
 	border-color: #d84800 !important;
 	background-color: color.adjust(#d84800, $lightness: 50%) !important;
 	color: color.adjust(#d84800, $lightness: -10%) !important;
+}
+
+.wporg-meeting-calendar__team-ai {
+	border-color: #8c3fbf !important;
+	background-color: color.adjust(#8c3fbf, $lightness: 45%) !important;
+	color: color.adjust(#8c3fbf, $lightness: -10%) !important;
+}
+
+.wporg-meeting-calendar__team-deib-working-group {
+	border-color: #8a5a2b !important;
+	background-color: color.adjust(#8a5a2b, $lightness: 50%) !important;
+	color: color.adjust(#8a5a2b, $lightness: -10%) !important;
+}
+
+.wporg-meeting-calendar__team-gatherpress {
+	border-color: #1f8f5f !important;
+	background-color: color.adjust(#1f8f5f, $lightness: 55%) !important;
+	color: color.adjust(#1f8f5f, $lightness: -10%) !important;
+}
+
+.wporg-meeting-calendar__team-photos {
+	border-color: #8f8a12 !important;
+	background-color: color.adjust(#8f8a12, $lightness: 55%) !important;
+	color: color.adjust(#8f8a12, $lightness: -15%) !important;
+}
+
+.wporg-meeting-calendar__team-playground {
+	border-color: #2271b1 !important;
+	background-color: color.adjust(#2271b1, $lightness: 50%) !important;
+	color: color.adjust(#2271b1, $lightness: -10%) !important;
 }
 
 .wporg-meeting-calendar__cell-event:not(.is-upcoming) {
