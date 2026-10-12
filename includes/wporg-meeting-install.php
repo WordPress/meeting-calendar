@@ -1,4 +1,10 @@
 <?php
+/**
+ * Sample meetings, created when the plugin is activated.
+ *
+ * @package WordPressdotorg\Meeting_Calendar
+ */
+
 namespace WordPressdotorg\Meeting_Calendar;
 
 /**

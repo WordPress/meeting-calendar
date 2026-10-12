@@ -1,17 +1,28 @@
 <?php
-use WordPressdotorg\Meeting_Calendar;
 /**
- * Class MeetingShortcodeTest
+ * Tests for the [meeting_time] shortcode.
  *
  * @package Meeting_Calendar
  */
 
+use WordPressdotorg\Meeting_Calendar;
+
 /**
- * Sample test case.
+ * Tests for the [meeting_time] shortcode.
  */
 class MeetingShortcodeTest extends WP_UnitTestCase {
-	protected $server;
+	/**
+	 * IDs of the sample meetings.
+	 *
+	 * @var int[]
+	 */
 	protected $meeting_ids;
+
+	/**
+	 * The meeting post type instance.
+	 *
+	 * @var Meeting_Post_Type
+	 */
 	protected $mpt;
 
 	/**
@@ -20,7 +31,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		// Install test data
+		// Install test data.
 		$this->meeting_ids = Meeting_Calendar\wporg_meeting_install();
 
 		$this->mpt = Meeting_Post_Type::getInstance();
@@ -29,9 +40,9 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 	/**
 	 * Test the [meeting_time] output for a team's upcoming meetings.
 	 */
-	function test_shortcode_simple() {
+	public function test_shortcode_simple() {
 
-		// A one-off meeting tomorrow
+		// A one-off meeting tomorrow.
 		$this->factory->post->create(
 			array(
 				'post_title'  => __( 'Meeting One', 'wporg-meeting-calendar' ),
@@ -50,7 +61,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 			)
 		);
 
-		// A recurring weekly meeting, starting yesterday
+		// A recurring weekly meeting, starting yesterday.
 		$this->factory->post->create(
 			array(
 				'post_title'  => __( 'Meeting Two', 'wporg-meeting-calendar' ),
@@ -74,22 +85,22 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$date1    = gmdate( 'Y-m-d\T01:00:00+00:00', strtotime( 'tomorrow' ) );
 		$display1 = gmdate( 'D M d 01:00:00 Y', strtotime( 'tomorrow' ) ) . ' UTC';
 		$expected = '<strong class="meeting-title">Meeting One</strong><br/><time class="date" datetime="' . $date1 . '" title="' . $date1 . '">' . $display1 . '</time>';
-		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
+		$substr   = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 
 		$date2    = gmdate( 'Y-m-d\T02:00:00+00:00', strtotime( 'yesterday +7 days' ) );
 		$display2 = gmdate( 'D M d 02:00:00 Y', strtotime( 'yesterday +7 days' ) ) . ' UTC';
 		$expected = '<strong class="meeting-title">Meeting Two</strong><br/><time class="date" datetime="' . $date2 . '" title="' . $date2 . '">' . $display2 . '</time>';
-		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting Two</strong>' ), strlen( $expected ) );
+		$substr   = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting Two</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 	}
 
 	/**
 	 * Test the [meeting_time] output when the next occurrence is cancelled.
 	 */
-	function test_shortcode_cancelled() {
+	public function test_shortcode_cancelled() {
 
-		// A recurring weekly meeting, starting yesterday
+		// A recurring weekly meeting, starting yesterday.
 		$meeting_1 = $this->factory->post->create(
 			array(
 				'post_title'  => __( 'Meeting One', 'wporg-meeting-calendar' ),
@@ -108,7 +119,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 			)
 		);
 
-		// Cancel the meeting that's in 6 days
+		// Cancel the meeting that's in 6 days.
 		$response = $this->mpt->cancel_meeting(
 			array(
 				'meeting_id' => $meeting_1,
@@ -122,17 +133,17 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 
 		$actual = do_shortcode( '[meeting_time team="Team-F" before="" more=0 limit=-1 /]' );
 
-		// The shortcode should show the next meeting is in 7 days
+		// The shortcode should show the next meeting is in 7 days.
 		$date1    = gmdate( 'Y-m-d\T01:00:00+00:00', strtotime( 'yesterday +7 days' ) );
 		$display1 = gmdate( 'D M d 01:00:00 Y', strtotime( 'yesterday +7 days' ) ) . ' UTC';
 		$expected = '<strong class="meeting-title">Meeting One</strong><br/><time class="date" datetime="' . $date1 . '" title="' . $date1 . '">' . $display1 . '</time>';
-		$substr = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
+		$substr   = substr( $actual, strpos( $actual, '<strong class="meeting-title">Meeting One</strong>' ), strlen( $expected ) );
 		$this->assertEquals( $substr, $expected );
 
-		// It should be listed as cancelled
+		// It should be listed as cancelled.
 		$this->assertGreaterThanOrEqual( 0, strpos( $actual, '<p class="wporg-meeting-shortcode meeting-cancelled"' ) );
 
-		// It should give the next date
+		// It should give the next date.
 		$this->assertGreaterThan( 0, strpos( $actual, 'This event is cancelled. The next meeting is scheduled for ' . gmdate( 'Y-m-d', strtotime( 'yesterday +14 days' ) ) . '.' ) );
 	}
 }

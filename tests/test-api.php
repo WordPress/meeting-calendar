@@ -1,16 +1,28 @@
 <?php
-use WordPressdotorg\Meeting_Calendar;
 /**
- * Class MeetingAPI
+ * Tests for the meetings REST API.
  *
  * @package Meeting_Calendar
  */
 
+use WordPressdotorg\Meeting_Calendar;
+
 /**
- * Sample test case.
+ * Tests for the meetings REST API.
  */
 class MeetingAPITest extends WP_UnitTestCase {
+	/**
+	 * REST server.
+	 *
+	 * @var WP_REST_Server
+	 */
 	protected $server;
+
+	/**
+	 * IDs of the sample meetings.
+	 *
+	 * @var int[]
+	 */
 	protected $meeting_ids;
 
 	/**
@@ -19,15 +31,16 @@ class MeetingAPITest extends WP_UnitTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		// Initialize a REST server
+		// Initialize a REST server.
 		global $wp_rest_server;
-		$this->server = $wp_rest_server = new \WP_REST_Server();
+		$wp_rest_server = new \WP_REST_Server(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- rest_get_server() reads it.
+		$this->server   = $wp_rest_server;
 		do_action( 'rest_api_init' );
 
-		// Install test data
+		// Install test data.
 		$this->meeting_ids = Meeting_Calendar\wporg_meeting_install();
 
-		// Make sure the meta keys are registered - setUp/tearDown nukes these
+		// Make sure the meta keys are registered - setUp/tearDown nukes these.
 		Meeting_Post_Type::getInstance()->register_meta();
 	}
 
@@ -46,11 +59,11 @@ class MeetingAPITest extends WP_UnitTestCase {
 	 */
 	public function test_register_route() {
 		$routes = $this->server->get_routes();
-		// Standard route for the CPT
+		// Standard route for the CPT.
 		$this->assertArrayHasKey( '/wp/v2/meeting', $routes );
-		// Main endpoint for listing events
+		// Main endpoint for listing events.
 		$this->assertArrayHasKey( '/wporg/v1/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)', $routes );
-		// Endpoint for cancelling
+		// Endpoint for cancelling.
 		$this->assertArrayHasKey( '/wporg/v1/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', $routes );
 	}
 
@@ -73,7 +86,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$meeting = $response->get_data();
 
-		// Make sure the postmeta is all present
+		// Make sure the postmeta is all present.
 		$this->assertEquals( 'meeting', $meeting['type'] );
 		$this->assertEquals( 'Team-A', $meeting['meta']['team'] );
 		$this->assertEquals( '2020-01-01', $meeting['meta']['start_date'] );
@@ -87,26 +100,26 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
 		$this->assertGreaterThanOrEqual( 4, count( $meeting['future_occurrences'] ) );
 		$this->assertLessThanOrEqual( 10, count( $meeting['future_occurrences'] ) );
-		// There should be no duplicates
+		// There should be no duplicates.
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
 		foreach ( $meeting['future_occurrences'] as $future_date ) {
-			// Make sure it's in the expected date format
+			// Make sure it's in the expected date format.
 			$this->assertEquals( 1, preg_match( '/^(\d\d\d\d)-(\d\d)-(\d\d)$/', $future_date, $matches ) );
-			// And it's a valid date
+			// And it's a valid date.
 			$this->assertTrue( checkdate( $matches[2], $matches[3], $matches[1] ) );
 
 			$dt = new DateTime( $future_date );
-			// It should be in the future
+			// It should be in the future.
 			$this->assertGreaterThanOrEqual( new DateTime( 'yesterday' ), $dt );
-			// It should be within 2 months (the default range)
+			// It should be within 2 months (the default range).
 			$this->assertLessThanOrEqual( new DateTime( '+2 months' ), $dt );
-			// Day of week should be Wednesday, same as the original
+			// Day of week should be Wednesday, same as the original.
 			$this->assertEquals( 3, $dt->format( 'N' ) );
 
 			if ( $last ) {
 				$interval = $last->diff( $dt );
-				// Should be exactly 7 days after the prior date
+				// Should be exactly 7 days after the prior date.
 				$this->assertEquals( '+7 days', $interval->format( '%R%a days' ) );
 			}
 
@@ -123,7 +136,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$meeting = $response->get_data();
 
-		// Make sure the postmeta is all present
+		// Make sure the postmeta is all present.
 		$this->assertEquals( 'meeting', $meeting['type'] );
 		$this->assertEquals( 'Team-B', $meeting['meta']['team'] );
 		$this->assertEquals( '2020-01-01', $meeting['meta']['start_date'] );
@@ -136,24 +149,24 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
 		$this->assertEquals( 2, count( $meeting['future_occurrences'] ) );
-		// There should be no duplicates
+		// There should be no duplicates.
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
 		foreach ( $meeting['future_occurrences'] as $future_date ) {
-			// Make sure it's in the expected date format
+			// Make sure it's in the expected date format.
 			$this->assertEquals( 1, preg_match( '/^(\d\d\d\d)-(\d\d)-(\d\d)$/', $future_date, $matches ) );
-			// And it's a valid date
+			// And it's a valid date.
 			$this->assertTrue( checkdate( $matches[2], $matches[3], $matches[1] ) );
 
 			$dt = new DateTime( $future_date );
-			// It should be in the future
+			// It should be in the future.
 			$this->assertGreaterThanOrEqual( new DateTime(), $dt );
-			// Day of week should be the first of the month, same as the original
+			// Day of week should be the first of the month, same as the original.
 			$this->assertEquals( 1, $dt->format( 'd' ) );
 
 			if ( $last ) {
 				$interval = $last->diff( $dt );
-				// Should be exactly 7 days after the prior date
+				// Should be exactly 7 days after the prior date.
 				$this->assertEquals( '+1 month 0 days', $interval->format( '%R%m month %d days' ) );
 			}
 
@@ -170,7 +183,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$meeting = $response->get_data();
 
-		// Make sure the postmeta is all present
+		// Make sure the postmeta is all present.
 		$this->assertEquals( 'meeting', $meeting['type'] );
 		$this->assertEquals( 'Team-C', $meeting['meta']['team'] );
 		$this->assertEquals( '2020-01-01', $meeting['meta']['start_date'] );
@@ -184,25 +197,25 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertTrue( is_array( $meeting['future_occurrences'] ) );
 		$this->assertGreaterThanOrEqual( 1, count( $meeting['future_occurrences'] ) );
 		$this->assertLessThanOrEqual( 2, count( $meeting['future_occurrences'] ) );
-		// There should be no duplicates
+		// There should be no duplicates.
 		$this->assertEquals( $meeting['future_occurrences'], array_unique( $meeting['future_occurrences'] ) );
 		$last = false;
 		foreach ( $meeting['future_occurrences'] as $future_date ) {
-			// Make sure it's in the expected date format
+			// Make sure it's in the expected date format.
 			$this->assertEquals( 1, preg_match( '/^(\d\d\d\d)-(\d\d)-(\d\d)$/', $future_date, $matches ) );
-			// And it's a valid date
+			// And it's a valid date.
 			$this->assertTrue( checkdate( $matches[2], $matches[3], $matches[1] ) );
 
 			$dt = new DateTime( $future_date . ' ' . $meeting['meta']['time'] );
-			// It should be in the future
+			// It should be in the future.
 			$this->assertGreaterThanOrEqual( new DateTime(), $dt );
 
-			// Day of week should be Wednesday, same as the original
+			// Day of week should be Wednesday, same as the original.
 			$this->assertEquals( 3, $dt->format( 'N' ) );
 
 			if ( $last ) {
 				$interval = $last->diff( $dt );
-				// Should be between 28 and 36 days since the last meeting
+				// Should be between 28 and 36 days since the last meeting.
 				$this->assertGreaterThanOrEqual( 28, $interval->format( '%R%a' ) );
 				$this->assertLessThanOrEqual( 36, $interval->format( '%R%a' ) );
 			}
@@ -216,7 +229,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 	 *
 	 * @return array[]
 	 */
-	public function _january_meetings() {
+	public function get_january_meetings() {
 		return array(
 			0  =>
 			array(
@@ -470,7 +483,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$meetings = $response->get_data();
 
-		$this->assertEquals( $this->_january_meetings(), $meetings );
+		$this->assertEquals( $this->get_january_meetings(), $meetings );
 	}
 
 	/**
@@ -551,18 +564,18 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $user_id );
 
-		// Cancel the meeting on 2020-01-15
+		// Cancel the meeting on 2020-01-15.
 		$request  = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 
-		// The feed should show that one meeting as cancelled
+		// The feed should show that one meeting as cancelled.
 		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 		$meetings = $response->get_data();
 
-		$january_meetings              = $this->_january_meetings();
+		$january_meetings              = $this->get_january_meetings();
 		$january_meetings[3]['status'] = 'cancelled';
 		// Set expected edit URLs since we are logged in as an editor.
 		foreach ( $january_meetings as &$meeting ) {
@@ -570,12 +583,12 @@ class MeetingAPITest extends WP_UnitTestCase {
 		}
 		$this->assertEquals( $january_meetings, $meetings );
 
-		// Now uncancel it
+		// Now uncancel it.
 		$request  = new WP_REST_Request( 'PUT', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 
-		// The feed should be as before
+		// The feed should be as before.
 		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
@@ -809,5 +822,4 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$next = $mpt->get_next_occurrence( $post, '2020-01-30 00:00:00 +00:00' );
 		$this->assertEquals( '2020-02-05', $next );
 	}
-
 }

@@ -1,4 +1,10 @@
 <?php
+/**
+ * ICS feeds for the meetings, at /meetings.ics and /meetings-{team}.ics.
+ *
+ * @package WordPressdotorg\Meeting_Calendar
+ */
+
 namespace WordPressdotorg\Meeting_Calendar\ICS;
 
 define( 'QUERY_KEY', 'meeting_ical' );
@@ -31,6 +37,9 @@ add_action( 'init', __NAMESPACE__ . '\add_rewrite_rules' );
 
 /**
  * Add the Query Var for the Rewrite Rules.
+ *
+ * @param string[] $query_vars Public query vars.
+ * @return string[]
  */
 function query_vars( $query_vars ) {
 	$query_vars[] = QUERY_KEY;
@@ -41,6 +50,8 @@ add_filter( 'query_vars', __NAMESPACE__ . '\query_vars' );
 
 /**
  * Main handler for ICS output for matching requests.
+ *
+ * @param \WP $request The current request.
  */
 function parse_request( $request ) {
 	if ( ! isset( $request->query_vars[ QUERY_KEY ] ) ) {
@@ -49,12 +60,12 @@ function parse_request( $request ) {
 
 	$team = strtolower( $request->query_vars[ QUERY_TEAM_KEY ] );
 
-	// Grab the meetings, optionally
+	// Grab the meetings, optionally.
 	$posts = get_meeting_posts( $team );
 
 	status_header( get_feed_status( $posts, $team ) );
 
-	// If the calendar has a 'method' property, the 'Content-Type' header must also specify it
+	// If the calendar has a 'method' property, the 'Content-Type' header must also specify it.
 	header( 'Content-Type: text/calendar; charset=utf-8; method=publish' );
 	$filename = sanitize_file_name( 'meetings' . ( $team ? "-{$team}" : '' ) . '.ics' );
 	header( 'Content-Disposition: inline; filename="' . $filename . '"' );
@@ -100,7 +111,7 @@ function is_known_team( $team ) {
 			'posts_per_page' => 1,
 			'fields'         => 'ids',
 			'no_found_rows'  => true,
-			'meta_query'     => array(
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meeting data is stored in post meta.
 				array(
 					'key'   => 'team',
 					'value' => $team,
@@ -137,7 +148,7 @@ function get_meeting_posts( $team = '' ) {
 			'post_type'        => 'meeting',
 			'post_status'      => 'publish',
 			'nopaging'         => true,
-			'meta_query'       => $meta_query,
+			'meta_query'       => $meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meeting data is stored in post meta.
 			// Avoid re-ordering the events.
 			'suppress_filters' => true,
 		)

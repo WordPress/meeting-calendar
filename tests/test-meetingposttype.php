@@ -1,17 +1,28 @@
 <?php
-use WordPressdotorg\Meeting_Calendar;
 /**
- * Class MeetingPostTypeTest
+ * Tests for the meeting post type.
  *
  * @package Meeting_Calendar
  */
 
+use WordPressdotorg\Meeting_Calendar;
+
 /**
- * Sample test case.
+ * Tests for the meeting post type.
  */
 class MeetingPostTypeTest extends WP_UnitTestCase {
-	protected $server;
+	/**
+	 * IDs of the sample meetings.
+	 *
+	 * @var int[]
+	 */
 	protected $meeting_ids;
+
+	/**
+	 * The meeting post type instance.
+	 *
+	 * @var Meeting_Post_Type
+	 */
 	protected $mpt;
 
 	/**
@@ -20,7 +31,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		// Install test data
+		// Install test data.
 		$this->meeting_ids = Meeting_Calendar\wporg_meeting_install();
 
 		$this->mpt = Meeting_Post_Type::getInstance();
@@ -29,8 +40,8 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 	/**
 	 * Test that a one-off meeting is listed exactly once.
 	 */
-	function test_single_meeting() {
-		// See https://github.com/WordPress/meeting-calendar/issues/34
+	public function test_single_meeting() {
+		// See https://github.com/WordPress/meeting-calendar/issues/34.
 
 		$meeting_id = $this->factory->post->create(
 			array(
@@ -44,7 +55,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 					'time'       => '01:00',
 					'recurring'  => '',
 					'link'       => 'https://wordpress.org',
-					'wptv_url'    => 'https://wordpress.tv',
+					'wptv_url'   => 'https://wordpress.tv',
 					'location'   => '#meta',
 				),
 			)
@@ -54,7 +65,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$found    = 0;
 		foreach ( $meetings as $meeting ) {
 			if ( $meeting['meeting_id'] === $meeting_id ) {
-				++ $found;
+				++$found;
 			}
 		}
 
@@ -64,7 +75,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 	/**
 	 * Test that a non-standard time like "0100 UTC" is normalized in the API output.
 	 */
-	function test_invalid_time() {
+	public function test_invalid_time() {
 		$meeting_id = $this->factory->post->create(
 			array(
 				'post_title'  => __( 'A meeting with an invalid time', 'wporg-meeting-calendar' ),
@@ -74,10 +85,10 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 					'team'       => 'Team-A',
 					'start_date' => gmdate( 'Y-m-d', strtotime( 'tomorrow' ) ),
 					'end_date'   => '',
-					'time'       => '0100 UTC', // Some production data is formatted like this
+					'time'       => '0100 UTC', // Some production data is formatted like this.
 					'recurring'  => '',
 					'link'       => 'https://wordpress.org',
-					'wptv_url'    => 'https://wordpress.tv',
+					'wptv_url'   => 'https://wordpress.tv',
 					'location'   => '#meta',
 				),
 			)
@@ -99,7 +110,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 	/**
 	 * Test that special characters in meeting fields aren't double-encoded in the API output.
 	 */
-	function test_encoding() {
+	public function test_encoding() {
 		$meeting_id = $this->factory->post->create(
 			array(
 				'post_title'  => __( 'A & B meeting', 'wporg-meeting-calendar' ),
@@ -139,33 +150,41 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 	 *
 	 * See https://github.com/WordPress/meeting-calendar/issues/98
 	 */
-	function test_sort_filter_bug() {
-		$category = $this->factory->category->create( array(
-			'slug' => 'test_sort_filter_bug'
-		) );
-
-		$this->factory->post->create( array(
-			'post_title' => 'older post',
-			'post_date'  => '2020-04-01 17:00:00',
-			'post_category' => array( $category ),
-			'meta_input' => array(
-				'time' => '17:00'
+	public function test_sort_filter_bug() {
+		$category = $this->factory->category->create(
+			array(
+				'slug' => 'test_sort_filter_bug',
 			)
-		) );
+		);
 
-		$this->factory->post->create( array(
-			'post_title' => 'newer post',
-			'post_date'  => '2020-04-02 18:00:00',
-			'post_category' => array( $category ),
-			'meta_input' => array(
-				'time' => '18:00'
+		$this->factory->post->create(
+			array(
+				'post_title'    => 'older post',
+				'post_date'     => '2020-04-01 17:00:00',
+				'post_category' => array( $category ),
+				'meta_input'    => array(
+					'time' => '17:00',
+				),
 			)
-		) );
+		);
 
-		$posts = get_posts( array( 
-			'suppress_filters' => false,
-			'category' => $category,
-		) );
+		$this->factory->post->create(
+			array(
+				'post_title'    => 'newer post',
+				'post_date'     => '2020-04-02 18:00:00',
+				'post_category' => array( $category ),
+				'meta_input'    => array(
+					'time' => '18:00',
+				),
+			)
+		);
+
+		$posts = get_posts(
+			array(
+				'suppress_filters' => false,
+				'category'         => $category,
+			)
+		);
 
 		$this->assertTrue( is_array( $posts ) );
 		$this->assertEquals( 2, count( $posts ) );
@@ -178,4 +197,29 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 		$this->assertEquals( 'older post', $posts[1]->post_title );
 	}
 
+	/**
+	 * Test that saving the meta box stores quotes and backslashes unchanged.
+	 */
+	public function test_save_meta_boxes_keeps_slashes() {
+		global $post;
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+		$post = get_post( self::factory()->post->create( array( 'post_type' => 'meeting' ) ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- save_meta_boxes() reads it.
+		$team = 'Team "A" \\ O\'Reilly';
+
+		// Request data arrives slashed, like core's wp_magic_quotes().
+		$_POST = wp_slash(
+			array(
+				'meeting_nonce' => wp_create_nonce( 'save_meeting_meta_' . $post->ID ),
+				'post_title'    => 'A meeting',
+				'team'          => $team,
+				'start_date'    => '2030-01-01',
+				'time'          => '12:00',
+			)
+		);
+		$this->mpt->save_meta_boxes( $post->ID );
+		$_POST = array();
+
+		$this->assertSame( $team, get_post_meta( $post->ID, 'team', true ) );
+	}
 }
