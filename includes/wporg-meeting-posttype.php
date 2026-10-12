@@ -33,6 +33,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			add_filter( 'manage_meeting_posts_columns', array( $mpt, 'meeting_add_custom_columns' ) );
 			add_action( 'manage_meeting_posts_custom_column', array( $mpt, 'meeting_custom_columns' ), 11, 2 );
 			add_action( 'admin_head', array( $mpt, 'meeting_column_width' ) );
+			add_action( 'restrict_manage_posts', array( $mpt, 'meeting_team_filter_dropdown' ) );
+			add_action( 'pre_get_posts', array( $mpt, 'meeting_filter_by_team' ) );
 			add_action( 'admin_bar_menu', array( $mpt, 'add_edit_meetings_item_to_admin_bar' ), 80 );
 			add_action( 'wp_enqueue_scripts', array( $mpt, 'add_edit_meetings_icon_to_admin_bar' ) );
 			add_shortcode( 'meeting_time', array( $mpt, 'meeting_time_shortcode' ) );
@@ -73,6 +75,76 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					echo esc_html( $wptv_url ?: '—' );
 					break;
 			}
+		}
+
+		/**
+		 * Outputs a team dropdown above the meetings list table.
+		 *
+		 * @param string $post_type The post type of the current list table.
+		 */
+		public function meeting_team_filter_dropdown( $post_type ) {
+			global $wpdb;
+
+			if ( 'meeting' !== $post_type ) {
+				return;
+			}
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Distinct meta values can't be fetched through the API, and this only runs on the list table.
+			$teams = $wpdb->get_col(
+				"SELECT DISTINCT pm.meta_value
+				FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE pm.meta_key = 'team' AND pm.meta_value != '' AND p.post_type = 'meeting'
+					AND p.post_status NOT IN ( 'trash', 'auto-draft' )
+				ORDER BY pm.meta_value"
+			);
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list table filter.
+			$selected = isset( $_GET['team'] ) ? sanitize_text_field( wp_unslash( $_GET['team'] ) ) : '';
+			?>
+			<label for="filter-by-team" class="screen-reader-text"><?php esc_html_e( 'Filter by team', 'wporg-meeting-calendar' ); ?></label>
+			<select name="team" id="filter-by-team">
+				<option value=""><?php esc_html_e( 'All teams', 'wporg-meeting-calendar' ); ?></option>
+				<?php foreach ( $teams as $team ) : ?>
+					<option value="<?php echo esc_attr( $team ); ?>" <?php selected( strtolower( $selected ), strtolower( $team ) ); ?>><?php echo esc_html( ucwords( $team ) ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php
+		}
+
+		/**
+		 * Limits the meetings list table to the team selected in the dropdown.
+		 *
+		 * @param WP_Query $query The query being prepared.
+		 */
+		public function meeting_filter_by_team( $query ) {
+			if ( ! is_admin() || ! $query->is_main_query() || 'meeting' !== $query->get( 'post_type' ) ) {
+				return;
+			}
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list table filter.
+			$team = isset( $_GET['team'] ) ? sanitize_text_field( wp_unslash( $_GET['team'] ) ) : '';
+			if ( ! $team ) {
+				return;
+			}
+
+			$team_query = array(
+				'key'   => 'team',
+				'value' => $team,
+			);
+
+			// Restrict any existing meta query instead of adding the team as an alternative to it.
+			$meta_query = $query->get( 'meta_query' );
+			if ( $meta_query ) {
+				$team_query = array(
+					'relation' => 'AND',
+					$meta_query,
+					$team_query,
+				);
+			} else {
+				$team_query = array( $team_query );
+			}
+			$query->set( 'meta_query', $team_query );
 		}
 
 		public function meeting_archive_page_query( $query ) {
