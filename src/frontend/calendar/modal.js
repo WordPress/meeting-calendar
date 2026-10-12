@@ -75,7 +75,13 @@ function EventModal( { event, onRequestClose } ) {
 			</p>
 			{ !! event.wptv_url && (
 				<p>
-					<a aria-label={ __( 'WordPress.tv URL for the meeting recording', 'wporg-meeting-calendar' ) } href={ event.wptv_url }>
+					<a
+						aria-label={ __(
+							'WordPress.tv URL for the meeting recording',
+							'wporg-meeting-calendar'
+						) }
+						href={ event.wptv_url }
+					>
 						{ __( 'View Recording', 'wporg-meeting-calendar' ) }
 					</a>
 				</p>

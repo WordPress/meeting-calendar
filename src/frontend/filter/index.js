@@ -13,42 +13,42 @@ import { useEvents } from '../store/event-context';
 
 const Filter = () => {
 	const { teams, team, setTeam } = useEvents();
-	const filterLabel = useRef(null);
+	const filterLabel = useRef( null );
 
-	if (teams.length < 2) {
+	if ( teams.length < 2 ) {
 		return null;
 	}
 
 	// Sort the teams alphabetically.
-	teams.sort( (a, b) => a.label.localeCompare( b.label ) );
+	teams.sort( ( a, b ) => a.label.localeCompare( b.label ) );
 
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
-	const selected = teams.find((option) => team === option.value);
+	const selected = teams.find( ( option ) => team === option.value );
 
 	return (
 		<div className="wporg-meeting-calendar__filter">
 			<label
 				className="wporg-meeting-calendar__filter-label"
-				htmlFor={dropdownId}
-				ref={filterLabel}
+				htmlFor={ dropdownId }
+				ref={ filterLabel }
 			>
-				{__('Filter by team: ', 'wporg-meeting-calendar')}
+				{ __( 'Filter by team: ', 'wporg-meeting-calendar' ) }
 			</label>
 			<SelectControl
-				id={dropdownId}
+				id={ dropdownId }
 				className="wporg-meeting-calendar__filter-dropdown"
-				value={team}
-				options={[
+				value={ team }
+				options={ [
 					{
-						label: __('All teams', 'wporg-meeting-calendar'),
+						label: __( 'All teams', 'wporg-meeting-calendar' ),
 						value: '',
 					},
 					...teams,
-				]}
-				onChange={(value) => {
-					setTeam(value);
+				] }
+				onChange={ ( value ) => {
+					setTeam( value );
 					const newSelected = teams.find(
-						(option) => value === option.value
+						( option ) => value === option.value
 					);
 					speak(
 						sprintf(
@@ -61,26 +61,26 @@ const Filter = () => {
 						),
 						'assertive'
 					);
-				}}
+				} }
 			/>
-			{'' !== team && (
+			{ '' !== team && (
 				<>
 					<p className="wporg-meeting-calendar__filter-applied">
-						{sprintf(
+						{ sprintf(
 							// translators: %s is the team name
 							__(
 								'Showing meetings for %s',
 								'wporg-meeting-calendar'
 							),
 							selected.label
-						)}
+						) }
 					</p>
 					<Button
 						icon="no-alt"
 						variant="link"
 						isDestructive
-						onClick={() => {
-							setTeam('');
+						onClick={ () => {
+							setTeam( '' );
 							speak(
 								__(
 									'Showing all meetings.',
@@ -89,15 +89,18 @@ const Filter = () => {
 								'assertive'
 							);
 							filterLabel.current.focus();
-						}}
+						} }
 						className="wporg-meeting-calendar__filter-remove"
 					>
 						<span>
-							{__('Remove team filter', 'wporg-meeting-calendar')}
+							{ __(
+								'Remove team filter',
+								'wporg-meeting-calendar'
+							) }
 						</span>
 					</Button>
 				</>
-			)}
+			) }
 		</div>
 	);
 };
