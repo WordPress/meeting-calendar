@@ -60,7 +60,19 @@ class MeetingiCalTest extends WP_UnitTestCase {
 	}
 
 	public function test_get_ical() {
-		$posts      = get_meeting_posts();
+		$posts = get_meeting_posts();
+
+		/*
+		 * The query orders by post date, and the sample meetings can be created across a
+		 * second boundary. Sort by ID so the order matches the fixture.
+		 */
+		usort(
+			$posts,
+			function ( $a, $b ) {
+				return $a->ID <=> $b->ID;
+			}
+		);
+
 		$ical_feed  = generate( $posts, '' );
 		$events_ics = file_get_contents( __DIR__ . '/fixtures/events.ics' );
 		$events_ics = str_replace( '%ID1%', str_replace( '-', '', $posts[0]->ID ), $events_ics );
