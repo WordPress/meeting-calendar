@@ -44,9 +44,20 @@ class MeetingAPITest extends WP_UnitTestCase {
 		// Standard route for the CPT
 		$this->assertArrayHasKey( '/wp/v2/meeting', $routes );
 		// Main endpoint for listing events
-		$this->assertArrayHasKey( '/wp/v2/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)', $routes );
+		$this->assertArrayHasKey( '/wporg/v1/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)', $routes );
 		// Endpoint for cancelling
+		$this->assertArrayHasKey( '/wporg/v1/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', $routes );
+	}
+
+	public function test_legacy_routes() {
+		$routes = $this->server->get_routes();
+		$this->assertArrayHasKey( '/wp/v2/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)', $routes );
 		$this->assertArrayHasKey( '/wp/v2/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', $routes );
+
+		$legacy  = $this->server->dispatch( new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' ) );
+		$current = $this->server->dispatch( new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' ) );
+		$this->assertSame( 200, $legacy->get_status() );
+		$this->assertSame( $current->get_data(), $legacy->get_data() );
 	}
 
 	public function test_get_meetings() {
@@ -440,7 +451,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 	}
 
 	public function test_meetings_january_2020() {
-		$request  = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' );
+		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 		$meetings = $response->get_data();
@@ -449,7 +460,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 	}
 
 	public function test_meetings_february_2020() {
-		$request  = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-02-01' );
+		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-02-01' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 		$meetings = $response->get_data();
@@ -488,11 +499,11 @@ class MeetingAPITest extends WP_UnitTestCase {
 	}
 
 	public function test_cancel_meeting_permissions_noauth() {
-		$request  = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request  = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 401, $response->get_status() );
 
-		$request  = new WP_REST_Request( 'PUT', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request  = new WP_REST_Request( 'PUT', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 401, $response->get_status() );
 	}
@@ -501,11 +512,11 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $user_id );
 
-		$request  = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request  = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 
-		$request  = new WP_REST_Request( 'PUT', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request  = new WP_REST_Request( 'PUT', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 	}
@@ -515,12 +526,12 @@ class MeetingAPITest extends WP_UnitTestCase {
 		wp_set_current_user( $user_id );
 
 		// Cancel the meeting on 2020-01-15
-		$request  = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request  = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 
 		// The feed should show that one meeting as cancelled
-		$request  = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' );
+		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 		$meetings = $response->get_data();
@@ -534,12 +545,12 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( $january_meetings, $meetings );
 
 		// Now uncancel it
-		$request  = new WP_REST_Request( 'PUT', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request  = new WP_REST_Request( 'PUT', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 
 		// The feed should be as before
-		$request  = new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' );
+		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
 		$meetings = $response->get_data();
@@ -553,7 +564,7 @@ class MeetingAPITest extends WP_UnitTestCase {
 		wp_set_current_user( $user_id );
 
 		// 2020-01-16 is a Thursday, not a valid occurrence for the weekly Wednesday meeting.
-		$request  = new WP_REST_Request( 'DELETE', '/wp/v2/meetings/' . $this->meeting_ids[0] . ':2020-01-16' );
+		$request  = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-16' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 400, $response->get_status() );
 

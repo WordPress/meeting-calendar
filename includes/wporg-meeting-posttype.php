@@ -440,31 +440,37 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 
 		public function register_rest_routes() {
-			register_rest_route(
-				'wp/v2/meetings',
-				'/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
-				array(
-					'methods'             => 'GET',
-					'callback'            => array( $this, 'get_occurrences_for_period' ),
-					'permission_callback' => '__return_true',
-				)
-			);
-			register_rest_route(
-				'wp/v2/meetings',
-				'/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)',
-				array(
+			/*
+			 * The routes were originally registered in the core `wp/v2` namespace.
+			 * Keep them there as a deprecated alias so existing consumers don't break.
+			 */
+			foreach ( array( 'wporg/v1', 'wp/v2' ) as $namespace ) {
+				register_rest_route(
+					$namespace,
+					'/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
 					array(
-						'methods'             => 'DELETE',
-						'callback'            => array( $this, 'cancel_meeting' ),
-						'permission_callback' => array( $this, 'can_cancel_meeting' ),
-					),
+						'methods'             => 'GET',
+						'callback'            => array( $this, 'get_occurrences_for_period' ),
+						'permission_callback' => '__return_true',
+					)
+				);
+				register_rest_route(
+					$namespace,
+					'/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)',
 					array(
-						'methods'             => 'PUT',
-						'callback'            => array( $this, 'uncancel_meeting' ),
-						'permission_callback' => array( $this, 'can_cancel_meeting' ),
-					),
-				)
-			);
+						array(
+							'methods'             => 'DELETE',
+							'callback'            => array( $this, 'cancel_meeting' ),
+							'permission_callback' => array( $this, 'can_cancel_meeting' ),
+						),
+						array(
+							'methods'             => 'PUT',
+							'callback'            => array( $this, 'uncancel_meeting' ),
+							'permission_callback' => array( $this, 'can_cancel_meeting' ),
+						),
+					)
+				);
+			}
 		}
 
 		public function cancel_meeting( $request ) {
@@ -872,7 +878,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					var method = this.checked ? 'PUT' : 'DELETE';
 
 					$.ajax( {
-						url: root + 'wp/v2/meetings/' + meeting_id,
+						url: root + 'wporg/v1/meetings/' + meeting_id,
 						method: method,
 						dataType: 'json',
 						beforeSend: function ( xhr ) {

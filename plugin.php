@@ -20,7 +20,7 @@ namespace WordPressdotorg\Meeting_Calendar;
  */
 function get_meeting_data( $per_page ) {
 	$date    = gmdate( 'Y-m-d', strtotime( 'first day of this month' ) );
-	$request = new \WP_REST_Request( 'GET', '/wp/v2/meetings/from/' . $date );
+	$request = new \WP_REST_Request( 'GET', '/wporg/v1/meetings/from/' . $date );
 	$request->set_query_params( array( 'per_page' => $per_page ) );
 	$response = rest_do_request( $request );
 	$server   = rest_get_server();
