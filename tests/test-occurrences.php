@@ -70,6 +70,18 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that an "occurrence" meeting starting in the future has no occurrences before its start date.
+	 */
+	public function test_next_occurrence_not_before_start_date(): void {
+		// The second Wednesday of each month, starting with December 9, 2026.
+		$meeting = $this->create_occurrence_meeting( '2026-12-09', array( 2 ) );
+
+		$next = Meeting_Post_Type::getInstance()->get_next_occurrence( $meeting, '2026-10-01 00:00:00 +00:00' );
+
+		$this->assertSame( '2026-12-09', $next );
+	}
+
+	/**
 	 * Test that [meeting_time] skips a meeting whose date can't be parsed, instead of throwing.
 	 */
 	public function test_shortcode_skips_unparseable_start_date(): void {
@@ -99,6 +111,16 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 		update_post_meta( $meeting->ID, 'team', 'Team-Y' );
 
 		$this->assertSame( '', do_shortcode( '[meeting_time team="Team-Y" /]' ) );
+	}
+
+	/**
+	 * Test that a non-numeric [meeting_time] limit lists all meetings, instead of throwing.
+	 */
+	public function test_shortcode_non_numeric_limit(): void {
+		$meeting = $this->create_occurrence_meeting( '2020-01-15', array( 3 ) );
+		update_post_meta( $meeting->ID, 'team', 'Team-X' );
+
+		$this->assertStringContainsString( '<time class="date"', do_shortcode( '[meeting_time team="Team-X" limit="all" /]' ) );
 	}
 
 	/**
