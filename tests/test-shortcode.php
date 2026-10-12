@@ -120,7 +120,7 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		);
 
 		// Cancel the meeting that's in 6 days.
-		$response = $this->mpt->cancel_meeting(
+		$response = Meeting_Calendar\REST_API::get_instance()->cancel_meeting(
 			array(
 				'meeting_id' => $meeting_1,
 				'date'       => gmdate(

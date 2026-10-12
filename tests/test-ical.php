@@ -119,7 +119,7 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$occurrences = Meeting_Post_Type::getInstance()->get_future_occurrences( get_post( $posts[0]->ID ), null, null );
 		$this->assertGreaterThan(
 			0,
-			Meeting_Post_Type::getInstance()->cancel_meeting(
+			Meeting_Calendar\REST_API::get_instance()->cancel_meeting(
 				array(
 					'meeting_id' => $posts[0]->ID,
 					'date'       => $occurrences[1],
