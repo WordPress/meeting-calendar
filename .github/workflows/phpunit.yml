@@ -37,7 +37,7 @@ jobs:
 
       - name: Run PHPCS
         run: |
-          vendor/bin/phpcs -q --report=checkstyle src | cs2pr
+          vendor/bin/phpcs -q --report=checkstyle | cs2pr
 
   unit-php:
     name: PHP Unit Tests
