@@ -26,7 +26,6 @@ class MeetingAPITest extends WP_UnitTestCase {
 
 		// Make sure the meta keys are registered - setUp/tearDown nukes these
 		Meeting_Post_Type::getInstance()->register_meta();
-		Meeting_Post_Type::getInstance()->register_rest_routes();
 	}
 
 
