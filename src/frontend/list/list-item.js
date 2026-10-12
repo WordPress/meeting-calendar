@@ -10,6 +10,7 @@ import { speak } from '@wordpress/a11y';
  */
 import {
 	getTeamClass,
+	getTeamStyle,
 	getSlackLink,
 	getFrequencyLabel,
 	isCancelled,
@@ -54,6 +55,7 @@ function ListItem({ date, events }) {
 										'wporg-meeting-calendar__list-event-team ' +
 										getTeamClass(event.team)
 									}
+									style={getTeamStyle(event.team)}
 									aria-label={sprintf(
 										// translators: %s is the team name
 										__(

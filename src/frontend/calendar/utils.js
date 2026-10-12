@@ -112,15 +112,34 @@ export function getSlackLink(location) {
 }
 
 /**
- * Get a classname based on team name
+ * Get the classnames for a team: its own, for the hardcoded team colors, and the fallback color.
  *
  * @param {string} team
+ * @return {string} Classnames.
  */
 export function getTeamClass(team) {
 	return (
-		'wporg-meeting-calendar__team-' +
-		team.replace([' ', '.'], '-').toLowerCase()
+		'wporg-meeting-calendar__team-color wporg-meeting-calendar__team-' +
+		team.trim().replace(/[\s.]+/g, '-').toLowerCase()
 	);
+}
+
+/**
+ * Get the inline style for a team's fallback color, a hue derived from its name.
+ *
+ * Teams with a hardcoded color in style.scss override it.
+ *
+ * @param {string} team
+ * @return {Object} Style object.
+ */
+export function getTeamStyle(team) {
+	// 32-bit FNV-1a, which spreads similar names further apart than a simple rolling hash.
+	let hash = 0x811c9dc5;
+	for (const char of team.toLowerCase()) {
+		hash = Math.imul(hash ^ char.charCodeAt(0), 0x01000193) >>> 0;
+	}
+
+	return { '--wporg-meeting-calendar-team-hue': hash % 360 };
 }
 
 /**
