@@ -95,6 +95,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				FROM {$wpdb->postmeta} pm
 				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 				WHERE pm.meta_key = 'team' AND pm.meta_value != '' AND p.post_type = 'meeting'
+					AND p.post_status NOT IN ( 'trash', 'auto-draft' )
 				ORDER BY pm.meta_value"
 			);
 
@@ -127,12 +128,23 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				return;
 			}
 
-			$meta_query   = $query->get( 'meta_query' ) ?: array();
-			$meta_query[] = array(
+			$team_query = array(
 				'key'   => 'team',
 				'value' => $team,
 			);
-			$query->set( 'meta_query', $meta_query );
+
+			// Restrict any existing meta query instead of adding the team as an alternative to it.
+			$meta_query = $query->get( 'meta_query' );
+			if ( $meta_query ) {
+				$team_query = array(
+					'relation' => 'AND',
+					$meta_query,
+					$team_query,
+				);
+			} else {
+				$team_query = array( $team_query );
+			}
+			$query->set( 'meta_query', $team_query );
 		}
 
 		public function meeting_archive_page_query( $query ) {
