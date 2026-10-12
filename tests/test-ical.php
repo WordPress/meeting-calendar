@@ -1,6 +1,7 @@
 <?php
 use WordPressdotorg\Meeting_Calendar;
 use function WordPressdotorg\Meeting_Calendar\ICS\get_meeting_posts;
+use function WordPressdotorg\Meeting_Calendar\ICS\{get_feed_status, is_known_team};
 use function WordPressdotorg\Meeting_Calendar\ICS\Generator\{generate, get_frequencies_by_day};
 
 /**
@@ -142,5 +143,57 @@ class MeetingiCalTest extends WP_UnitTestCase {
 		$lines = preg_split( '/\r\n|\r|\n/', generate( $posts, '' ) );
 
 		$this->assertEmpty( preg_grep( '/^EXDATE:/', $lines ) );
+	}
+
+	/**
+	 * Create a meeting for a team.
+	 *
+	 * @param string $team   Name of the team.
+	 * @param string $status Post status.
+	 * @param string $date   Start date.
+	 * @return int
+	 */
+	protected function create_team_meeting( $team, $status = 'publish', $date = '2020-01-01' ) {
+		return $this->factory->post->create(
+			array(
+				'post_type'   => 'meeting',
+				'post_status' => $status,
+				'meta_input'  => array(
+					'team'       => $team,
+					'start_date' => $date,
+					'time'       => '12:00:00',
+					'recurring'  => '',
+				),
+			)
+		);
+	}
+
+	/**
+	 * Test which teams count as known: published meetings, including past ones, case-insensitive.
+	 */
+	public function test_is_known_team() {
+		$this->create_team_meeting( 'Team-Past' );
+		$this->create_team_meeting( 'Team-Draft', 'draft' );
+		$this->create_team_meeting( 'Team-Trashed', 'trash' );
+
+		$this->assertEmpty( get_meeting_posts( 'team-past' ) );
+		$this->assertTrue( is_known_team( 'team-past' ) );
+		$this->assertTrue( is_known_team( 'TEAM-PAST' ) );
+		$this->assertFalse( is_known_team( 'team-draft' ) );
+		$this->assertFalse( is_known_team( 'team-trashed' ) );
+		$this->assertFalse( is_known_team( 'not-a-team' ) );
+	}
+
+	/**
+	 * Test that only unknown teams get a 404, and empty feeds otherwise get a 200.
+	 */
+	public function test_get_feed_status() {
+		$this->create_team_meeting( 'Team-Past' );
+		$upcoming = get_post( $this->create_team_meeting( 'Team-Upcoming', 'publish', gmdate( 'Y-m-d', strtotime( '+1 week' ) ) ) );
+
+		$this->assertSame( 200, get_feed_status( array( $upcoming ), 'team-upcoming' ) );
+		$this->assertSame( 200, get_feed_status( array(), 'team-past' ) );
+		$this->assertSame( 200, get_feed_status( array(), '' ) );
+		$this->assertSame( 404, get_feed_status( array(), 'not-a-team' ) );
 	}
 }
