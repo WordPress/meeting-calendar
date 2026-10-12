@@ -49,17 +49,6 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertArrayHasKey( '/wporg/v1/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', $routes );
 	}
 
-	public function test_legacy_routes() {
-		$routes = $this->server->get_routes();
-		$this->assertArrayHasKey( '/wp/v2/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)', $routes );
-		$this->assertArrayHasKey( '/wp/v2/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', $routes );
-
-		$legacy  = $this->server->dispatch( new WP_REST_Request( 'GET', '/wp/v2/meetings/from/2020-01-01' ) );
-		$current = $this->server->dispatch( new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' ) );
-		$this->assertSame( 200, $legacy->get_status() );
-		$this->assertSame( $current->get_data(), $legacy->get_data() );
-	}
-
 	public function test_get_meetings() {
 		$request  = new WP_REST_Request( 'GET', '/wp/v2/meeting' );
 		$response = $this->server->dispatch( $request );

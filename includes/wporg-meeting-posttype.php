@@ -440,37 +440,31 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 
 		public function register_rest_routes() {
-			/*
-			 * The routes were originally registered in the core `wp/v2` namespace.
-			 * Keep them there as a deprecated alias so existing consumers don't break.
-			 */
-			foreach ( array( 'wporg/v1', 'wp/v2' ) as $namespace ) {
-				register_rest_route(
-					$namespace,
-					'/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
+			register_rest_route(
+				'wporg/v1',
+				'/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( $this, 'get_occurrences_for_period' ),
+					'permission_callback' => '__return_true',
+				)
+			);
+			register_rest_route(
+				'wporg/v1',
+				'/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)',
+				array(
 					array(
-						'methods'             => 'GET',
-						'callback'            => array( $this, 'get_occurrences_for_period' ),
-						'permission_callback' => '__return_true',
-					)
-				);
-				register_rest_route(
-					$namespace,
-					'/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)',
+						'methods'             => 'DELETE',
+						'callback'            => array( $this, 'cancel_meeting' ),
+						'permission_callback' => array( $this, 'can_cancel_meeting' ),
+					),
 					array(
-						array(
-							'methods'             => 'DELETE',
-							'callback'            => array( $this, 'cancel_meeting' ),
-							'permission_callback' => array( $this, 'can_cancel_meeting' ),
-						),
-						array(
-							'methods'             => 'PUT',
-							'callback'            => array( $this, 'uncancel_meeting' ),
-							'permission_callback' => array( $this, 'can_cancel_meeting' ),
-						),
-					)
-				);
-			}
+						'methods'             => 'PUT',
+						'callback'            => array( $this, 'uncancel_meeting' ),
+						'permission_callback' => array( $this, 'can_cancel_meeting' ),
+					),
+				)
+			);
 		}
 
 		public function cancel_meeting( $request ) {
