@@ -124,25 +124,168 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that [meeting_time] skips a meeting whose time can't be parsed, instead of showing it at midnight.
+	 */
+	public function test_shortcode_skips_meeting_without_time(): void {
+		$this->create_meeting(
+			array(
+				'team'       => 'Team-T',
+				'start_date' => gmdate( 'Y-m-d', strtotime( 'tomorrow' ) ),
+				'time'       => '',
+			)
+		);
+
+		$this->assertSame( '', do_shortcode( '[meeting_time team="Team-T" /]' ) );
+	}
+
+	/**
+	 * Test that the "more" link in [meeting_time] points at the site the meetings come from.
+	 */
+	public function test_shortcode_more_link_points_to_main_site(): void {
+		$meta = array(
+			'team'       => 'Team-M',
+			'start_date' => gmdate( 'Y-m-d', strtotime( 'yesterday' ) ),
+			'recurring'  => 'weekly',
+		);
+		$this->create_meeting( $meta );
+		$this->create_meeting( $meta );
+
+		$this->assertStringContainsString( 'href="' . home_url( '/meetings/#team-m' ) . '"', do_shortcode( '[meeting_time team="Team-M" limit=1 /]' ) );
+	}
+
+	/**
+	 * Test that meetings are sorted by their next date only when the query doesn't ask for an order.
+	 */
+	public function test_sort_filter_keeps_requested_order(): void {
+		$later  = $this->create_meeting(
+			array(
+				'start_date' => gmdate( 'Y-m-d', strtotime( '+10 days' ) ),
+				'recurring'  => 'weekly',
+			),
+			'Alpha'
+		);
+		$sooner = $this->create_meeting(
+			array(
+				'start_date' => gmdate( 'Y-m-d', strtotime( '+1 day' ) ),
+				'recurring'  => 'weekly',
+			),
+			'Beta'
+		);
+		$args   = array(
+			'post_type' => 'meeting',
+			'post__in'  => array( $later->ID, $sooner->ID ),
+		);
+
+		$by_next_date = ( new WP_Query( $args ) )->posts;
+		$this->assertSame( array( 'Beta', 'Alpha' ), wp_list_pluck( $by_next_date, 'post_title' ) );
+
+		$args['orderby'] = 'title';
+		$args['order']   = 'ASC';
+
+		$by_title = ( new WP_Query( $args ) )->posts;
+		$this->assertSame( array( 'Alpha', 'Beta' ), wp_list_pluck( $by_title, 'post_title' ) );
+	}
+
+	/**
+	 * Test that the occurrences include one on the end date, whatever the time of day.
+	 */
+	public function test_future_occurrences_include_end_date(): void {
+		$meeting = $this->create_meeting(
+			array(
+				'start_date' => '2026-01-07',
+				'end_date'   => '2026-01-14',
+				'time'       => '23:59:00',
+				'recurring'  => 'weekly',
+			)
+		);
+
+		$occurrences = Meeting_Post_Type::getInstance()->get_future_occurrences( $meeting, null, array( 'month' => '2026-01-01' ) );
+
+		$this->assertSame( array( '2026-01-07', '2026-01-14' ), $occurrences );
+	}
+
+	/**
+	 * Test that an unparseable end date ends the meeting, as it does in the meta query.
+	 */
+	public function test_future_occurrences_with_unparseable_end_date(): void {
+		$meeting = $this->create_meeting(
+			array(
+				'start_date' => '2026-01-07',
+				'end_date'   => 'never',
+				'recurring'  => 'weekly',
+			)
+		);
+
+		$this->assertSame( array(), Meeting_Post_Type::getInstance()->get_future_occurrences( $meeting, null, array( 'month' => '2026-01-01' ) ) );
+	}
+
+	/**
+	 * Test that string and out-of-range week values don't break an "occurrence" meeting.
+	 */
+	public function test_next_occurrence_with_unexpected_week_values(): void {
+		// The last Wednesday of each month, with a week that doesn't exist.
+		$meeting = $this->create_occurrence_meeting( '2020-01-15', array( 7, '-1' ) );
+
+		$next = Meeting_Post_Type::getInstance()->get_next_occurrence( $meeting, '2026-10-01 00:00:00 +00:00' );
+
+		$this->assertSame( '2026-10-28', $next );
+	}
+
+	/**
+	 * Test that a meeting with an unparseable time doesn't occur on any date, instead of throwing.
+	 */
+	public function test_is_valid_occurrence_with_unparseable_time(): void {
+		$meeting = $this->create_meeting(
+			array(
+				'start_date' => '2026-01-07',
+				'time'       => 'TBD',
+				'recurring'  => 'weekly',
+			)
+		);
+
+		$this->assertFalse( Meeting_Post_Type::getInstance()->is_valid_occurrence( $meeting->ID, '2026-01-14' ) );
+	}
+
+	/**
 	 * Create a meeting that recurs on given weeks of the month, on the start date's weekday.
 	 *
 	 * @param string $start_date Start date, Y-m-d.
-	 * @param int[]  $weeks      Weeks of the month, 1-4, or -1 for the last.
+	 * @param array  $weeks      Weeks of the month, 1-4, or -1 for the last.
 	 * @return WP_Post
 	 */
 	private function create_occurrence_meeting( string $start_date, array $weeks ): WP_Post {
+		return $this->create_meeting(
+			array(
+				'start_date' => $start_date,
+				'recurring'  => 'occurrence',
+				'occurrence' => $weeks,
+			)
+		);
+	}
+
+	/**
+	 * Create a published meeting.
+	 *
+	 * @param array  $meta  Meeting meta, merged into a 15:00 one-off meeting for Team-A.
+	 * @param string $title Meeting title.
+	 * @return WP_Post
+	 */
+	private function create_meeting( array $meta, string $title = 'Meeting' ): WP_Post {
 		return get_post(
 			self::factory()->post->create(
 				array(
+					'post_title'  => $title,
 					'post_type'   => 'meeting',
 					'post_status' => 'publish',
-					'meta_input'  => array(
-						'team'       => 'Team-A',
-						'start_date' => $start_date,
-						'end_date'   => '',
-						'time'       => '15:00:00',
-						'recurring'  => 'occurrence',
-						'occurrence' => $weeks,
+					'meta_input'  => array_merge(
+						array(
+							'team'       => 'Team-A',
+							'start_date' => '',
+							'end_date'   => '',
+							'time'       => '15:00:00',
+							'recurring'  => '',
+						),
+						$meta
 					),
 				)
 			)

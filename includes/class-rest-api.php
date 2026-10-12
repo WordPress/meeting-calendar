@@ -163,8 +163,8 @@ class REST_API {
 	 */
 	public function cancel_meeting( \WP_REST_Request|array $request ): int|bool|\WP_Error {
 		$meeting_post_type = \Meeting_Post_Type::getInstance();
-		$meeting_id        = $this->get_route_param( $request, 'meeting_id' );
-		$date              = $this->get_route_param( $request, 'date' );
+		$meeting_id        = (int) $this->get_route_param( $request, 'meeting_id' );
+		$date              = (string) $this->get_route_param( $request, 'date' );
 
 		if ( ! $meeting_post_type->is_valid_occurrence( $meeting_id, $date ) ) {
 			return new \WP_Error( 'invalid_date', 'The meeting does not occur on the given date.', array( 'status' => 400 ) );

@@ -575,7 +575,7 @@ class Admin {
 		}
 
 		$end_date = sanitize_text_field( wp_unslash( $_POST['end_date'] ?? '' ) );
-		if ( $end_date && false === strtotime( $end_date ) ) {
+		if ( ! \Meeting_Post_Type::getInstance()->is_valid_date( $end_date ) ) {
 			$end_date = '';
 		}
 
@@ -593,7 +593,8 @@ class Admin {
 		$from = \DateTime::createFromFormat( 'U', (string) strtotime( '-30 minutes' ) );
 		$end  = new \DateTime( '+6 months' );
 		if ( $post->end_date ) {
-			$end = \DateTime::createFromFormat( 'Y-m-d', $post->end_date );
+			// The meeting still occurs on its end date.
+			$end = \DateTime::createFromFormat( '!Y-m-d', $post->end_date )->setTime( 23, 59, 59 );
 		}
 
 		$max   = 12;
