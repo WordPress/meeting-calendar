@@ -536,9 +536,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					'numberposts' => -1,
 				)
 			);
+			$period   = array( 'month' => $this->get_route_param( $request, 'month' ) );
 			$out      = array();
 			foreach ( $meetings as $meeting ) {
-				$occurrences = $this->get_future_occurrences( $meeting, null, $request );
+				$occurrences = $this->get_future_occurrences( $meeting, null, $period );
 
 				$frequency = '';
 				if ( ! empty( $meeting->recurring ) && ! empty( $occurrences ) ) {
@@ -637,13 +638,22 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * Cancel a meeting's occurrence.
 		 *
 		 * @param WP_REST_Request $request Request.
-		 * @return int|false|WP_Error Meta ID, false on failure, or an error if the meeting doesn't occur on the date.
+		 * @return int|bool|WP_Error Meta ID, true if it was already cancelled, false on failure, or an error if the meeting doesn't occur on the date.
 		 */
 		public function cancel_meeting( $request ) {
-			if ( ! $this->is_valid_occurrence( $request['meeting_id'], $request['date'] ) ) {
+			$meeting_id = $this->get_route_param( $request, 'meeting_id' );
+			$date       = $this->get_route_param( $request, 'date' );
+
+			if ( ! $this->is_valid_occurrence( $meeting_id, $date ) ) {
 				return new \WP_Error( 'invalid_date', 'The meeting does not occur on the given date.', array( 'status' => 400 ) );
 			}
-			return add_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'], false );
+
+			// Store each cancellation once.
+			if ( $this->is_meeting_cancelled( $meeting_id, $date ) ) {
+				return true;
+			}
+
+			return add_post_meta( $meeting_id, 'meeting_cancelled', $date, false );
 		}
 
 		/**
@@ -653,7 +663,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * @return bool Whether the cancellation was removed.
 		 */
 		public function uncancel_meeting( $request ) {
-			return delete_post_meta( $request['meeting_id'], 'meeting_cancelled', $request['date'] );
+			return delete_post_meta( $this->get_route_param( $request, 'meeting_id' ), 'meeting_cancelled', $this->get_route_param( $request, 'date' ) );
 		}
 
 		/**
@@ -689,7 +699,25 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		 * @return bool
 		 */
 		public function can_cancel_meeting( $request ) {
-			return current_user_can( 'edit_post', $request['meeting_id'] );
+			return current_user_can( 'edit_post', $this->get_route_param( $request, 'meeting_id' ) );
+		}
+
+		/**
+		 * Get a parameter from the route's URL path.
+		 *
+		 * Query and body args take precedence over URL params in a WP_REST_Request, so
+		 * `?date=…` could otherwise act on a different date than the one in the path.
+		 *
+		 * @param WP_REST_Request|array|null $request Request, or an array of params.
+		 * @param string                     $key     Parameter name.
+		 * @return mixed|null
+		 */
+		private function get_route_param( $request, $key ) {
+			if ( $request instanceof \WP_REST_Request ) {
+				$request = $request->get_url_params();
+			}
+
+			return $request[ $key ] ?? null;
 		}
 
 		/**
@@ -712,7 +740,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			// The month the occurrences should be within.
 			// Passed to the API endpoint as /meetings?month=2020-09-01
 			$now = time();
-			if ( isset( $request['month'] ) ) {
+			if ( isset( $request['month'] ) && $this->is_valid_date( $request['month'] ) ) {
 				$now = strtotime( $request['month'] );
 			}
 

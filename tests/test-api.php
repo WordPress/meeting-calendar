@@ -629,6 +629,87 @@ class MeetingAPITest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that a `?date=` query arg can't change which occurrence gets cancelled.
+	 */
+	public function test_cancel_meeting_uses_path_date() {
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'editor' ) ) );
+
+		$request = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request->set_query_params( array( 'date' => '2020-01-22' ) );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( array( '2020-01-15' ), get_post_meta( $this->meeting_ids[0], 'meeting_cancelled', false ) );
+	}
+
+	/**
+	 * Test that a `?meeting_id=` query arg can't move the permission check to another meeting.
+	 */
+	public function test_cancel_meeting_permission_uses_path_meeting() {
+		$author_id   = $this->factory->user->create( array( 'role' => 'author' ) );
+		$own_meeting = $this->factory->post->create(
+			array(
+				'post_type'   => 'meeting',
+				'post_status' => 'publish',
+				'post_author' => $author_id,
+			)
+		);
+		wp_set_current_user( $author_id );
+
+		$request = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
+		$request->set_query_params( array( 'meeting_id' => $own_meeting ) );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 403, $response->get_status() );
+		$this->assertEmpty( get_post_meta( $this->meeting_ids[0], 'meeting_cancelled', false ) );
+	}
+
+	/**
+	 * Test that a `?month=` query arg can't change the listed period.
+	 */
+	public function test_meetings_from_uses_path_month() {
+		$expected = $this->server->dispatch( new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' ) );
+
+		$request = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
+		$request->set_query_params( array( 'month' => '2020-06-01' ) );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( $expected->get_data(), $response->get_data() );
+	}
+
+	/**
+	 * Test that cancelling the same occurrence twice stores it once.
+	 */
+	public function test_cancel_meeting_twice() {
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'editor' ) ) );
+
+		foreach ( array( 1, 2 ) as $attempt ) {
+			$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' ) );
+			$this->assertEquals( 200, $response->get_status(), "Attempt {$attempt}" );
+		}
+
+		$this->assertSame( array( '2020-01-15' ), get_post_meta( $this->meeting_ids[0], 'meeting_cancelled', false ) );
+	}
+
+	/**
+	 * Test that an invalid `?month=` on the core meeting endpoint is ignored, not read as 1970.
+	 */
+	public function test_future_occurrences_invalid_month() {
+		$request = new WP_REST_Request( 'GET', '/wp/v2/meeting' );
+		$request->set_query_params( array( 'month' => '2020-99-99' ) );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		foreach ( $response->get_data() as $meeting ) {
+			$this->assertNotEmpty( $meeting['future_occurrences'] );
+			foreach ( $meeting['future_occurrences'] as $date ) {
+				$this->assertGreaterThanOrEqual( gmdate( 'Y-m-d', strtotime( '-1 day' ) ), $date );
+			}
+		}
+	}
+
+	/**
 	 * Test that cancelling a date the meeting doesn't occur on is rejected.
 	 */
 	public function test_cancel_meeting_invalid_date() {
