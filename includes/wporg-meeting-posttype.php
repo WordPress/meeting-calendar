@@ -512,6 +512,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		}
 
 		public function register_rest_routes() {
+			$date_arg = array(
+				'validate_callback' => array( $this, 'is_valid_date' ),
+			);
+
 			register_rest_route(
 				'wporg/v1',
 				'/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
@@ -519,12 +523,18 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_occurrences_for_period' ),
 					'permission_callback' => '__return_true',
+					'args'                => array(
+						'month' => $date_arg,
+					),
 				)
 			);
 			register_rest_route(
 				'wporg/v1',
 				'/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)',
 				array(
+					'args' => array(
+						'date' => $date_arg,
+					),
 					array(
 						'methods'             => 'DELETE',
 						'callback'            => array( $this, 'cancel_meeting' ),
@@ -537,6 +547,18 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					),
 				)
 			);
+		}
+
+		/**
+		 * Checks that a route parameter is a real calendar date in Y-m-d format.
+		 *
+		 * @param string $value The parameter value.
+		 * @return bool
+		 */
+		public function is_valid_date( $value ) {
+			$date = DateTime::createFromFormat( '!Y-m-d', $value );
+
+			return $date && $date->format( 'Y-m-d' ) === $value;
 		}
 
 		public function cancel_meeting( $request ) {

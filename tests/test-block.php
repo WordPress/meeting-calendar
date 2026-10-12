@@ -61,7 +61,7 @@ class MeetingBlockTest extends WP_UnitTestCase {
 		$filter = $this->get_error_filter();
 		add_filter( 'rest_pre_dispatch', $filter );
 
-		$data = Meeting_Calendar\get_meeting_data( 12 );
+		$data = Meeting_Calendar\get_meeting_data();
 
 		remove_filter( 'rest_pre_dispatch', $filter );
 

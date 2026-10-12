@@ -15,13 +15,11 @@ namespace WordPressdotorg\Meeting_Calendar;
 /**
  * Retrieves meetings
  *
- * @param integer $per_page Number of meetings per page.
  * @return string|\WP_Error List of meetings in JSON format, or an error if the request failed.
  */
-function get_meeting_data( $per_page ) {
-	$date    = gmdate( 'Y-m-d', strtotime( 'first day of this month' ) );
-	$request = new \WP_REST_Request( 'GET', '/wporg/v1/meetings/from/' . $date );
-	$request->set_query_params( array( 'per_page' => $per_page ) );
+function get_meeting_data() {
+	$date     = gmdate( 'Y-m-d', strtotime( 'first day of this month' ) );
+	$request  = new \WP_REST_Request( 'GET', '/wporg/v1/meetings/from/' . $date );
 	$response = rest_do_request( $request );
 	if ( $response->is_error() ) {
 		return $response->as_error();
@@ -40,7 +38,7 @@ function get_meeting_data( $per_page ) {
  * @return string HTML output used by the calendar JS.
  */
 function render_callback( $attributes, $content ) {
-	$meetings = get_meeting_data( 12 );
+	$meetings = get_meeting_data();
 	if ( is_wp_error( $meetings ) ) {
 		$output = sprintf(
 			'<div class="alignwide wporg-block-meeting-calendar"><p>%s</p></div>',

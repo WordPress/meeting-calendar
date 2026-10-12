@@ -548,6 +548,25 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( $january_meetings, $meetings );
 	}
 
+	public function test_meetings_from_impossible_date() {
+		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-13-01' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertEquals( 'rest_invalid_param', $response->as_error()->get_error_code() );
+	}
+
+	public function test_cancel_meeting_impossible_date() {
+		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $user_id );
+
+		foreach ( array( 'DELETE', 'PUT' ) as $method ) {
+			$request  = new WP_REST_Request( $method, '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-02-30' );
+			$response = $this->server->dispatch( $request );
+			$this->assertEquals( 400, $response->get_status(), $method );
+			$this->assertEquals( 'rest_invalid_param', $response->as_error()->get_error_code(), $method );
+		}
+	}
+
 	public function test_cancel_meeting_invalid_date() {
 		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $user_id );
