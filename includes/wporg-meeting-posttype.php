@@ -672,6 +672,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 			$max         = 12;
 			$dates       = array();
+			// Collect up to 4 upcoming dates; `isset( $dates[3] )` means there are 4.
 			do {
 				$next = $this->get_next_occurrence( $post, $from->format( 'Y-m-d H:i:s P' ) );
 				if ( $next ) {
@@ -680,7 +681,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						$dates[] = $next;
 					}
 				}
-			} while ( --$max > 0 && $next && $from && $from < $end && count( $dates ) < 4 );
+			} while ( --$max > 0 && $next && $from && $from < $end && ! isset( $dates[3] ) );
 
 			// Format dates with day names for display (e.g. "Wednesday, 2026-03-25").
 			$formatted = array();
@@ -708,7 +709,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 					array( $this, 'render_meta_upcoming' ),
 					'meeting',
 					'normal',
-				'high'
+					'high'
 				);
 			}
 		}
