@@ -32,7 +32,7 @@ const Filter = () => {
 				htmlFor={ dropdownId }
 				ref={ filterLabel }
 			>
-				{ __( 'Filter by team: ', 'wporg-meeting-calendar' ) }
+				{ __( 'Filter by team:', 'wporg-meeting-calendar' ) }{ ' ' }
 			</label>
 			<SelectControl
 				id={ dropdownId }

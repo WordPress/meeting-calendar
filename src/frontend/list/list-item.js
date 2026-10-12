@@ -88,11 +88,11 @@ function ListItem( { date, events } ) {
 						</div>
 						<div className="wporg-meeting-calendar__list-event-details">
 							<p className="wporg-meeting-calendar__list-event-copy">
-								{ __( 'Meets: ', 'wporg-meeting-calendar' ) }
+								{ __( 'Meets:', 'wporg-meeting-calendar' ) }{ ' ' }
 								{ getFrequencyLabel( event ) }
 							</p>
 							<p className="wporg-meeting-calendar__list-event-copy">
-								{ __( 'Location: ', 'wporg-meeting-calendar' ) }
+								{ __( 'Location:', 'wporg-meeting-calendar' ) }{ ' ' }
 								{ getSlackLink( event.location ) }
 							</p>
 						</div>
@@ -127,7 +127,8 @@ function EventTitle( { event } ) {
 			<span>{ event.title }</span>
 			{ isCancelled( event.status ) && (
 				<span>
-					{ __( ' Meeting is cancelled', 'wporg-meeting-calendar' ) }
+					{ ' ' }
+					{ __( 'Meeting is cancelled', 'wporg-meeting-calendar' ) }
 				</span>
 			) }
 		</>

@@ -54,7 +54,7 @@ export function EventsProvider( { children, value } ) {
 				label: e.team,
 				value: e.team.toLowerCase(),
 			} ) )
-			.filter( ( { value } ) => !! value ),
+			.filter( ( team ) => !! team.value ),
 		'value'
 	);
 

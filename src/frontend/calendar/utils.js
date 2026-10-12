@@ -65,12 +65,14 @@ export function getFrequencyLabel( event ) {
 	switch ( event.recurring ) {
 		case 'weekly':
 			return sprintf(
+				// translators: %s: Day of the week, e.g. Monday.
 				__( 'Every week on %s', 'wporg-meeting-calendar' ),
 				dayOfWeek
 			);
 
 		case 'biweekly':
 			return sprintf(
+				// translators: %s: Day of the week, e.g. Monday.
 				__( 'Every other week on %s', 'wporg-meeting-calendar' ),
 				dayOfWeek
 			);
@@ -81,7 +83,11 @@ export function getFrequencyLabel( event ) {
 		case 'occurrence':
 			if ( event.occurrence.length ) {
 				return sprintf(
-					__( 'Every month on the %s %s', 'wporg-meeting-calendar' ),
+					// translators: 1: Week(s) of the month, e.g. "1st, 3rd". 2: Day of the week, e.g. Monday.
+					__(
+						'Every month on the %1$s %2$s',
+						'wporg-meeting-calendar'
+					),
 					event.occurrence
 						.map( ( o ) => occurrences[ o ] )
 						.join( ', ' ),
@@ -152,6 +158,7 @@ export function getTeamStyle( team ) {
 	// 32-bit FNV-1a, which spreads similar names further apart than a simple rolling hash.
 	let hash = 0x811c9dc5;
 	for ( const char of getTeamSlug( team ) ) {
+		// eslint-disable-next-line no-bitwise -- FNV-1a is defined in terms of XOR and unsigned 32-bit math.
 		hash = Math.imul( hash ^ char.charCodeAt( 0 ), 0x01000193 ) >>> 0;
 	}
 
@@ -166,9 +173,9 @@ export function getTeamStyle( team ) {
 export function isToday( date ) {
 	const today = new Date();
 	return (
-		date.getDate() == today.getDate() &&
-		date.getMonth() == today.getMonth() &&
-		date.getFullYear() == today.getFullYear()
+		date.getDate() === today.getDate() &&
+		date.getMonth() === today.getMonth() &&
+		date.getFullYear() === today.getFullYear()
 	);
 }
 

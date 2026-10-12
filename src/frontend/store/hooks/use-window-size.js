@@ -1,23 +1,21 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from '@wordpress/element';
 
 const breakpoints = {
 	small: 600,
 };
 
+const isClient = typeof window === 'object';
+
+function getSize() {
+	return {
+		isSmall: isClient ? window.innerWidth < breakpoints.small : undefined,
+	};
+}
+
 const useWindowSize = () => {
-	const isClient = typeof window === 'object';
-
-	function getSize() {
-		return {
-			isSmall: isClient
-				? window.innerWidth < breakpoints.small
-				: undefined,
-		};
-	}
-
 	const [ windowSize, setWindowSize ] = useState( getSize );
 
 	useEffect( () => {
