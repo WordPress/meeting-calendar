@@ -6,7 +6,8 @@ import { format } from '@wordpress/date';
 /**
  * Get the list of events in day-buckets.
  *
- * @param {Array} events
+ * @param {Object[]} events Meeting occurrences.
+ * @return {Object<string, Object[]>} Events, keyed by date (Y-m-d).
  */
 export function getSortedEvents( events ) {
 	const sortedEvents = {};

@@ -47,9 +47,9 @@ const StateContext = createContext();
 /**
  * Provide the events, filtered to the selected team, and the list of teams.
  *
- * @param {Object}   props          Component props.
- * @param {Element}  props.children Child elements.
- * @param {Object[]} props.value    Meeting occurrences.
+ * @param {Object}                    props          Component props.
+ * @param {import('react').ReactNode} props.children Child elements.
+ * @param {Object[]}                  props.value    Meeting occurrences.
  * @return {Element} Context provider element.
  */
 export function EventsProvider( { children, value } ) {

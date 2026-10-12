@@ -16,7 +16,7 @@
     "test:unit-php": "wp-env --config=.wp-env.test.json run cli --env-cwd=wp-content/plugins/meeting-calendar vendor/bin/phpunit",
     "wp-env": "wp-env",
     "wp-env:test": "wp-env --config=.wp-env.test.json",
-    "format": "wp-scripts format"
+    "format": "wp-scripts format ./src"
   },
   "repository": {
     "type": "git",

@@ -11,9 +11,9 @@ const LIST_VIEW = 'list_view';
 /**
  * Provide the default view, based on the viewport size.
  *
- * @param {Object}  props                 Component props.
- * @param {Element} props.children        Child elements.
- * @param {boolean} props.isSmallViewport Whether the viewport is small.
+ * @param {Object}                    props                 Component props.
+ * @param {import('react').ReactNode} props.children        Child elements.
+ * @param {boolean}                   props.isSmallViewport Whether the viewport is small.
  * @return {Element} Context provider element.
  */
 export function ViewProvider( { children, isSmallViewport } ) {

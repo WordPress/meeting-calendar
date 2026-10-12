@@ -21,6 +21,7 @@ jobs:
         cache: 'npm'
 
     - name: npm install and build
+      id: build
       run: |
         npm ci
         npm run build
@@ -32,4 +33,4 @@ jobs:
     - name: Lint JavaScript
       run: |
         npm run lint:js
-      if: ${{ success() || failure() }}
+      if: ${{ ! cancelled() && steps.build.outcome == 'success' }}

@@ -30,7 +30,7 @@ const useWindowSize = () => {
 
 	useEffect( () => {
 		if ( ! isClient ) {
-			return false;
+			return;
 		}
 
 		/**

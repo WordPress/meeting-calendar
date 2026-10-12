@@ -38,7 +38,7 @@ function ListItem( { date, events } ) {
 				/**
 				 * Filter the list to the event's team.
 				 *
-				 * @param {Event} clickEvent Click event.
+				 * @param {import('react').MouseEvent} clickEvent Click event.
 				 */
 				const onTeamClick = ( clickEvent ) => {
 					clickEvent.preventDefault();

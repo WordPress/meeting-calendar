@@ -17,15 +17,17 @@ import { useEvents } from '../store/event-context';
  * @return {?Element} Filter element, or null.
  */
 const Filter = () => {
-	const { teams, team, setTeam } = useEvents();
+	const { teams: unsortedTeams, team, setTeam } = useEvents();
 	const filterLabel = useRef( null );
 
-	if ( teams.length < 2 ) {
+	if ( unsortedTeams.length < 2 ) {
 		return null;
 	}
 
-	// Sort the teams alphabetically.
-	teams.sort( ( a, b ) => a.label.localeCompare( b.label ) );
+	// Sort the teams alphabetically, without reordering the shared list.
+	const teams = [ ...unsortedTeams ].sort( ( a, b ) =>
+		a.label.localeCompare( b.label )
+	);
 
 	const dropdownId = 'wporg-meeting-calendar__filter-dropdown';
 	const selected = teams.find( ( option ) => team === option.value );
@@ -56,14 +58,19 @@ const Filter = () => {
 						( option ) => value === option.value
 					);
 					speak(
-						sprintf(
-							// translators: %s is the team name
-							__(
-								'Showing meetings for %s',
-								'wporg-meeting-calendar'
-							),
-							newSelected.label
-						),
+						newSelected
+							? sprintf(
+									// translators: %s is the team name
+									__(
+										'Showing meetings for %s',
+										'wporg-meeting-calendar'
+									),
+									newSelected.label
+								)
+							: __(
+									'Showing all meetings.',
+									'wporg-meeting-calendar'
+								),
 						'assertive'
 					);
 				} }
