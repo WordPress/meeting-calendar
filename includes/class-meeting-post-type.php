@@ -202,7 +202,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 		public function meeting_set_next_meeting( $posts ) {
 			$is_meeting_list = array_reduce(
 				$posts,
-				function ( $is_meeting, $post ) {
+				static function ( $is_meeting, $post ) {
 					return $is_meeting && 'meeting' === $post->post_type;
 				},
 				true
@@ -245,7 +245,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 			$is_meeting_list = array_reduce(
 				$posts,
-				function ( $is_meeting, $post ) {
+				static function ( $is_meeting, $post ) {
 					return $is_meeting && 'meeting' === $post->post_type;
 				},
 				true
@@ -257,7 +257,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			// reorder the posts by next_date + time.
 			usort(
 				$posts,
-				function ( $a, $b ) {
+				static function ( $a, $b ) {
 					$adate = strtotime( $a->next_date . ' ' . $a->time );
 					$bdate = strtotime( $b->next_date . ' ' . $b->time );
 					if ( $adate === $bdate ) {
@@ -582,7 +582,7 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 
 			usort(
 				$out,
-				function ( $a, $b ) {
+				static function ( $a, $b ) {
 					return $a['datetime'] <=> $b['datetime'];
 				}
 			);
