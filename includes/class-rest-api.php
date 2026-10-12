@@ -5,6 +5,8 @@
  * @package WordPressdotorg\Meeting_Calendar
  */
 
+declare( strict_types = 1 );
+
 namespace WordPressdotorg\Meeting_Calendar;
 
 use function WordPressdotorg\Meeting_Calendar\ICS\Generator\get_frequency;
@@ -19,14 +21,14 @@ class REST_API {
 	 *
 	 * @var REST_API|null
 	 */
-	protected static $instance = null;
+	protected static ?REST_API $instance = null;
 
 	/**
 	 * Get the single instance of the class.
 	 *
 	 * @return REST_API
 	 */
-	public static function get_instance() {
+	public static function get_instance(): self {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
@@ -36,7 +38,7 @@ class REST_API {
 	/**
 	 * Register the REST hooks.
 	 */
-	public static function init() {
+	public static function init(): void {
 		$rest_api = self::get_instance();
 		add_action( 'rest_api_init', array( $rest_api, 'register_rest_field' ) );
 		add_action( 'rest_api_init', array( $rest_api, 'register_rest_routes' ) );
@@ -45,7 +47,7 @@ class REST_API {
 	/**
 	 * Add the upcoming occurrences to meetings in the REST API, as `future_occurrences`.
 	 */
-	public function register_rest_field() {
+	public function register_rest_field(): void {
 		register_rest_field(
 			'meeting',
 			'future_occurrences',
@@ -58,7 +60,7 @@ class REST_API {
 	/**
 	 * Register the REST routes for listing occurrences and (un)cancelling them.
 	 */
-	public function register_rest_routes() {
+	public function register_rest_routes(): void {
 		register_rest_route(
 			'wporg/v1',
 			'/meetings/from/(?P<month>\d\d\d\d-\d\d-\d\d)',
@@ -99,21 +101,22 @@ class REST_API {
 	/**
 	 * Get all meeting occurrences in the period starting at the requested month.
 	 *
-	 * @param WP_REST_Request $request Request.
+	 * @param \WP_REST_Request|array|null $request Request, or an array of params.
 	 * @return array[] Occurrences, sorted by date and time.
 	 */
-	public function get_occurrences_for_period( $request ) {
-		$meetings = get_posts(
+	public function get_occurrences_for_period( \WP_REST_Request|array|null $request ): array {
+		$meeting_post_type = \Meeting_Post_Type::getInstance();
+		$meetings          = get_posts(
 			array(
 				'post_type'   => 'meeting',
 				'post_status' => 'publish',
 				'numberposts' => -1,
 			)
 		);
-		$period   = array( 'month' => $this->get_route_param( $request, 'month' ) );
-		$out      = array();
+		$period            = array( 'month' => $this->get_route_param( $request, 'month' ) );
+		$out               = array();
 		foreach ( $meetings as $meeting ) {
-			$occurrences = \Meeting_Post_Type::getInstance()->get_future_occurrences( $meeting, null, $period );
+			$occurrences = $meeting_post_type->get_future_occurrences( $meeting, null, $period );
 
 			$frequency = '';
 			if ( ! empty( $meeting->recurring ) && ! empty( $occurrences ) ) {
@@ -121,21 +124,22 @@ class REST_API {
 			}
 
 			foreach ( $occurrences as $occurrence ) {
-				$meeting->time = gmdate( 'H:i:s', strtotime( $meeting->time ) );
+				// An unparseable time used to be coerced to 00:00:00; keep that.
+				$meeting->time = gmdate( 'H:i:s', (int) strtotime( (string) $meeting->time ) );
 				$out[]         = array(
 					'meeting_id'  => $meeting->ID,
 					'instance_id' => "{$meeting->ID}:{$occurrence}",
 					'date'        => $occurrence,
 					'time'        => $meeting->time,
 					'datetime'    => "{$occurrence}T{$meeting->time}+00:00",
-					'team'        => ucwords( $meeting->team ),
+					'team'        => ucwords( (string) $meeting->team ),
 					'link'        => $meeting->link,
 					'title'       => wp_specialchars_decode( $meeting->post_title, ENT_QUOTES ),
 					'location'    => $meeting->location,
 					'wptv_url'    => $meeting->wptv_url,
 					'recurring'   => $meeting->recurring,
 					'occurrence'  => $meeting->occurrence,
-					'status'      => ( \Meeting_Post_Type::getInstance()->is_meeting_cancelled( $meeting->ID, $occurrence ) ? 'cancelled' : 'active' ),
+					'status'      => ( $meeting_post_type->is_meeting_cancelled( $meeting->ID, $occurrence ) ? 'cancelled' : 'active' ),
 					'rrule'       => $frequency ? "RRULE:FREQ={$frequency}" : '',
 					'edit_url'    => current_user_can( 'edit_post', $meeting->ID ) ? get_edit_post_link( $meeting->ID, 'raw' ) : '',
 				);
@@ -154,19 +158,20 @@ class REST_API {
 	/**
 	 * Cancel a meeting's occurrence.
 	 *
-	 * @param WP_REST_Request $request Request.
-	 * @return int|bool|WP_Error Meta ID, true if it was already cancelled, false on failure, or an error if the meeting doesn't occur on the date.
+	 * @param \WP_REST_Request|array $request Request, or an array of params.
+	 * @return int|bool|\WP_Error Meta ID, true if it was already cancelled, false on failure, or an error if the meeting doesn't occur on the date.
 	 */
-	public function cancel_meeting( $request ) {
-		$meeting_id = $this->get_route_param( $request, 'meeting_id' );
-		$date       = $this->get_route_param( $request, 'date' );
+	public function cancel_meeting( \WP_REST_Request|array $request ): int|bool|\WP_Error {
+		$meeting_post_type = \Meeting_Post_Type::getInstance();
+		$meeting_id        = $this->get_route_param( $request, 'meeting_id' );
+		$date              = $this->get_route_param( $request, 'date' );
 
-		if ( ! \Meeting_Post_Type::getInstance()->is_valid_occurrence( $meeting_id, $date ) ) {
+		if ( ! $meeting_post_type->is_valid_occurrence( $meeting_id, $date ) ) {
 			return new \WP_Error( 'invalid_date', 'The meeting does not occur on the given date.', array( 'status' => 400 ) );
 		}
 
 		// Store each cancellation once.
-		if ( \Meeting_Post_Type::getInstance()->is_meeting_cancelled( $meeting_id, $date ) ) {
+		if ( $meeting_post_type->is_meeting_cancelled( $meeting_id, $date ) ) {
 			return true;
 		}
 
@@ -176,20 +181,20 @@ class REST_API {
 	/**
 	 * Un-cancel a meeting's occurrence.
 	 *
-	 * @param WP_REST_Request $request Request.
+	 * @param \WP_REST_Request|array $request Request, or an array of params.
 	 * @return bool Whether the cancellation was removed.
 	 */
-	public function uncancel_meeting( $request ) {
+	public function uncancel_meeting( \WP_REST_Request|array $request ): bool {
 		return delete_post_meta( $this->get_route_param( $request, 'meeting_id' ), 'meeting_cancelled', $this->get_route_param( $request, 'date' ) );
 	}
 
 	/**
 	 * Whether the current user can (un)cancel the requested meeting.
 	 *
-	 * @param WP_REST_Request $request Request.
+	 * @param \WP_REST_Request|array $request Request, or an array of params.
 	 * @return bool
 	 */
-	public function can_cancel_meeting( $request ) {
+	public function can_cancel_meeting( \WP_REST_Request|array $request ): bool {
 		return current_user_can( 'edit_post', $this->get_route_param( $request, 'meeting_id' ) );
 	}
 
@@ -199,11 +204,11 @@ class REST_API {
 	 * Query and body args take precedence over URL params in a WP_REST_Request, so
 	 * `?date=…` could otherwise act on a different date than the one in the path.
 	 *
-	 * @param WP_REST_Request|array|null $request Request, or an array of params.
-	 * @param string                     $key     Parameter name.
-	 * @return mixed|null
+	 * @param \WP_REST_Request|array|null $request Request, or an array of params.
+	 * @param string                      $key     Parameter name.
+	 * @return mixed
 	 */
-	private function get_route_param( $request, $key ) {
+	private function get_route_param( \WP_REST_Request|array|null $request, string $key ): mixed {
 		if ( $request instanceof \WP_REST_Request ) {
 			$request = $request->get_url_params();
 		}

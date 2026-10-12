@@ -1,9 +1,11 @@
 <?php
 /**
- * Admin screens for meetings: list table columns and filter, meta boxes, and the admin bar link.
+ * Admin screens for meetings: list table columns and filter, and meta boxes.
  *
  * @package WordPressdotorg\Meeting_Calendar
  */
+
+declare( strict_types = 1 );
 
 namespace WordPressdotorg\Meeting_Calendar;
 
@@ -17,14 +19,14 @@ class Admin {
 	 *
 	 * @var Admin|null
 	 */
-	protected static $instance = null;
+	protected static ?Admin $instance = null;
 
 	/**
 	 * Get the single instance of the class.
 	 *
 	 * @return Admin
 	 */
-	public static function get_instance() {
+	public static function get_instance(): self {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
@@ -34,7 +36,7 @@ class Admin {
 	/**
 	 * Register the admin hooks.
 	 */
-	public static function init() {
+	public static function init(): void {
 		$admin = self::get_instance();
 		add_action( 'admin_head', array( $admin, 'meeting_column_width' ) );
 		add_filter( 'manage_meeting_posts_columns', array( $admin, 'meeting_add_custom_columns' ) );
@@ -44,14 +46,12 @@ class Admin {
 		add_action( 'add_meta_boxes_meeting', array( $admin, 'add_meta_boxes' ) );
 		add_action( 'save_post_meeting', array( $admin, 'save_meta_boxes' ), 10, 2 );
 		add_action( 'wp_ajax_meeting_date_preview', array( $admin, 'ajax_date_preview' ) );
-		add_action( 'admin_bar_menu', array( $admin, 'add_edit_meetings_item_to_admin_bar' ), 80 );
-		add_action( 'wp_enqueue_scripts', array( $admin, 'add_edit_meetings_icon_to_admin_bar' ) );
 	}
 
 	/**
 	 * Print the styles for the meetings list table columns and meta box.
 	 */
-	public function meeting_column_width() {
+	public function meeting_column_width(): void {
 		?>
 		<style type="text/css">
 			.column-team { width: 10em !important; overflow: hidden; }
@@ -66,7 +66,7 @@ class Admin {
 	 * @param array $columns List table columns.
 	 * @return array
 	 */
-	public function meeting_add_custom_columns( $columns ) {
+	public function meeting_add_custom_columns( array $columns ): array {
 		$columns = array_slice( $columns, 0, 1, true )
 			+ array( 'team' => __( 'Team', 'wporg-meeting-calendar' ) )
 			+ array_slice( $columns, 1, -1, true )
@@ -81,10 +81,10 @@ class Admin {
 	 * @param string $column  Column name.
 	 * @param int    $post_id Meeting ID.
 	 */
-	public function meeting_custom_columns( $column, $post_id ) {
+	public function meeting_custom_columns( string $column, int $post_id ): void {
 		switch ( $column ) {
 			case 'team':
-				$team = get_post_meta( $post_id, 'team', true );
+				$team = (string) get_post_meta( $post_id, 'team', true );
 				echo esc_html( ucwords( $team ) );
 				break;
 		}
@@ -101,7 +101,7 @@ class Admin {
 	 *
 	 * @param string $post_type The post type of the current list table.
 	 */
-	public function meeting_team_filter_dropdown( $post_type ) {
+	public function meeting_team_filter_dropdown( string $post_type ): void {
 		global $wpdb;
 
 		if ( 'meeting' !== $post_type ) {
@@ -134,9 +134,9 @@ class Admin {
 	/**
 	 * Limits the meetings list table to the team selected in the dropdown.
 	 *
-	 * @param WP_Query $query The query being prepared.
+	 * @param \WP_Query $query The query being prepared.
 	 */
-	public function meeting_filter_by_team( $query ) {
+	public function meeting_filter_by_team( \WP_Query $query ): void {
 		if ( ! is_admin() || ! $query->is_main_query() || 'meeting' !== $query->get( 'post_type' ) ) {
 			return;
 		}
@@ -169,9 +169,9 @@ class Admin {
 	/**
 	 * Add the meeting info and upcoming meetings meta boxes.
 	 *
-	 * @param WP_Post $post Meeting.
+	 * @param \WP_Post $post Meeting.
 	 */
-	public function add_meta_boxes( $post ) {
+	public function add_meta_boxes( \WP_Post $post ): void {
 		add_meta_box(
 			'meeting-info',
 			'Meeting Info',
@@ -195,9 +195,9 @@ class Admin {
 	/**
 	 * Render the meeting info meta box.
 	 *
-	 * @param WP_Post $post Meeting.
+	 * @param \WP_Post $post Meeting.
 	 */
-	public function render_meta_boxes( $post ) {
+	public function render_meta_boxes( \WP_Post $post ): void {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', true, '1.12.1' );
 
@@ -406,17 +406,18 @@ class Admin {
 	/**
 	 * Render the upcoming meetings meta box, with checkboxes to (un)cancel each occurrence.
 	 *
-	 * @param WP_Post $meeting Meeting.
+	 * @param \WP_Post $meeting Meeting.
 	 */
-	public function render_meta_upcoming( $meeting ) {
-		$occurrences = \Meeting_Post_Type::getInstance()->get_future_occurrences( $meeting, null, null );
+	public function render_meta_upcoming( \WP_Post $meeting ): void {
+		$meeting_post_type = \Meeting_Post_Type::getInstance();
+		$occurrences       = $meeting_post_type->get_future_occurrences( $meeting, null, null );
 		if ( count( $occurrences ) ) {
 			?>
 			<ul>
 			<?php
 
 			foreach ( $occurrences as $occurrence ) {
-				$is_cancelled = \Meeting_Post_Type::getInstance()->is_meeting_cancelled( $meeting->ID, $occurrence );
+				$is_cancelled = $meeting_post_type->is_meeting_cancelled( $meeting->ID, $occurrence );
 				?>
 				<li>
 					<label>
@@ -424,10 +425,10 @@ class Admin {
 						/* translators: 1: Date of the meeting. 2: Time of the meeting. */
 						printf( esc_html__( '%1$s at %2$s', 'wporg-meeting-calendar' ), esc_html( $occurrence ), esc_html( $meeting->time ) );
 						?>
-						<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr( $meeting->ID ) . ':' . esc_attr( $occurrence ); ?>" <?php checked( ! \Meeting_Post_Type::getInstance()->is_meeting_cancelled( $meeting->ID, $occurrence ) ); ?> />
+						<input type="checkbox" class="cancel-meeting" value="<?php echo esc_attr( $meeting->ID ) . ':' . esc_attr( $occurrence ); ?>" <?php checked( ! $is_cancelled ); ?> />
 						<span class="meeting-status">
 							<?php
-							if ( \Meeting_Post_Type::getInstance()->is_meeting_cancelled( $meeting->ID, $occurrence ) ) {
+							if ( $is_cancelled ) {
 								esc_html_e( 'Cancelled', 'wporg-meeting-calendar' );
 							}
 							?>
@@ -487,29 +488,28 @@ class Admin {
 	 * Save the meeting info meta box fields.
 	 *
 	 * @param int $post_id Meeting ID.
-	 * @return int|false|void Meeting ID or false when nothing was saved.
 	 */
-	public function save_meta_boxes( $post_id ) {
+	public function save_meta_boxes( int $post_id ): void {
 		global $post;
 
 		// Verify nonce.
 		if ( ! isset( $_POST['meeting_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['meeting_nonce'] ) ), 'save_meeting_meta_' . $post_id ) ) {
-			return $post_id;
+			return;
 		}
 
 		// Check autosave.
 		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
-			return $post_id;
+			return;
 		}
 
 		// Don't save for revisions.
 		if ( isset( $post->post_type ) && 'revision' === $post->post_type ) {
-			return $post_id;
+			return;
 		}
 
 		// Check permissions.
 		if ( ! current_user_can( 'edit_post', $post->ID ) ) {
-			return $post_id;
+			return;
 		}
 
 		$meta['team']       = sanitize_text_field( wp_unslash( $_POST['team'] ?? '' ) );
@@ -522,16 +522,16 @@ class Admin {
 
 		// Basic validation.
 		if ( '' === sanitize_text_field( wp_unslash( $_POST['post_title'] ?? '' ) ) ) {
-			return false;
+			return;
 		}
 		if ( '' === $meta['start_date'] || false === strtotime( $meta['start_date'] ) ) {
-			return false;
+			return;
 		}
 		if ( '' !== $meta['end_date'] && false === strtotime( $meta['end_date'] ) ) {
-			return false;
+			return;
 		}
 		if ( '' === $meta['time'] || false === strtotime( $meta['time'] ) ) {
-			return false;
+			return;
 		}
 
 		$meta['recurring'] = sanitize_text_field( wp_unslash( $_POST['recurring'] ?? '' ) );
@@ -558,7 +558,7 @@ class Admin {
 	/**
 	 * Send a preview of the next dates for the meeting settings in the edit screen, via Ajax.
 	 */
-	public function ajax_date_preview() {
+	public function ajax_date_preview(): void {
 		check_ajax_referer( 'meeting_date_preview', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
@@ -590,7 +590,7 @@ class Admin {
 		$post->occurrence = $occurrence;
 
 		// Use a longer window than the default 2 months to ensure we get enough dates.
-		$from = \DateTime::createFromFormat( 'U', strtotime( '-30 minutes' ) );
+		$from = \DateTime::createFromFormat( 'U', (string) strtotime( '-30 minutes' ) );
 		$end  = new \DateTime( '+6 months' );
 		if ( $post->end_date ) {
 			$end = \DateTime::createFromFormat( 'Y-m-d', $post->end_date );
@@ -617,47 +617,5 @@ class Admin {
 		}
 
 		wp_send_json_success( $formatted );
-	}
-
-	/**
-	 * Adds "Edit Meetings" item after "Add New" menu.
-	 *
-	 * @param \WP_Admin_Bar $wp_admin_bar The admin bar instance.
-	 */
-	public function add_edit_meetings_item_to_admin_bar( $wp_admin_bar ) {
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return;
-		}
-
-		if ( is_admin() || ! is_post_type_archive( 'meeting' ) ) {
-			return;
-		}
-
-		$wp_admin_bar->add_menu(
-			array(
-				'id'    => 'edit-meetings',
-				'title' => '<span class="ab-icon"></span>' . __( 'Edit Meetings', 'wporg-meeting-calendar' ),
-				'href'  => admin_url( 'edit.php?post_type=meeting' ),
-			)
-		);
-	}
-
-	/**
-	 * Adds icon for the "Edit Meetings" item.
-	 */
-	public function add_edit_meetings_icon_to_admin_bar() {
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return;
-		}
-
-		wp_add_inline_style(
-			'admin-bar',
-			'
-		#wpadminbar #wp-admin-bar-edit-meetings .ab-icon:before {
-			content: "\f145";
-			top: 2px;
-		}
-	'
-		);
 	}
 }
