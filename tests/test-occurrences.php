@@ -61,6 +61,36 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that an "occurrence" meeting without any weeks has no next occurrence, rather than one a year out.
+	 */
+	public function test_next_occurrence_without_weeks(): void {
+		$meeting = $this->create_occurrence_meeting( '2020-01-15', array() );
+
+		$this->assertFalse( Meeting_Post_Type::getInstance()->get_next_occurrence( $meeting, '2026-10-01 00:00:00 +00:00' ) );
+	}
+
+	/**
+	 * Test that [meeting_time] skips a meeting whose date can't be parsed, instead of throwing.
+	 */
+	public function test_shortcode_skips_unparseable_start_date(): void {
+		self::factory()->post->create(
+			array(
+				'post_type'   => 'meeting',
+				'post_status' => 'publish',
+				'meta_input'  => array(
+					'team'       => 'Team-Z',
+					'start_date' => 'not a date',
+					'end_date'   => '',
+					'time'       => '15:00:00',
+					'recurring'  => 'weekly',
+				),
+			)
+		);
+
+		$this->assertSame( '', do_shortcode( '[meeting_time team="Team-Z" /]' ) );
+	}
+
+	/**
 	 * Create a meeting that recurs on given weeks of the month, on the start date's weekday.
 	 *
 	 * @param string $start_date Start date, Y-m-d.

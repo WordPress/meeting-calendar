@@ -197,6 +197,11 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 						$sorted[] = -1;
 					}
 
+					// Without any weeks there's no occurrence; the caller falls back to the start date.
+					if ( ! $sorted ) {
+						return false;
+					}
+
 					$limit = 12;
 					do {
 						$month_year = $next->format( 'F Y' );
@@ -531,7 +536,10 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$utc_time                = gmdate( 'H:i:s', strtotime( $post->time ) );
 				$next_meeting_iso        = $next_meeting_datestring . 'T' . $utc_time . '+00:00';
 				$next_meeting_timestamp  = strtotime( $next_meeting_datestring . ' ' . $utc_time );
-				$date_time               = new DateTime( '@' . $next_meeting_timestamp );
+				if ( false === $next_meeting_timestamp ) {
+					continue;
+				}
+				$date_time = new DateTime( '@' . $next_meeting_timestamp );
 				$date_time->setTimezone( new DateTimeZone( 'UTC' ) );
 				$next_meeting_display = $date_time->format( 'D M d H:i:s Y T' );
 
