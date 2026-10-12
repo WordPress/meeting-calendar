@@ -43,7 +43,7 @@ function setTeamEffect( team = '' ) {
 const StateContext = createContext();
 
 export function EventsProvider( { children, value } ) {
-	const [ team, setTeam ] = useState( getTeamOnLoad() );
+	const [ selectedTeam, setTeam ] = useState( getTeamOnLoad() );
 
 	let eventsToDisplay = value;
 
@@ -58,16 +58,12 @@ export function EventsProvider( { children, value } ) {
 		'value'
 	);
 
-	// Validate the team is valid.
-	if ( team && team.trim().length ) {
-		const teamExists = teams.find(
-			( t ) => t.value.toLowerCase() === team.toLowerCase()
-		);
-		if ( ! teamExists ) {
-			team = '';
-			setTeam( '' );
-		}
-	}
+	// Ignore a team from the URL that has no meetings.
+	const team = teams.some(
+		( t ) => t.value.toLowerCase() === selectedTeam.toLowerCase()
+	)
+		? selectedTeam
+		: '';
 
 	// Filter the initial events list.
 	if ( team && team.trim().length ) {
