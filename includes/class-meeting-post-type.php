@@ -882,7 +882,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 			if ( '1' === $recurring ) {
 				$recurring = 'weekly';
 			}
-			$occurrence = array_map( 'intval', (array) get_post_meta( $post->ID, 'occurrence', true ) );
+			$occurrence = get_post_meta( $post->ID, 'occurrence', true );
+			$occurrence = $occurrence ? array_map( 'intval', (array) $occurrence ) : array();
 			$link       = (string) get_post_meta( $post->ID, 'link', true );
 			$location   = (string) get_post_meta( $post->ID, 'location', true );
 			$wptv_url   = (string) get_post_meta( $post->ID, 'wptv_url', true );

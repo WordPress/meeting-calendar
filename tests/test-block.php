@@ -44,7 +44,7 @@ class MeetingBlockTest extends WP_UnitTestCase {
 	 * Test that the block outputs the meeting data when the REST request succeeds.
 	 */
 	public function test_render_callback_outputs_meeting_data(): void {
-		$output = Meeting_Calendar\render_callback( array(), '' );
+		$output = Meeting_Calendar\render_callback();
 
 		$this->assertStringContainsString( 'id="wporg-meeting-calendar-js"', $output );
 		$this->assertSame( 1, preg_match( '/data-meetings="([^"]*)"/', $output, $matches ) );
@@ -76,7 +76,7 @@ class MeetingBlockTest extends WP_UnitTestCase {
 		$filter = $this->get_error_filter();
 		add_filter( 'rest_pre_dispatch', $filter );
 
-		$output = Meeting_Calendar\render_callback( array(), '' );
+		$output = Meeting_Calendar\render_callback();
 
 		remove_filter( 'rest_pre_dispatch', $filter );
 
@@ -94,7 +94,7 @@ class MeetingBlockTest extends WP_UnitTestCase {
 		$filter = $this->get_error_filter();
 		add_filter( 'rest_pre_dispatch', $filter );
 
-		$output = Meeting_Calendar\render_callback( array(), '' );
+		$output = Meeting_Calendar\render_callback();
 
 		remove_filter( 'rest_pre_dispatch', $filter );
 
