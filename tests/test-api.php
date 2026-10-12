@@ -13,6 +13,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 	protected $server;
 	protected $meeting_ids;
 
+	/**
+	 * Set up the test fixtures.
+	 */
 	public function setUp(): void {
 		parent::setUp();
 
@@ -38,6 +41,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 	}
 
 
+	/**
+	 * Test that the meeting routes are registered.
+	 */
 	public function test_register_route() {
 		$routes = $this->server->get_routes();
 		// Standard route for the CPT
@@ -48,6 +54,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertArrayHasKey( '/wporg/v1/meetings/(?P<meeting_id>\d+):(?P<date>\d\d\d\d-\d\d-\d\d)', $routes );
 	}
 
+	/**
+	 * Test that the core meeting endpoint lists the sample meetings.
+	 */
 	public function test_get_meetings() {
 		$request  = new WP_REST_Request( 'GET', '/wp/v2/meeting' );
 		$response = $this->server->dispatch( $request );
@@ -55,6 +64,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 3, count( $response->get_data() ) );
 	}
 
+	/**
+	 * Test the occurrences of a weekly meeting.
+	 */
 	public function test_meeting_weekly() {
 		$request  = new WP_REST_Request( 'GET', '/wp/v2/meeting/' . $this->meeting_ids[0] );
 		$response = $this->server->dispatch( $request );
@@ -102,6 +114,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Test the occurrences of a monthly meeting.
+	 */
 	public function test_meeting_monthly() {
 		$request  = new WP_REST_Request( 'GET', '/wp/v2/meeting/' . $this->meeting_ids[1] );
 		$response = $this->server->dispatch( $request );
@@ -146,6 +161,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Test the occurrences of a meeting on the third Wednesday of the month.
+	 */
 	public function test_meeting_third_wednesday() {
 		$request  = new WP_REST_Request( 'GET', '/wp/v2/meeting/' . $this->meeting_ids[2] );
 		$response = $this->server->dispatch( $request );
@@ -193,6 +211,11 @@ class MeetingAPITest extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Get the expected sample meeting occurrences from January 2020.
+	 *
+	 * @return array[]
+	 */
 	public function _january_meetings() {
 		return array(
 			0  =>
@@ -438,6 +461,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * Test the occurrences listed from January 2020.
+	 */
 	public function test_meetings_january_2020() {
 		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-01-01' );
 		$response = $this->server->dispatch( $request );
@@ -447,6 +473,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( $this->_january_meetings(), $meetings );
 	}
 
+	/**
+	 * Test the occurrences listed from February 2020.
+	 */
 	public function test_meetings_february_2020() {
 		$request  = new WP_REST_Request( 'GET', '/wporg/v1/meetings/from/2020-02-01' );
 		$response = $this->server->dispatch( $request );
@@ -486,6 +515,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( $expected_teams, wp_list_pluck( $meetings, 'team' ) );
 	}
 
+	/**
+	 * Test that logged-out users can't cancel or uncancel meetings.
+	 */
 	public function test_cancel_meeting_permissions_noauth() {
 		$request  = new WP_REST_Request( 'DELETE', '/wporg/v1/meetings/' . $this->meeting_ids[0] . ':2020-01-15' );
 		$response = $this->server->dispatch( $request );
@@ -496,6 +528,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 401, $response->get_status() );
 	}
 
+	/**
+	 * Test that editors can cancel and uncancel meetings.
+	 */
 	public function test_cancel_meeting_permissions_valid() {
 		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $user_id );
@@ -509,6 +544,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 	}
 
+	/**
+	 * Test that cancelling and uncancelling an occurrence updates its status in the listing.
+	 */
 	public function test_cancel_meeting_output() {
 		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $user_id );
@@ -590,6 +628,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( 400, $response->get_status() );
 	}
 
+	/**
+	 * Test that cancelling a date the meeting doesn't occur on is rejected.
+	 */
 	public function test_cancel_meeting_invalid_date() {
 		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $user_id );
@@ -604,6 +645,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertNotContains( '2020-01-16', $cancellations );
 	}
 
+	/**
+	 * Test the occurrences of a meeting on the last Wednesday of the month.
+	 */
 	public function test_meeting_last_wednesday() {
 		// Create a meeting on the last Wednesday of each month.
 		// 2020-01-01 is a Wednesday, so the day of week is Wednesday.
@@ -645,6 +689,9 @@ class MeetingAPITest extends WP_UnitTestCase {
 		$this->assertEquals( '2020-03-25', $next );
 	}
 
+	/**
+	 * Test the occurrences of a meeting on the first and last Wednesday of the month.
+	 */
 	public function test_meeting_first_and_last_wednesday() {
 		// Create a meeting on the 1st and last Wednesday of each month.
 		$meeting_id = wp_insert_post(

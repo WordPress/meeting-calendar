@@ -14,6 +14,9 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 	protected $meeting_ids;
 	protected $mpt;
 
+	/**
+	 * Set up the test fixtures.
+	 */
 	public function setUp(): void {
 		parent::setUp();
 
@@ -23,6 +26,9 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$this->mpt = Meeting_Post_Type::getInstance();
 	}
 
+	/**
+	 * Test the [meeting_time] output for a team's upcoming meetings.
+	 */
 	function test_shortcode_simple() {
 
 		// A one-off meeting tomorrow
@@ -78,6 +84,9 @@ class MeetingShortcodeTest extends WP_UnitTestCase {
 		$this->assertEquals( $substr, $expected );
 	}
 
+	/**
+	 * Test the [meeting_time] output when the next occurrence is cancelled.
+	 */
 	function test_shortcode_cancelled() {
 
 		// A recurring weekly meeting, starting yesterday
