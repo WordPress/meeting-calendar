@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { createElement, render } from '@wordpress/element';
+import { createElement, createRoot } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -19,7 +19,7 @@ const initCalendar = () => {
 		return;
 	}
 	const events = getMeetings( calendarEl );
-	render( createElement( App, { events } ), calendarEl );
+	createRoot( calendarEl ).render( createElement( App, { events } ) );
 };
 
 document.addEventListener( 'DOMContentLoaded', initCalendar );
