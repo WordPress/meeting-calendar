@@ -253,6 +253,83 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that a one-off meeting before the period isn't listed in it.
+	 */
+	public function test_future_occurrences_exclude_past_one_off_meeting(): void {
+		$with_end_date    = $this->create_meeting(
+			array(
+				'start_date' => '2020-05-14',
+				'end_date'   => '2020-05-14',
+				'time'       => '19:00:00',
+			)
+		);
+		$without_end_date = $this->create_meeting( array( 'start_date' => '2020-05-14' ) );
+
+		$meeting_post_type = Meeting_Post_Type::getInstance();
+		$this->assertSame( array(), $meeting_post_type->get_future_occurrences( $with_end_date, null, array( 'month' => '2026-10-01' ) ) );
+		$this->assertSame( array(), $meeting_post_type->get_future_occurrences( $without_end_date, null, array( 'month' => '2026-10-01' ) ) );
+	}
+
+	/**
+	 * Test that a one-off meeting in the period is listed, whatever its time of day.
+	 */
+	public function test_future_occurrences_include_one_off_meeting(): void {
+		$meeting = $this->create_meeting(
+			array(
+				'start_date' => '2026-10-14',
+				'end_date'   => '2026-10-14',
+				'time'       => '23:00:00',
+			)
+		);
+
+		$this->assertSame( array( '2026-10-14' ), Meeting_Post_Type::getInstance()->get_future_occurrences( $meeting, null, array( 'month' => '2026-10-01' ) ) );
+	}
+
+	/**
+	 * Test that a one-off meeting has no next occurrence once it has started.
+	 */
+	public function test_next_occurrence_of_one_off_meeting(): void {
+		$meeting = $this->create_meeting(
+			array(
+				'start_date' => '2026-10-14',
+				'time'       => '19:00:00',
+			)
+		);
+
+		$meeting_post_type = Meeting_Post_Type::getInstance();
+		$this->assertSame( '2026-10-14', $meeting_post_type->get_next_occurrence( $meeting, '2026-10-01 00:00:00 +00:00' ) );
+		$this->assertFalse( $meeting_post_type->get_next_occurrence( $meeting, '2026-10-14 19:30:00 +00:00' ) );
+	}
+
+	/**
+	 * Test that a one-off meeting with an unparseable time has no occurrences, instead of throwing.
+	 */
+	public function test_future_occurrences_with_unparseable_time(): void {
+		$meeting = $this->create_meeting(
+			array(
+				'start_date' => '2026-10-14',
+				'time'       => 'TBD',
+			)
+		);
+
+		$this->assertSame( array(), Meeting_Post_Type::getInstance()->get_future_occurrences( $meeting, null, array( 'month' => '2026-10-01' ) ) );
+	}
+
+	/**
+	 * Test that an unknown recurrence value lists the start date once, not on every pass of the loop.
+	 */
+	public function test_future_occurrences_with_unknown_recurrence(): void {
+		$meeting = $this->create_meeting(
+			array(
+				'start_date' => '2026-10-14',
+				'recurring'  => 'yearly',
+			)
+		);
+
+		$this->assertSame( array( '2026-10-14' ), Meeting_Post_Type::getInstance()->get_future_occurrences( $meeting, null, array( 'month' => '2026-10-01' ) ) );
+	}
+
+	/**
 	 * Test that string and out-of-range week values don't break an "occurrence" meeting.
 	 */
 	public function test_next_occurrence_with_unexpected_week_values(): void {
