@@ -205,6 +205,39 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that the meta query keeps a recurring meeting through its end date, like get_future_occurrences().
+	 */
+	public function test_meta_query_includes_meeting_ending_today(): void {
+		$today = gmdate( 'Y-m-d' );
+		$this->create_meeting(
+			array(
+				'start_date' => gmdate( 'Y-m-d', strtotime( $today . ' -7 days' ) ),
+				'end_date'   => $today,
+				'recurring'  => 'weekly',
+			),
+			'Ending today'
+		);
+		$this->create_meeting(
+			array(
+				'start_date' => gmdate( 'Y-m-d', strtotime( $today . ' -8 days' ) ),
+				'end_date'   => gmdate( 'Y-m-d', strtotime( $today . ' -1 day' ) ),
+				'recurring'  => 'weekly',
+			),
+			'Ended yesterday'
+		);
+
+		$meetings = get_posts(
+			array(
+				'post_type'   => 'meeting',
+				'numberposts' => -1,
+				'meta_query'  => Meeting_Post_Type::getInstance()->meeting_meta_query(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- The query under test.
+			)
+		);
+
+		$this->assertSame( array( 'Ending today' ), wp_list_pluck( $meetings, 'post_title' ) );
+	}
+
+	/**
 	 * Test that an unparseable end date ends the meeting, as it does in the meta query.
 	 */
 	public function test_future_occurrences_with_unparseable_end_date(): void {
