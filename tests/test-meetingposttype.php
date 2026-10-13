@@ -61,7 +61,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 			)
 		);
 
-		$meetings = $this->mpt->get_occurrences_for_period( null );
+		$meetings = Meeting_Calendar\REST_API::get_instance()->get_occurrences_for_period( null );
 		$found    = 0;
 		foreach ( $meetings as $meeting ) {
 			if ( $meeting['meeting_id'] === $meeting_id ) {
@@ -94,7 +94,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 			)
 		);
 
-		$meetings = $this->mpt->get_occurrences_for_period( null );
+		$meetings = Meeting_Calendar\REST_API::get_instance()->get_occurrences_for_period( null );
 
 		$found = 0;
 		foreach ( $meetings as $meeting ) {
@@ -129,7 +129,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 			)
 		);
 
-		$meetings = $this->mpt->get_occurrences_for_period( null );
+		$meetings = Meeting_Calendar\REST_API::get_instance()->get_occurrences_for_period( null );
 
 		$found = 0;
 		foreach ( $meetings as $meeting ) {
@@ -217,7 +217,7 @@ class MeetingPostTypeTest extends WP_UnitTestCase {
 				'time'          => '12:00',
 			)
 		);
-		$this->mpt->save_meta_boxes( $post->ID );
+		Meeting_Calendar\Admin::get_instance()->save_meta_boxes( $post->ID );
 		$_POST = array();
 
 		$this->assertSame( $team, get_post_meta( $post->ID, 'team', true ) );

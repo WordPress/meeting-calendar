@@ -145,11 +145,16 @@ function conditionally_load_assets() {
 add_action( 'enqueue_block_assets', __NAMESPACE__ . '\conditionally_load_assets' );
 
 /**
- * Set up the Meetings post type.
+ * Set up the Meetings post type, its admin screens, and its REST API.
  */
 function init() {
 	require_once __DIR__ . '/includes/class-meeting-post-type.php';
-	new \Meeting_Post_Type();
+	require_once __DIR__ . '/includes/class-admin.php';
+	require_once __DIR__ . '/includes/class-rest-api.php';
+
+	\Meeting_Post_Type::init();
+	Admin::init();
+	REST_API::init();
 }
 add_action( 'plugins_loaded', __NAMESPACE__ . '\init' );
 

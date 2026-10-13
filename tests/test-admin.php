@@ -7,17 +7,19 @@
 
 declare( strict_types = 1 );
 
+use WordPressdotorg\Meeting_Calendar\Admin;
+
 /**
  * Class MeetingAdminTest
  */
 class MeetingAdminTest extends WP_UnitTestCase {
 
 	/**
-	 * The meeting post type instance.
+	 * The admin screens instance.
 	 *
-	 * @var Meeting_Post_Type
+	 * @var Admin
 	 */
-	protected Meeting_Post_Type $mpt;
+	protected Admin $admin;
 
 	/**
 	 * Meeting IDs keyed by team name.
@@ -32,7 +34,7 @@ class MeetingAdminTest extends WP_UnitTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->mpt = Meeting_Post_Type::getInstance();
+		$this->admin = Admin::get_instance();
 		set_current_screen( 'edit-meeting' );
 
 		foreach ( array( 'Core', 'core', 'Polyglots', 'Hosting' ) as $team ) {
@@ -63,7 +65,7 @@ class MeetingAdminTest extends WP_UnitTestCase {
 		$_GET['team'] = 'polyglots';
 
 		ob_start();
-		$this->mpt->meeting_team_filter_dropdown( 'meeting' );
+		$this->admin->meeting_team_filter_dropdown( 'meeting' );
 		$output = ob_get_clean();
 
 		$this->assertSame( 1, substr_count( strtolower( $output ), 'value="core"' ) );
@@ -75,7 +77,7 @@ class MeetingAdminTest extends WP_UnitTestCase {
 	 */
 	public function test_team_filter_dropdown_skips_trashed_meetings(): void {
 		ob_start();
-		$this->mpt->meeting_team_filter_dropdown( 'meeting' );
+		$this->admin->meeting_team_filter_dropdown( 'meeting' );
 		$output = ob_get_clean();
 
 		$this->assertStringNotContainsString( 'value="Hosting"', $output );
@@ -86,7 +88,7 @@ class MeetingAdminTest extends WP_UnitTestCase {
 	 */
 	public function test_team_filter_dropdown_other_post_type(): void {
 		ob_start();
-		$this->mpt->meeting_team_filter_dropdown( 'post' );
+		$this->admin->meeting_team_filter_dropdown( 'post' );
 		$output = ob_get_clean();
 
 		$this->assertSame( '', $output );
@@ -128,7 +130,7 @@ class MeetingAdminTest extends WP_UnitTestCase {
 
 		$query = $this->get_main_query();
 		$query->set( 'meta_query', $existing );
-		$this->mpt->meeting_filter_by_team( $query );
+		$this->admin->meeting_filter_by_team( $query );
 
 		$this->assertSame(
 			array(
@@ -148,7 +150,7 @@ class MeetingAdminTest extends WP_UnitTestCase {
 	 */
 	public function test_filter_by_team_without_selection(): void {
 		$query = $this->get_main_query();
-		$this->mpt->meeting_filter_by_team( $query );
+		$this->admin->meeting_filter_by_team( $query );
 
 		$this->assertSame( '', $query->get( 'meta_query' ) );
 	}
