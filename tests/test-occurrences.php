@@ -316,6 +316,20 @@ class MeetingOccurrencesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that a meeting without a start date has no occurrences, instead of one today.
+	 */
+	public function test_meeting_without_start_date(): void {
+		$one_off = $this->create_meeting( array( 'time' => '' ) );
+		$weekly  = $this->create_meeting( array( 'recurring' => 'weekly' ) );
+
+		$meeting_post_type = Meeting_Post_Type::getInstance();
+		foreach ( array( $one_off, $weekly ) as $meeting ) {
+			$this->assertFalse( $meeting_post_type->get_next_occurrence( $meeting, '2026-10-01 00:00:00 +00:00' ) );
+			$this->assertSame( array(), $meeting_post_type->get_future_occurrences( $meeting, null, array( 'month' => gmdate( 'Y-m-01' ) ) ) );
+		}
+	}
+
+	/**
 	 * Test that an unknown recurrence value lists the start date once, not on every pass of the loop.
 	 */
 	public function test_future_occurrences_with_unknown_recurrence(): void {
