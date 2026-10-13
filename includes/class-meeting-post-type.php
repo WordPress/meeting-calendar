@@ -420,8 +420,9 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$now = strtotime( $request['month'] );
 			}
 
-			$from = DateTime::createFromFormat( 'U', (string) strtotime( '-30 minutes', $now ) );
-			$end  = DateTime::createFromFormat( 'U', (string) strtotime( '+2 month', $now ) );
+			$from  = DateTime::createFromFormat( 'U', (string) strtotime( '-30 minutes', $now ) );
+			$start = clone $from;
+			$end   = DateTime::createFromFormat( 'U', (string) strtotime( '+2 month', $now ) );
 			if ( $meeting->end_date ) {
 				$end = DateTime::createFromFormat( '!Y-m-d', $meeting->end_date );
 				// An unparseable end date ends the meeting, as it does in meeting_meta_query().
@@ -437,7 +438,8 @@ if ( ! class_exists( 'Meeting_Post_Type' ) ) :
 				$next = $this->get_next_occurrence( $meeting, $from->format( 'Y-m-d H:i:s P' ) );
 				if ( $next ) {
 					$from = new DateTime( "{$next} {$meeting->time} GMT" );
-					if ( $from <= $end ) {
+					// A one-off meeting's next date is its start date, even once it has passed.
+					if ( $from >= $start && $from <= $end ) {
 						$occurrences[] = $next;
 					}
 				}
