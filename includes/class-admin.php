@@ -579,7 +579,6 @@ class Admin {
 			$end_date = '';
 		}
 
-		// Build a temporary post object to pass to get_future_occurrences().
 		$post             = new \stdClass();
 		$post->ID         = 0;
 		$post->post_type  = 'meeting';
@@ -589,26 +588,8 @@ class Admin {
 		$post->recurring  = $recurring;
 		$post->occurrence = $occurrence;
 
-		// Use a longer window than the default 2 months to ensure we get enough dates.
-		$from = \DateTime::createFromFormat( 'U', (string) strtotime( '-30 minutes' ) );
-		$end  = new \DateTime( '+6 months' );
-		if ( $post->end_date ) {
-			// The meeting still occurs on its end date.
-			$end = \DateTime::createFromFormat( '!Y-m-d', $post->end_date )->setTime( 23, 59, 59 );
-		}
-
-		$max   = 12;
-		$dates = array();
-		// Collect up to 4 upcoming dates; `isset( $dates[3] )` means there are 4.
-		do {
-			$next = \Meeting_Post_Type::getInstance()->get_next_occurrence( $post, $from->format( 'Y-m-d H:i:s P' ) );
-			if ( $next ) {
-				$from = new \DateTime( "{$next} {$post->time}" );
-				if ( $from <= $end ) {
-					$dates[] = $next;
-				}
-			}
-		} while ( --$max > 0 && $next && $from && $from < $end && ! isset( $dates[3] ) );
+		// A longer window than the calendar's two months, so a monthly meeting fills the preview.
+		$dates = \Meeting_Post_Type::getInstance()->get_occurrences( $post, new \DateTime( '-30 minutes' ), new \DateTime( '+6 months' ), 4 );
 
 		// Format dates with day names for display (e.g. "Wednesday, 2026-03-25").
 		$formatted = array();
